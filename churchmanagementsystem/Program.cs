@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace churchmanagementproject
+namespace churchmanagementsystem
 {
     internal class Program
     {
@@ -9,6 +9,7 @@ namespace churchmanagementproject
 
         static void Main(string[] args)
         {
+            Console.WriteLine("TEST PUSH FOR GITHUB");
             DisplayDashboard();
         }
 
