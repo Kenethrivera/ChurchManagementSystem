@@ -3,17 +3,15 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using CMSDataLogic;
 
 namespace BusinessAndDataLogic
 {
-    public static class CMSProcess
+    public class CMSProcess
     {
-        public static List<string> usernames = new List<string>();
-        public static List<string> passwords = new List<string>();
+        private CMSDataProcess dataProcess = new CMSDataProcess();
 
-        public static List<string> adminUsernames = new List<string>();
-        public static List<string> adminPasswords = new List<string>();
-
+        //storage for ministries
         public static List<string> discipleshipSchedules = new List<string>();
         public static List<string> discipleshipTopics = new List<string>();
 
@@ -26,106 +24,162 @@ namespace BusinessAndDataLogic
         public static List<string> christianEdTeachers = new List<string>();
         public static List<string> christianEdTopics = new List<string>();
 
-        public static List<string> ministries = new List<string>();
-
-
-
         // about Login/sign up
-        public static void RegisteredUsernameAndPassword(string username, string password, bool isAdmin)
+        public void RegisteringRegularAccounts(string firstName, string lastName, int age, string emailAddress, string username, string password)
         {
-            if (isAdmin)
-            {
-                adminUsernames.Add(username);
-                adminPasswords.Add(password);
-            }
-            else
-            {
-                usernames.Add(username);
-                passwords.Add(password);
-            }
+            dataProcess.RegularUserAccounts(firstName, lastName, age, emailAddress, username, password);
+        }
+        public void RegisteringAdminAccounts(string firstName, string lastName, int age, string emailAddress, string ministryName, string position, string userName, string passWord)
+        {
+            dataProcess.AdminAccounts(firstName, lastName, age, emailAddress, ministryName, position, userName, passWord);
         }
         public static bool CheckPasswordMatch(string password, string re_Enter_Password)
         {
-            return password == re_Enter_Password;
-        }
-        public static bool ValidatingUsernameAndPassword(string username, string password, bool isAdmin)
-        {
-            if (isAdmin)
+            if( password == re_Enter_Password)
             {
-                int index = adminUsernames.IndexOf(username);
-                if (index != -1 && adminPasswords[index] == password)
-                {
-                    return true;
-                }
-                return false;
-
-            }
+                return true;
+            } 
             else
             {
-                int index = usernames.IndexOf(username);
-                if (index != -1 && passwords[index] == password)
-                {
-                    return true;
-                }
                 return false;
             }
         }
-
-        // about the ministries
-        public static string[] MinistryNamesList()
+        public bool ValidatingUsernameAndPassword(string username, string password, bool isAdmin)
         {
-            string[] ministryName = { "[1] Discipleship Ministry", "[2] Prayer Ministry", "[3] Worship Ministry", "[4] Christian Education" };
+            return dataProcess.ValidatingRegisteredUser(username, password, isAdmin);
+        }
+
+
+        // about the ministries schedule
+        public string[] MinistryNamesList()
+        {
+            string[] ministryName = { "[1] Discipleship Ministry", "[2] Prayer Ministry", "[3] Worship Ministry", "[4] Christian Education", "[5] EXIT" };
             return ministryName;
         }
-
-        public static List<string> ViewSchedule(string ministryName)
+        //viewing schedule
+        public string ViewSchedules(string ministryName)
         {
             if (ministryName == "[1] Discipleship Ministry")
             {
-                return discipleshipSchedules;
+                return dataProcess.ViewDiscipleshipSchedule();
             }
             else if (ministryName == "[2] Prayer Ministry")
             {
-                return prayerSchedules;
+                return dataProcess.ViewPrayerSchedule();
             }
             else if (ministryName == "[3] Worship Ministry")
             {
-                return worshipSchedules;
+                return dataProcess.ViewSundayWorshipSchedule();
             }
             else if (ministryName == "[4] Christian Education")
-            { 
-                return christianEdTeachers;
+            {
+                return dataProcess.ViewTeachersList();
             }
             else
             {
-                return new List<string>();
+                return "false";
             }
         }
-
-        public static bool RemoveScheduleItem(string ministryName, string toRemove)
+        //view praise and worship schedule
+        public string ViewPraiseAndWorshipSchedule()
+        {
+            return dataProcess.ViewPraiseAndWorshipDetails();
+        }
+        //view devotion schedules
+        public string ViewDevotionSchedule()
+        {
+            return dataProcess.ViewDevotionDetails();
+        }
+        //add schedule for 1,2,3.1 ministry
+        public bool AddMinistrySchedule(string ministryName, int date, string speaker, string presider, string description)
+        {
+            switch (ministryName)
+            {
+                case "[1] Discipleship Ministry":
+                    dataProcess.AddDiscipleshipSchedule(date, speaker, presider, description);
+                    return true;
+                case "[2] Prayer Ministry":
+                    dataProcess.AddPrayerSchedule(date, speaker, presider, description);
+                    return true;
+                case "[3] Worship Ministry":
+                    dataProcess.AddSundayWorshipSchedule(date, speaker, presider, description);
+                    return true;    
+            }
+            return false;
+        }
+        //add praise and worship schedule
+        public bool AddPraiseAndWorshipSchedule(string songLeader, string firstRehearsalDate, string firstRehearsalTime, string finalRehearsalDate,  string finalRehearsalTime)
+        {
+            dataProcess.AddPraiseAndWorshipSchedule(songLeader, firstRehearsalDate, firstRehearsalTime, finalRehearsalDate, finalRehearsalTime);
+            return true;
+        }
+        //add devotion schedule
+        public bool AddDevotionSchedule(string speaker, string presider, string devotionDate, string devotionTime)
+        {
+            dataProcess.AddDevotionSchedules(speaker, presider, devotionDate, devotionTime);
+            return true;
+        }
+        //add teacher
+        public bool AddTeachersName(string teachersName)
+        {
+            dataProcess.AddTeachersName(teachersName);
+            return true;
+        }
+        //remove logic for ministry 1, 2, 3.1, 4
+        public bool RemoveSchedule(string ministryName, int index)
         {
             if (ministryName == "[1] Discipleship Ministry")
             {
-                return discipleshipSchedules.Remove(toRemove);
+                return dataProcess.RemoveDiscipleshipSchedule(index);
             }
             else if (ministryName == "[2] Prayer Ministry")
             {
-                return prayerSchedules.Remove(toRemove);
+                return dataProcess.RemovePrayerSchedule(index);
             }
             else if (ministryName == "[3] Worship Ministry")
             {
-                return worshipSchedules.Remove(toRemove);
+                return dataProcess.RemoveSundayWorshipSchedule(index);
             }
             else if (ministryName == "[4] Christian Education")
             {
-                return christianEdTeachers.Remove(toRemove);
+                return dataProcess.RemoveTeachers(index);
             }
             else
             {
                 return false;
+            }       
+        } 
+        //remove praise and worship schedule
+        public bool RemovePraiseAndWorshipSchedule(int index)
+        {
+            return dataProcess.RemovePraiseAndWorshipSchedule(index);
+        }
+        //remove devotion schedule
+        public bool RemoveDevotionSchedule(int index)
+        {
+            return dataProcess.RemoveDevotionSchedule(index);
+        }
+        //choose types of schedule
+        public int SetTypeOfScheduling(string ministryName)
+        {
+            if (ministryName == "[1] Discipleship Ministry" || ministryName == "[2] Prayer Ministry")
+            {
+                return 1;
             }
-        }   
-
+            else if (ministryName == "[3] Worship Ministry")
+            {
+                return 2;
+            }
+            else if (ministryName == "[4] Christian Education")
+            {
+                return 3;
+            }
+            else
+            {
+                return 4;
+            }
+        }
+        //dates
         public static int[] GetAvailableDates(string ministryName)
         {
             if(ministryName == "[1] Discipleship Ministry" || ministryName == "[3] Worship Ministry")
@@ -138,131 +192,74 @@ namespace BusinessAndDataLogic
             
         }
 
-        public static bool AddConfirmedSchedule(string ministryName, string schedule)
+
+        public bool AddMinistryTopics(string ministryName, string field1 = "", string field2= "", string field3 = "", string field4 = "")
         {
             switch (ministryName)
             {
                 case "[1] Discipleship Ministry":
-                    discipleshipSchedules.Add(schedule);
+                    dataProcess.AddDiscipleshipTopics(field1, field2, field3, field4);
                     return true;
                 case "[2] Prayer Ministry":
-                    prayerSchedules.Add(schedule);
+                    dataProcess.AddPrayerRequest(field1);
                     return true;
                 case "[3] Worship Ministry":
-                    worshipSchedules.Add(schedule);
+                    dataProcess.AddRepertoire(field1);
                     return true;
                 case "[4] Christian Education":
-                    christianEdTeachers.Add(schedule);
+                    dataProcess.AddLesson(field1);
                     return true;
                 default:
                     return false;
             }
         }
-        public static bool ProcessingType1Scheduling(string ministryName, int day, string speaker, string presider, string description)
-        {
-            
-            string schedule = $"April {day}, 2025\nSpeaker: {speaker}\nPresider: {presider}\nDescription: {description}";
-            return AddConfirmedSchedule(ministryName, schedule);
-        }
 
-        public static bool ProcessingType2Scheduling(string ministryName, int userChoice, string field1, string field2, string day1, string time1, string day2 = "", string time2 = "")
-        {
-            //string schedule = $"April {day}, 2025\nSpeaker: {speaker}\nPresider: {presider}\nDescription: {description}";
-            string schedule = " ";
-            if (userChoice == 2)
-            {
-                schedule = $"Song Leader: {field1}\nDate (First Rehearsal): {day1}\nTime (Time): {time1}\nDate (Final Rehearsal): {day2}\nTime (Time): {time2}";
-            }
-            else if (userChoice == 3)
-            {
-                schedule = $"Speaker: {field1}\nPresider: {field2}\nDate: {day1}\nTime: {time1}";
-            }
-            return AddConfirmedSchedule(ministryName, schedule);
-        }
-
-        public static bool ProcessingTeachersList(string ministryName, string name)
-        {
-            return AddConfirmedSchedule(ministryName, name);
-        }
-
-
-
-
-
-
-
-
-        //topic business logic
-
-        public static List<string> ViewTopicList(string ministryName)
+        public string ViewTopics(string ministryName)
         {
             if (ministryName == "[1] Discipleship Ministry")
             {
-                return discipleshipTopics;
+                return dataProcess.ViewDiscipleshipTopics();
             }
             else if (ministryName == "[2] Prayer Ministry")
             {
-                return prayerRequest;
+                return dataProcess.ViewPrayerRequest();
             }
             else if (ministryName == "[3] Worship Ministry")
             {
-                return worshipRepertoire;
+                return dataProcess.ViewRepertoire();
             }
             else if (ministryName == "[4] Christian Education")
             {
-                return christianEdTopics;
+                return dataProcess.ViewLesson();
             }
             else
             {
-                return new List<string>();
-            }
+                return "false";
+            }    
         }
-        public static bool RemoveTopics(string ministryName, string toRemove)
+        public bool RemoveTopics(string ministryName, int index)
         {
             if (ministryName == "[1] Discipleship Ministry")
             {
-                return discipleshipTopics.Remove(toRemove);
+                return dataProcess.RemoveDiscipleshipTopics(index);
             }
             else if (ministryName == "[2] Prayer Ministry")
             {
-                return prayerRequest.Remove(toRemove);
+                return dataProcess.RemovePrayerRequest(index);
             }
             else if (ministryName == "[3] Worship Ministry")
             {
-                return worshipRepertoire.Remove(toRemove);
+                return dataProcess.RemoveRepertoire(index);
             }
             else if (ministryName == "[4] Christian Education")
             {
-                return christianEdTopics.Remove(toRemove);
+                return dataProcess.RemoveLessons(index);
             }
             else
             {
                 return false;
             }
-        }
-        public static bool AddConfirmedTopics(string ministryName, string schedule)
-        {
-            switch (ministryName)
-            {
-                case "[1] Discipleship Ministry":
-                    discipleshipTopics.Add(schedule);
-                    return true;
-                case "[2] Prayer Ministry":
-                    prayerRequest.Add(schedule);
-                    return true;
-                case "[3] Worship Ministry":
-                    worshipRepertoire.Add(schedule);
-                    return true;
-                case "[4] Christian Education":
-                    christianEdTopics.Add(schedule);
-                    return true;
-                default:
-                    return false;
-            }
-        }
-        public static bool ProcessingTopicTypes1(string ministryName, string details)
-        {
-            return AddConfirmedTopics(ministryName, details);
-        }
+
+        }      
     }
 }

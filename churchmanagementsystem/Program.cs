@@ -1,12 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Reflection;
 using BusinessAndDataLogic;
+using CMSSchedules;
+using CMSTopics;
 
-namespace churchmanagementsystem
+namespace churchmanagementsystem 
 {
     internal class Program
     {
+        static BusinessAndDataLogic.CMSProcess cmsProcess = new CMSProcess();
         static void Main(string[] args)
         {
             DisplayDashboard();
@@ -53,13 +57,8 @@ namespace churchmanagementsystem
                     Console.WriteLine("Error: User Input exceed 1-3 Options");
                 }
             } while (userChoice > 3 || userChoice < 1);
-        }
-        static int UserChoice()
-        {
-            Console.Write("Enter Choice: ");
-            int userChoice = Convert.ToInt16(Console.ReadLine());
-            return userChoice;
-        }
+
+        }      
         static void DisplayLine()
         {
             Console.WriteLine("------------------------------------");
@@ -70,49 +69,44 @@ namespace churchmanagementsystem
             Console.WriteLine("\nREGISTRATION");
             DisplayLine();
 
-            Console.Write("First Name: ");
-            string firstName = Console.ReadLine();
-            Console.Write("Last Name: ");
-            string lastName = Console.ReadLine();
+            string firstName = NoNullOrEmptyInput("First Name: ");
+            string lastName = NoNullOrEmptyInput("Last Name: ");
             Console.Write("Age: ");
             int age = Convert.ToInt16(Console.ReadLine());
-            Console.Write("Email Address: ");
-            string emailAddress = Console.ReadLine();
+            string emailAddress = NoNullOrEmptyInput("Email Address: ");
 
             Console.WriteLine("Are you an Officer/Admin? [1]Yes [2]No: ");
-            //BL
             int positionChoice = UserChoice();
-
+           
             string username = CreateUsername();
             string password = CreatePassword();
-
-            bool isAdmin = positionChoice == 1;
+            bool isAdmin = positionChoice == 1; // means the user is admin
             if (isAdmin)
             {
-                Console.Write("Enter Ministry: ");
-                string ministryName = Console.ReadLine();
-                Console.Write("Enter Position: ");
-                string position = Console.ReadLine();
+                string ministryName = NoNullOrEmptyInput("Ministry Name: ");
+                string position = NoNullOrEmptyInput("Your Position: ");
+                cmsProcess.RegisteringAdminAccounts(firstName, lastName, age, emailAddress, ministryName, position, username, password);
+                
+            } else
+            {
+                cmsProcess.RegisteringRegularAccounts(firstName, lastName, age, emailAddress, username, password);
             }
-            CMSProcess.RegisteredUsernameAndPassword(username, password, isAdmin);
+
             Console.WriteLine("Registration Complete");
             DisplayDashboard();
         }
+        
         static string CreateUsername()
         {
-            Console.Write("Create Username: ");
-            string username = Console.ReadLine();
+            string username = NoNullOrEmptyInput("Create Username: ");
             return username;
         }
         static string CreatePassword()
         {
             while (true)
             {
-                Console.Write("Create your Password: ");
-                string password = Console.ReadLine();
-
-                Console.Write("Re-Enter your Password: ");
-                string re_Enter_Password = Console.ReadLine();
+                string password = NoNullOrEmptyInput("Create Password: ");
+                string re_Enter_Password = NoNullOrEmptyInput("Re-Enter Password: ");
 
                 if (CMSProcess.CheckPasswordMatch(password, re_Enter_Password))
                 {
@@ -129,12 +123,10 @@ namespace churchmanagementsystem
 
             while (attempt < maxAttempt)
             {
-                Console.Write("Username: ");
-                string username = Console.ReadLine();
-                Console.Write("Password: ");
-                string password = Console.ReadLine();
+                string username = NoNullOrEmptyInput("Username: ");
+                string password = NoNullOrEmptyInput("Password: ");
 
-                if (CMSProcess.ValidatingUsernameAndPassword(username, password, isAdmin))
+                if (cmsProcess.ValidatingUsernameAndPassword(username, password, isAdmin))
                 {
                     Console.WriteLine("Login Successful!");
                     DisplayMinistryOptions();
@@ -144,7 +136,6 @@ namespace churchmanagementsystem
                 attempt++;
                 Console.WriteLine($"Wrong Username or Password. Attempts left: {maxAttempt - attempt}");
             }
-
             Console.Write("Maximum attempts reached. Try again later.");
             Thread.Sleep(2000);
             DisplayDashboard();
@@ -153,10 +144,10 @@ namespace churchmanagementsystem
         //UI
         static void DisplayMinistryOptions()
         {
-            Console.WriteLine("\n Welcome to Adelina Christian Church");
+            Console.WriteLine("\nWelcome to Adelina Christian Church");
             Console.WriteLine("Ministry: ");
 
-            string[] ministryName = CMSProcess.MinistryNamesList();
+            string[] ministryName = cmsProcess.MinistryNamesList();
             foreach (string ministry in ministryName)
             {
                 Console.WriteLine(ministry);
@@ -212,12 +203,11 @@ namespace churchmanagementsystem
             {
                 Console.WriteLine("Invalid Input \n");
             }
-            //BL
+
             int userChoice = UserChoice();
             ProcessMinistryOptionsChoice(ministryName, userChoice);
 
         }
-        //BL
         static void ProcessMinistryOptionsChoice(string ministryName, int userChoice)
         {
             switch (userChoice)
@@ -226,7 +216,8 @@ namespace churchmanagementsystem
                     ManageSchedule(ministryName);
                     break;
                 case 2:
-                    ManageListForTopics(ministryName);
+                    int choice = ViewAddDeleteOption();
+                    ManageListForTopics(ministryName, choice);
                     break;
                 case 3:
                     DisplayMinistryOptions();
@@ -237,7 +228,6 @@ namespace churchmanagementsystem
                     break;
             }
         }
-
         //BL
         static void ManageSchedule(string ministryName)
         {
@@ -248,64 +238,132 @@ namespace churchmanagementsystem
                 Console.WriteLine("[1]View [2]Add [3]Remove [4]Exit");
                 userChoice = UserChoice();
 
-                if (userChoice == 1)
+                switch (userChoice)
                 {
-                    Console.WriteLine("Current List: ");
-                    List<string> schedules = CMSProcess.ViewSchedule(ministryName);
-                    foreach (string schedule in schedules)
-                    {
-                        Console.WriteLine(schedule);
-                    }
-                }
-                //BL
-                else if (userChoice == 2)
-                {     
-                    if(ministryName == "[4] Christian Education")
-                    {
-                        ManageTeachersList(ministryName);
-                    }
-                    SetTypeOfSchedule(ministryName);
-                }
-                else if (userChoice == 3)
-                {
-                    Console.Write("Enter something to remove? ");
-                    string toRemove = Console.ReadLine();
-                    if (CMSProcess.RemoveScheduleItem(ministryName,toRemove))
-                    {
-                        Console.WriteLine("Removed Successfully");
-                    
-                    } else
-                    {
-                        Console.WriteLine("No item to remove");
-                    }
-                }
-                else if (userChoice == 4)
-                {
-                    return;
-                }
-                else
-                {
-                    Console.WriteLine("Error");
+                    case 1://view
+                        if(ministryName == "[3] Worship Ministry")
+                        {
+                            int worshipViewType = WorshipViewingSchedule();
+                            if (worshipViewType == 1)
+                            {
+                                Console.WriteLine("Current List: ");
+                                Console.WriteLine(cmsProcess.ViewSchedules(ministryName));
+                            }
+                            else if (worshipViewType == 2)
+                            {
+                                Console.WriteLine("Current List: ");
+                                Console.WriteLine(cmsProcess.ViewPraiseAndWorshipSchedule());
+                            }
+                            else if (worshipViewType == 3)
+                            {
+                                Console.WriteLine("Current List: ");
+                                Console.WriteLine(cmsProcess.ViewDevotionSchedule());
+                            }
+                            else
+                            {
+                                Console.WriteLine("Invalid Input");
+                            }
+                        } else
+                        {
+                            Console.WriteLine("Current List: ");
+                            Console.WriteLine(cmsProcess.ViewSchedules(ministryName));
+                        }
+                            break;
+                    case 2://add
+                        SetTypeOfSchedule(ministryName);
+                        break;
+                    case 3://remove
+                        RemoveFromSchedule(ministryName);
+                        break;
+                    case 4://back
+                        return;
+                    default:
+                        Console.WriteLine("Input does not match with the options");
+                        break;
                 }
             }
         }
+        public static int WorshipViewingSchedule()
+        {
+            DisplayLine();
+            Console.WriteLine("Choose Schedule Type: ");
+            Console.WriteLine("[1] Sunday Worship Service \n[2] Weekly P&W Practices\n[3] Weekly Team Devotion");
+            int userChoice = UserChoice();
+            return userChoice;
+        }
+        public static void RemoveFromSchedule(string ministryName)
+        {
+            int index;
+            if(ministryName == "[3] Worship Ministry")
+            {
+                int choice = WorshipViewingSchedule();
+                if (choice == 1)
+                {
+                    Console.Write("Enter index: ");
+                    index = Convert.ToInt32(Console.ReadLine());
+                    bool success = cmsProcess.RemoveSchedule(ministryName, index - 1);
+                    if (success)
+                    {
+                        Console.WriteLine("Remove Successfully");
+                    }
+                    else
+                    {
+                        Console.WriteLine("Removing Schedule Failed");
+                    }
+                }
+                if (choice == 2)
+                {
+                    Console.Write("Enter index: ");
+                    index = Convert.ToInt32(Console.ReadLine());
+                    bool success = cmsProcess.RemovePraiseAndWorshipSchedule(index - 1);
+                    if (success)
+                    {
+                        Console.WriteLine("Remove Successfully");
+                    }
+                    else
+                    {
+                        Console.WriteLine("Removing Schedule Failed");
+                    }
+                }else if (choice == 3)
+                {
+                    Console.Write("Enter index: ");
+                    index = Convert.ToInt32(Console.ReadLine());
+                    bool success = cmsProcess.RemoveDevotionSchedule(index - 1);
+                    if (success)
+                    {
+                        Console.WriteLine("Remove Successfully");
+                    }
+                    else
+                    {
+                        Console.WriteLine("Removing Schedule Failed");
+                    }
+                } else
+                {
+                    Console.WriteLine("Error: No Schedule type match");
+                }
+            }
+                
+        }
         public static void SetTypeOfSchedule(string ministryName)
         {
-            if (ministryName == "[1] Discipleship Ministry" || ministryName == "[2] Prayer Ministry")
+            int typeofSchedule = cmsProcess.SetTypeOfScheduling(ministryName);
+            switch (typeofSchedule)
             {
-                SchedulingType1(ministryName);
-            }
-            else if (ministryName == "[3] Worship Ministry")
-            {
-                SchedulingType2(ministryName);
-            }
-            else if (ministryName == "[4] Christian Education")
-            {
-                ManageSchedule(ministryName);
-            }
-            else
-            {
-                Console.WriteLine("Unknown ministry. Cannot set scheduling type.");
+                case 1:
+                    SchedulingType1(ministryName);
+                    break;
+                case 2:
+                    SchedulingType2(ministryName);
+                    break;
+                case 3:
+                    ManageTeachersList();
+                    break;
+                case 4:
+                    ManageSchedule(ministryName);
+                    break;
+                default:
+                    Console.WriteLine("Error: Input does not Match the Choices");
+                    break;
             }
         }
         //first type of scheduling
@@ -315,13 +373,12 @@ namespace churchmanagementsystem
             Console.WriteLine("   ");
             Console.WriteLine("APRIL 2025");
 
-
             int[] availableDates = CMSProcess.GetAvailableDates(ministryName);
             foreach (int day in availableDates)
             {
                 Console.WriteLine($"April {day}, 2025");
             }
-            
+
             int userChoice = UserChoice();
 
             if (availableDates.Contains(userChoice))
@@ -330,8 +387,8 @@ namespace churchmanagementsystem
                 string presider = GetPresider();
                 string description = GetDescription();
 
-                bool addedSchedule = CMSProcess.ProcessingType1Scheduling(ministryName, userChoice, speaker, presider, description);
-                if(addedSchedule == true)
+                bool addedSchedule = cmsProcess.AddMinistrySchedule(ministryName, userChoice, speaker, presider, description);
+                if (addedSchedule == true)
                 {
                     Console.WriteLine("Added Successfully");
                 } else
@@ -345,6 +402,7 @@ namespace churchmanagementsystem
             }
             DisplayMinistryDashboard(ministryName);
         }
+
         //scheduling type2 for Worship
         static void SchedulingType2(string ministryName)
         {
@@ -353,7 +411,6 @@ namespace churchmanagementsystem
             Console.WriteLine("[1] Sunday Worship Service \n[2] Weekly P&W Practices \n[3] Weekly Team Devotion");
             int userChoice = UserChoice();
 
-            //BL
             if (userChoice == 1)
             {
                 SchedulingType1(ministryName);
@@ -361,22 +418,13 @@ namespace churchmanagementsystem
             else if (userChoice == 2)
             {
                 //UI
-                Console.Write("Song Leader: ");
-                string songLeader = Console.ReadLine();
-
-                Console.WriteLine("Date (First rehearsal)");
+                string songLeader = NoNullOrEmptyInput("Song Leader: ");
                 string firstRehearsalDate = GetDate();
-
-                Console.WriteLine("Time ");
                 string firstRehearsalTime = GetTime();
-
-                Console.WriteLine("Date (Final rehearsal)");
                 string finalRehearsalDate = GetDate();
-
-                Console.WriteLine("Time: ");
                 string finalRehearsalTime = GetTime();
 
-                bool addedSchedule = CMSProcess.ProcessingType2Scheduling(ministryName, userChoice, songLeader, firstRehearsalDate, firstRehearsalTime, finalRehearsalDate, finalRehearsalTime);
+                bool addedSchedule = cmsProcess.AddPraiseAndWorshipSchedule(songLeader, firstRehearsalDate, firstRehearsalTime, finalRehearsalDate, finalRehearsalTime);
                 if (addedSchedule == true)
                 {
                     Console.WriteLine("Added Successfully");
@@ -394,7 +442,7 @@ namespace churchmanagementsystem
                 string date = GetDate();
                 string time = GetTime();
 
-                bool addedSchedule = CMSProcess.ProcessingType2Scheduling(ministryName, userChoice, speaker, presider, date, time);
+                bool addedSchedule = cmsProcess.AddDevotionSchedule(speaker, presider, date, time);
                 if (addedSchedule == true)
                 {
                     Console.WriteLine("Added Successfully");
@@ -407,159 +455,213 @@ namespace churchmanagementsystem
             }
 
         }
-
-        static void ManageTeachersList(string ministryName)
+        static void ManageTeachersList()
         {
-            if (ministryName == "[4] Christian Education")
+            string teachersName = NoNullOrEmptyInput("Name: ");
+            bool addedSchedule = cmsProcess.AddTeachersName(teachersName);
+            if (addedSchedule == true)
             {
-                Console.Write("Name: ");
-                string teachersName = Console.ReadLine();
-
-                bool addedSchedule = CMSProcess.ProcessingTeachersList(ministryName,teachersName);
-                if (addedSchedule == true)
-                {
-                    Console.WriteLine("Added Successfully");
-                }
-                else
-                {
-                    Console.WriteLine("Error: Schedule Cannot be Added. Try Again");
-                }
-            }
-        }
-
-
-        //code for OPTION NUMBER 2
-        //view add remove function
-        static void ManageListForTopics(string ministryName)
-        {
-            int userChoice;
-            while (true)
-            {
-                Console.WriteLine(" ");
-                Console.WriteLine("[1]View [2]Add [3]Remove [4]Exit");
-                userChoice = UserChoice();
-
-                if (userChoice == 1)
-                {
-                    Console.WriteLine("Current List: ");
-                    List<string> topics = CMSProcess.ViewTopicList(ministryName);
-                    foreach (string topic in topics)
-                    {
-                        Console.WriteLine(topic);
-                    }  
-                }
-                else if (userChoice == 2)
-                {
-                    string details = GetTypesOfTopics(ministryName);
-                    bool added = CMSProcess.ProcessingTopicTypes1(ministryName, details);
-                    if (added == true)
-                    {
-                        Console.WriteLine("Added Successfully");
-                    } else
-                    {
-                        Console.WriteLine("Topic Cannot be added");
-                    }
-                }
-                else if (userChoice == 3)
-                {
-                    Console.Write("Enter something to remove? ");
-                    string toRemove = Console.ReadLine();
-                    if (CMSProcess.RemoveTopics(ministryName, toRemove))
-                    {
-                        Console.WriteLine("Removed Successfully");
-                    }
-                    else
-                    {
-                        Console.WriteLine("No item to remove");
-                    }
-                }
-                else if (userChoice == 4)
-                {
-                    return;
-                }
-                else
-                {
-                    Console.WriteLine("Error");
-                }
-            }
-        }
-        //kung anong ministry mag ibaba ng path. sheeshshshsajdhajda
-        static string GetTypesOfTopics(string ministryName)
-        {
-            if (ministryName == "[1] Discipleship Ministry" || ministryName == "[4] Christian Education")
-            {
-                string date = GetDate();
-                string time = GetTime();
-                Console.Write("Topics: ");
-                string topics = Console.ReadLine();
-                return ($"Details: \n{date} \n{time} \n{topics}");
-            }
-            else if (ministryName == "[3] Worship Ministry")
-            {
-                Console.Write("How many songs? ");
-                int numberOfSongs = Convert.ToInt16(Console.ReadLine());
-
-                List<string> repertoires = new List<string> ();
-                for (int i = 0; i < numberOfSongs; i++)
-                {
-                    Console.Write("Enter your Repertoire: ");
-                    string input = Console.ReadLine();
-                    repertoires.Add(input);
-                }
-                string repertoire = "Repertoire:\n";
-
-                foreach (string song in repertoires)
-                {
-                    repertoire += song + "\n";
-                }
-                return repertoire;
-            }
-            else if (ministryName == "[2] Prayer Ministry")
-            {
-                Console.Write("Enter your Prayer Request: ");
-                string prayerRequest = Console.ReadLine();
-                return prayerRequest;
+                Console.WriteLine("Added Successfully");
             }
             else
             {
-                return "Error: Ministry Name not Found";
+                Console.WriteLine("Error: Schedule Cannot be Added. Try Again");
             }
         }
 
+       static int ViewAddDeleteOption()
+       {
+            Console.WriteLine(" ");
+            Console.WriteLine("[1]View [2]Add [3]Remove [4]Exit");
+            int userChoice = UserChoice();
+            return userChoice;
+        }
+
+        static void ManageListForTopics(string ministryName, int userChoice)
+        {
+            switch (userChoice)
+            {
+                case 1:
+                    DisplayTopics(ministryName);
+                    break;
+                case 2:
+                    switch (ministryName)
+                    {
+                        case "[1] Discipleship Ministry":
+                            AddDiscipleshipTopicsDetails(ministryName); //add
+                            break;
+                        case "[2] Prayer Ministry":
+                            AskPrayerRequest(ministryName); //add
+                            break;
+                        case "[3] Worship Ministry":
+                            AskRepertoire(ministryName); //add
+                            break;
+                        case "[4] Christian Education":
+                            AskLessons(ministryName); //add
+                            break;
+                        default:
+                            Console.WriteLine("Error: ");
+                            break;
+                    }
+                    break;
+                case 3:
+                    RemoveTopics(ministryName);
+                    break;
+                default:
+                    Console.WriteLine("Invalid UserChoice");
+                    break;
+
+            }
+        }
+        //discipleship ministry
+        static void AddDiscipleshipTopicsDetails(string ministryName)
+        {
+            string topic = NoNullOrEmptyInput("Enter Topic: ");
+            string description = NoNullOrEmptyInput("Description of Topics: ");
+            string materials = NoNullOrEmptyInput("Materials needed: ");
+            string dateTime = NoNullOrEmptyInput("Date and Time: ");
+            bool success = cmsProcess.AddMinistryTopics(ministryName, topic, description, materials, dateTime);
+            if (success == true)
+            {
+                Console.WriteLine("Added successfully");
+            }
+            else
+            {
+                Console.WriteLine("Failed to Add");
+            }
+        }     
+        //prayer ministry
+        static void AskPrayerRequest(string ministryName)
+        {
+            string prayerRequest = NoNullOrEmptyInput("Enter your Prayer Request: ");
+            bool success = cmsProcess.AddMinistryTopics(ministryName, prayerRequest);
+            if (success == true)
+            {
+                Console.WriteLine("Your Prayer Request will be added to the list to pray for the upcoming Prayer Meeting.");
+            }
+            else
+            {
+                Console.WriteLine("Failed to Add");
+            }
+        }
+        //worship ministry
+        static void AskRepertoire(string ministryName)
+        {
+            Console.WriteLine("How many songs?");
+            int songs = UserChoice();
+
+            string repertoire = "";
+            for(int i = 0; i < songs; i++)
+            {
+                string song = NoNullOrEmptyInput($"Enter Song {i + 1}:");
+                repertoire += song + "\n";
+            }
+
+            bool success = cmsProcess.AddMinistryTopics(ministryName, repertoire);
+            if (success == true)
+            {
+                Console.WriteLine("Added successfully");
+            }
+            else
+            {
+                Console.WriteLine("Failed to Add");
+            }
+        }
+        // christian Education
+        static void AskLessons(string ministryName)
+        {
+            string lesson = NoNullOrEmptyInput("Lesson: ");
+            string teacher = NoNullOrEmptyInput("Assign Teacher: ");
+            string materials = NoNullOrEmptyInput("Materials needed: ");
+            bool success = cmsProcess.AddMinistryTopics(ministryName, lesson, teacher, materials);
+            if (success == true)
+            {
+                Console.WriteLine("Added successfully");
+            }
+            else
+            {
+                Console.WriteLine("Failed to Add");
+            }
+        }
+        static void DisplayTopics(string ministryName)
+        {
+            Console.WriteLine("Current List: ");
+            Console.WriteLine(cmsProcess.ViewTopics(ministryName));
+        }
+        static void RemoveTopics(string ministryName)
+        {
+            Console.Write("Enter index: ");
+            int index = Convert.ToInt32(Console.ReadLine());
+            bool success = cmsProcess.RemoveTopics(ministryName, index - 1);
+            if (success)
+            {
+                Console.WriteLine("Remove Successfully");
+            }
+            else
+            {
+                Console.WriteLine("Removing Schedule Failed");
+            }
+        }
         static string GetSpeaker()
         {
-            Console.Write("Speaker: ");
-            string speaker = Console.ReadLine();
+            string speaker = NoNullOrEmptyInput("Speaker: ");
             return speaker;
         }
         //BL
         static string GetPresider()
         {
-            Console.Write("Presider: ");
-            string presider = Console.ReadLine();
+            string presider = NoNullOrEmptyInput("Presider: ");
             return presider;
         }
         //BL
         static string GetDescription()
         {
-            Console.Write("Description: ");
-            string description = Console.ReadLine();
+            string description = NoNullOrEmptyInput("Description: ");
             return description;
         }
+
+        //for worship
         //BL
         static string GetDate()
         {
-            Console.Write("Enter Date: ");
-            string date = Console.ReadLine();
+            string date = NoNullOrEmptyInput("Enter Date: ");
             return date;
         }
         //BLs
         static string GetTime()
         {
-            Console.Write("Enter Time: ");
-            string time = Console.ReadLine();
+            string time = NoNullOrEmptyInput("Enter Time: ");
             return time;
         }
+        static int UserChoice()
+        {
+            int userChoice;
+            do
+            {
+                Console.Write("Enter Choice: ");
+                if (!int.TryParse(Console.ReadLine(), out userChoice) || userChoice <= 0)
+                {
+                    Console.WriteLine("Please Input a Valid Integer");
+                }
+            } while (userChoice <= 0);
 
+            return userChoice;
+        }
+        static string NoNullOrEmptyInput(string input)
+        {
+            string userInput;
+            do
+            {
+                Console.Write(input);
+                userInput = Console.ReadLine() ?? string.Empty;
+
+                if (string.IsNullOrWhiteSpace(userInput))
+                {
+                    Console.WriteLine("Please Enter Valid Strings to proceed.");
+                }
+
+            } while (string.IsNullOrWhiteSpace(userInput));
+            return userInput;
+        }
     }
-}
+    }

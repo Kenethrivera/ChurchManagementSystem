@@ -7,7 +7,9 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\CMSDataLogic\CMSDataLogic.csproj" />
+    <ProjectReference Include="..\CMSAccounts\CMSAccounts.csproj" />
+    <ProjectReference Include="..\CMSSchedules\CMSSchedules.csproj" />
+    <ProjectReference Include="..\CMSTopics\CMSTopics.csproj" />
   </ItemGroup>
 
 </Project>
