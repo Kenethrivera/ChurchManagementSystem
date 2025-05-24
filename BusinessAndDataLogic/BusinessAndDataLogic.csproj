@@ -8,6 +8,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\CMSDataLogic\CMSDataLogic.csproj" />
+    <ProjectReference Include="..\CMSSchedules\CMSSchedules.csproj" />
   </ItemGroup>
 
 </Project>

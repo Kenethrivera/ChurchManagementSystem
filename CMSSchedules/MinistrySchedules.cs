@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -8,20 +9,15 @@ namespace CMSSchedules
 {
     public class DiscipleshipMinistry
     {
-        private int date;
-        private string presider;
+        private string date;
         private string speaker;
         private string description;
+        private string note;
 
-        public int Date
+        public string Date
         {
             get { return date; }
             set { date = value; }
-        }
-        public string Presider
-        {
-            get { return presider; }
-            set { presider = value; }
         }
         public string Speaker
         {
@@ -33,169 +29,176 @@ namespace CMSSchedules
             get { return description; }
             set { description = value; }
         }
-
-        public string GetDiscipleshipScheduleDetails()
+        public string Note
         {
-            return ($"Date: {date}\nSpeaker: {speaker}\nPresider: {presider}\nDescription: {description} ");
-            
+            get { return note; }
+            set { note = value; }
         }
-        
 
     }
     public class PrayerMinistry
     {
-        private int date;
-        private string presider;
-        private string speaker;
-        private string description;
-
-        public int Date
-        {
-            get { return date; }
-            set { date = value; }
-        }
-        public string Presider
-        {
-            get { return presider; }
-            set { presider = value; }
-        }
-        public string Speaker
-        {
-            get { return speaker; }
-            set { speaker = value; }
-        }
-        public string Description
-        {
-            get { return description; }
-            set { description = value; }
-        }
-
-        public string GetPrayerScheduleDetails()
-        {
-            return ($"Date: {date}\nSpeaker: {speaker}\nPresider: {presider}\nDescription: {description} ");
-
-        }
-    }
-    public class WorshipMinistry
-    {
-        //for option 1
-        //the sunday worship service
-        private int date;
-        private string presider;
-        private string speaker;
-        private string description;
-        public int Date
-        {
-            get { return date; }
-            set { date = value; }
-        }
-        public string Presider
-        {
-            get { return presider; }
-            set { presider = value; }
-        }
-        public string Speaker
-        {
-            get { return speaker; }
-            set { speaker = value; }
-        }
-        public string Description
-        {
-            get { return description; }
-            set { description = value; }
-        }
-
-        //for option 2
-        //weekly p&w practices
-
+        private string date;
         private string songLeader;
-        private string firstRehearsalDate;
-        private string finalRehearsalDate;
-        private string firstRehearsalTime;
-        private string finalRehearsalTime;
-        
+        private string presider;
+        private string speaker;
+        private string description;
+        private string prayerItem;
+
+        public string Date
+        {
+            get { return date; }
+            set { date = value; }
+        }
         public string SongLeader
         {
             get { return songLeader; }
             set { songLeader = value; }
         }
-        public string FirstRehearsalDate
+        public string Presider
         {
-            get { return firstRehearsalDate; }
-            set { firstRehearsalDate = value; }
+            get { return presider; }
+            set { presider = value; }
         }
-        public string FinalRehearsalDate
+        public string Speaker
         {
-            get { return finalRehearsalDate; }
-            set { finalRehearsalDate = value; }
+            get { return speaker; }
+            set { speaker = value; }
         }
-        public string FirstRehearsalTime
+        public string Description
         {
-            get { return firstRehearsalTime; }
-            set { firstRehearsalTime = value; }
+            get { return description; }
+            set { description = value; }
         }
-        public string FinalRehearsalTime
+        public string PrayerItem
         {
-            get { return finalRehearsalTime; }
-            set { finalRehearsalTime = value; }
-        }
-
-        //for option 3
-        //weekly devotion schedule
-        private string devotionSpeaker;
-        private string devotionPresider;
-        private string devotionDate;
-        private string devotionTime;
-
-        public string DevotionSpeaker
-        {
-            get { return devotionSpeaker; }
-            set { devotionSpeaker = value; }
-        }
-        public string DevotionPresider
-        {
-            get { return devotionPresider; }
-            set { devotionPresider = value; }
-        }
-        public string DevotionDate
-        {
-            get { return devotionDate; }
-            set { devotionDate = value; }
-        }
-        public string DevotionTime
-        {
-            get { return devotionTime; }
-            set { devotionTime = value; }
+            get { return prayerItem; }
+            set { prayerItem = value; }
         }
 
-        public string GetSundayWorshipServiceDetails()
+    }
+    public class PraiseAndWorship
+    {
+        private string date;
+        private string songLeader;
+        private string instrumentalist;
+        public string Date
         {
-            return ($"Date: {date}\nSpeaker: {speaker}\nPresider: {presider}\nDescription: {description} ");
+            get { return date; }
+            set { date = value; }
+        }
+        public string SongLeader
+        {
+            get { return songLeader; }
+            set { songLeader = value; }
+        }
+        public string Instrumentalist
+        {
+            get { return instrumentalist; }
+            set { instrumentalist = value; }
+        }
 
-        }
-        public string GetPraiseAndWorshipDetails()
+
+    }
+    public class SundayWorshipService
+    {
+        private string date;
+        private string presider;
+        private string speaker;
+        private string flowers;
+        private string ushers;
+
+        public string Date
         {
-            return ($"SongLeader: {songLeader}\nFirstRehearsalDate: {finalRehearsalDate}\nFinalRehearsalDate: {finalRehearsalDate}\nFistRehearsalTime: {firstRehearsalTime}\nFinalRehearsalTime: {FinalRehearsalTime} ");
+            get { return date; }
+            set { date = value; }
         }
-        public string GetDevotionDetails()
+        public string Presider
         {
-            return ($"Speaker: {devotionSpeaker}\nPresider: {devotionPresider}\nDevotion Date: {devotionDate}\nDevotion Time: {devotionTime}");
+            get { return presider; }
+            set { presider = value; }
+        }
+        public string Speaker
+        {
+            get { return speaker; }
+            set { speaker = value; }
+        }
+        public string Flowers
+        {
+            get { return flowers; }
+            set { flowers = value; }
+        }
+        public string Ushers
+        {
+            get { return ushers; }
+            set { ushers = value; }
         }
     }
+    public class Devotion
+    {
+        string presider;
+        string speaker;
+        string date;
+        string songLeader;
 
-    public class ChristianEducation
+        public string Date
+        {
+            get { return date; }
+            set { date = value; }
+        }
+        public string SongLeader
+        {
+            get { return songLeader; }
+            set { songLeader = value; }
+        }
+        public string Presider
+        {
+            get { return presider; }
+            set { presider = value; }
+        }
+        public string Speaker
+        {
+            get { return speaker; }
+            set { speaker = value; }
+        }
+
+    }
+    public class TeachersList
     {
         private string teachersName;
+        private string assignment;
 
         public string TeachersName
         {
             get { return teachersName; }
             set { teachersName = value; }
         }
-
-        public string GetTeachersList()
+        public string Assignment
         {
-            return ($"Teacher's List: {teachersName}");
+            get { return assignment; }
+            set { assignment = value; }
+        }
+    }
+    public class Lesson
+    {
+        private string date;
+        private string lesson;
+        private string materials;
+
+        public string Date
+        {
+            get { return date; }
+            set { date = value; }
+        }
+        public string Lessson
+        {
+            get { return lesson; }
+            set { lesson = value; }
+        }
+        public string Materials
+        {
+            get { return materials; }
+            set { materials = value; }
         }
     }
 }
