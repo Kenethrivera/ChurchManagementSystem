@@ -176,7 +176,7 @@ namespace CMSDataLogic
         {
             return prayerSchedules;
         }
-        public bool AddPrayerSchedule(string date, string songLeader, string presider, string speaker)
+        public bool AddPrayerSchedule(string date, string songLeader, string presider, string speaker, string prayerItem)
         {
             try
             {
@@ -185,7 +185,8 @@ namespace CMSDataLogic
                     Date = date,
                     SongLeader = songLeader,
                     Presider = presider,
-                    Speaker = speaker
+                    Speaker = speaker,
+                    PrayerItem = prayerItem
                 });
                 return true;
             }
@@ -202,21 +203,6 @@ namespace CMSDataLogic
                 if (prayerSchedules[i].Date == date)
                 {
                     prayerSchedules.RemoveAt(i);
-                    return true;
-                }
-            }
-            return false;
-        }
-        public bool AddPrayerItem(string date, string prayerItem)
-        {
-            for (int i = 0; i < prayerSchedules.Count; i++)
-            {
-                if (prayerSchedules[i].Date == date)
-                {
-                    prayerSchedules.Add(new PrayerMinistry
-                    {
-                        PrayerItem = prayerItem
-                    });
                     return true;
                 }
             }

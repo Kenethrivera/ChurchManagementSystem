@@ -6,7 +6,6 @@ using System.Text;
 using System.Threading.Tasks;
 using CMSAccounts;
 using CMSSchedules;
-using CMSTopics;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace CMSDataLogic
@@ -19,6 +18,7 @@ namespace CMSDataLogic
         {
             // cmsDataService = new InMemoryDataService();
             // cmsDataService = new TextFileDataService();
+            //cmsDataService = new JsonDataService();
             cmsDataService = new DBDataService();            
         }
         public void RegularUserAccounts(string firstName, string lastName, int age, string emailAddress, string userName, string passWord)
@@ -53,17 +53,13 @@ namespace CMSDataLogic
         {
             return cmsDataService.ViewPrayerMeetingSchedule();
         }
-        public bool AddPrayerSchedule(string date, string songLeader, string presider, string speaker)
+        public bool AddPrayerSchedule(string date, string songLeader, string presider, string speaker, string prayerItem)
         {
-            return cmsDataService.AddPrayerSchedule(date, songLeader, presider, speaker);
+            return cmsDataService.AddPrayerSchedule(date, songLeader, presider, speaker, prayerItem);
         }
         public bool RemovePrayerSchedule(string date)
         {
             return cmsDataService.RemovePrayerSchedule(date);
-        }
-        public bool AddPrayerItem(string date, string prayerItem)
-        {
-            return cmsDataService.AddPrayerItem(date, prayerItem);
         }
         public List<PraiseAndWorship> ViewPraiseAndWorshipSchedule()
         {

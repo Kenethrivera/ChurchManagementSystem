@@ -1,10 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Reflection;
-using BusinessAndDataLogic;
-using CMSSchedules;
-using CMSTopics;
+﻿using BusinessAndDataLogic;
+
 
 namespace churchmanagementsystem 
 {
@@ -17,7 +12,6 @@ namespace churchmanagementsystem
         }
         static void DisplayDashboard()
         {
-            //UI Logic
             Console.Clear();
             Console.WriteLine("\nWELCOME TO ADELINA CHRISTIAN CHURCH");
             DisplayLine();
@@ -277,7 +271,7 @@ namespace churchmanagementsystem
         {
             Console.WriteLine($"WELCOME TO {ministryName}");
 
-            Console.WriteLine("[1] Schedule Prayer Meeting [2] Set Prayer Item [3] Log out");
+            Console.WriteLine("[1] Schedule Prayer Meeting [2] Log out");
             int userChoice = UserChoice();
 
             if (userChoice == 1)
@@ -305,25 +299,6 @@ namespace churchmanagementsystem
 
             } else if (userChoice == 2)
             {
-                var action = CRUDOptions();
-                if(action == 1)
-                {
-
-                }
-                else if(action == 2)
-                {
-                    Console.WriteLine("----------------------------------");
-                    SetPrayerItem(ministryName);
-                }else if (action == 3)
-                {
-
-                } else
-                {
-                    Console.WriteLine("Invalid Input");
-                }
-            }
-            else if (userChoice == 3)
-            {
                 Console.Clear();
                 DisplayDashboard();
             }
@@ -343,6 +318,7 @@ namespace churchmanagementsystem
                 Console.WriteLine($"Song Leader: {sched.SongLeader}");
                 Console.WriteLine($"Presider: {sched.Presider}");
                 Console.WriteLine($"Speaker: {sched.Speaker}");
+                Console.WriteLine($"Prayer Item: {sched.PrayerItem}");
                 Console.WriteLine("----------------------------------");
             }
             Thread.Sleep(1000);
@@ -357,8 +333,9 @@ namespace churchmanagementsystem
             string songLeader = NoNullOrEmptyInput("Song Leader: ");
             string presider = NoNullOrEmptyInput("Presider: ");
             string speaker = NoNullOrEmptyInput("Speaker: ");
+            string prayerItem = NoNullOrEmptyInput("Prayer Item: ");
             
-            bool isAdded = cmsProcess.AddPrayerSched(date, songLeader, presider, speaker);
+            bool isAdded = cmsProcess.AddPrayerSched(date, songLeader, presider, speaker, prayerItem);
             Console.WriteLine(isAdded ? "Added Successfully" : "Failed to Add Schedule");
 
             Console.WriteLine("----------------------------------");
@@ -377,18 +354,7 @@ namespace churchmanagementsystem
             Console.WriteLine("----------------------------------");
             PrayerAdminDashboard(ministryName);
         }
-        static void SetPrayerItem(string ministryName)
-        {
-            Console.Clear();
-            string date = NoNullOrEmptyInput("Enter Date: ");
-            string prayerItem = NoNullOrEmptyInput("Prayer Item: ");
 
-            bool isSet = cmsProcess.SetPrayerItem(date, prayerItem);
-            Console.WriteLine(isSet ? "Prayer Item Successfully Set" : "Failed to Set Prayer Item");
-
-            Console.WriteLine("----------------------------------");
-            PrayerAdminDashboard(ministryName);
-        }
 
         //worship ministry dashboard
         static void WorshipAdminDashboard(string ministryName)
@@ -803,7 +769,10 @@ namespace churchmanagementsystem
             return userChoice;
         }
 
-        // code for user path
+        /*
+             code for user path
+        */
+
 
         static int UserChoice()
         {

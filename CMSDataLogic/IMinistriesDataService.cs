@@ -18,9 +18,8 @@ namespace CMSDataLogic
         public bool AddDiscipleshipSchedule(string date, string speaker, string description, string note);
         public bool RemoveDiscipleshipSchedule(string date);
         public List<PrayerMinistry> ViewPrayerMeetingSchedule();
-        public bool AddPrayerSchedule(string date, string songLeader, string presider, string speaker);
+        public bool AddPrayerSchedule(string date, string songLeader, string presider, string speaker, string prayerItem);
         public bool RemovePrayerSchedule(string date);
-        public bool AddPrayerItem(string date, string prayerItem);
         public List<PraiseAndWorship> ViewPraiseAndWorshipSchedule();
         public bool AddPraiseAndWorshipSchedule(string date, string songLeader, string instrumentalist);
         public bool RemovePraiseAndWorshipSchedule(string date);
@@ -36,8 +35,6 @@ namespace CMSDataLogic
         public List<Lesson> ViewLessons();
         public bool AddLesson(string date, string lesson, string materials);
         public bool RemoveLesson(string date);
-
-
 
     }
 }

@@ -71,17 +71,13 @@ namespace BusinessAndDataLogic
         {
             return dataProcess.ViewPrayerMeetingSchedule();
         }
-        public bool AddPrayerSched(string date, string songLeader, string presider, string speaker)
+        public bool AddPrayerSched(string date, string songLeader, string presider, string speaker, string prayerItem)
         {
-            return dataProcess.AddPrayerSchedule(date, songLeader, presider, speaker);
+            return dataProcess.AddPrayerSchedule(date, songLeader, presider, speaker, prayerItem);
         }
         public bool RemovePrayerSched(string date)
         {
             return dataProcess.RemovePrayerSchedule(date);
-        }
-        public bool SetPrayerItem(string date, string prayerItem)
-        {
-            return dataProcess.AddPrayerItem(date, prayerItem);
         }
 
         //worship ministry

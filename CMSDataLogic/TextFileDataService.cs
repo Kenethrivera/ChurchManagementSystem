@@ -108,22 +108,6 @@ namespace CMSDataLogic
             }
 
         }
-        private void LoadPrayerItem()
-        {
-            var lines = File.ReadAllLines(prayerItemFilePath);
-
-            foreach (var line in lines)
-            {
-                var parts = line.Split('|');
-
-                prayerSchedules.Add(new PrayerMinistry
-                {
-                    Date = parts[0],
-                    PrayerItem = parts[1]
-                });
-            }
-
-        }
         private void LoadPrayerSched()
         {
             var lines = File.ReadAllLines(prayerMeetingFilePath);
@@ -326,16 +310,9 @@ namespace CMSDataLogic
             var newLines = $"{date}|{songLeader}|{instrumentalist}";
             return AppendLineToFile(praiseAndWorshipScheduleFilePath, newLines);
         }
-
-        public bool AddPrayerItem(string date, string prayerItem)
+        public bool AddPrayerSchedule(string date, string songLeader, string presider, string speaker, string prayerItem)
         {
-            var newLines = $"{date}|{prayerItem}";
-            return AppendLineToFile(prayerItemFilePath, newLines);
-        }
-
-        public bool AddPrayerSchedule(string date, string songLeader, string presider, string speaker)
-        {
-            var newLines = $"{date}|{songLeader}|{presider}|{speaker}";
+            var newLines = $"{date}|{songLeader}|{presider}|{speaker}|{prayerItem}";
             return AppendLineToFile(prayerMeetingFilePath, newLines);
         }
 
@@ -378,7 +355,7 @@ namespace CMSDataLogic
                 lines[i] = $"{discipleshipSchedules[i].Date}|{discipleshipSchedules[i].Speaker}|{discipleshipSchedules[i].Description}| {discipleshipSchedules[i].Note}";
             }
 
-            File.WriteAllLines(discipleshipScheduleFilePath, lines); // Fixed: was devotionScheduleFilePath
+            File.WriteAllLines(discipleshipScheduleFilePath, lines);
         }
 
         private void WriteLessonToFile()
@@ -411,7 +388,7 @@ namespace CMSDataLogic
 
             for (int i = 0; i < prayerSchedules.Count; i++)
             {
-                lines[i] = $"{prayerSchedules[i].Date}|{prayerSchedules[i].SongLeader}|{prayerSchedules[i].Presider}|{prayerSchedules[i].Speaker}";
+                lines[i] = $"{prayerSchedules[i].Date}|{prayerSchedules[i].SongLeader}|{prayerSchedules[i].Presider}|{prayerSchedules[i].Speaker}|{prayerSchedules[i].PrayerItem}";
             }
 
             File.WriteAllLines(prayerMeetingFilePath, lines);
