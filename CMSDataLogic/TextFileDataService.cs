@@ -20,7 +20,6 @@ namespace CMSDataLogic
         string discipleshipScheduleFilePath = "discipleshipSchedule.txt";
         string praiseAndWorshipScheduleFilePath = "praiseAndWorshipSchedule.txt";
         string sundayWorshipServiceFilePath = "sundayWorshipSchedule.txt";
-        string prayerItemFilePath = "prayerItem.txt";
         string prayerMeetingFilePath = "prayerMeeting.txt";
         string lessonFilePath = "lesson.txt";
         string teachersFilePath = "teacher.txt";
@@ -43,57 +42,88 @@ namespace CMSDataLogic
         }
         private void LoadDevotionSched()
         {
+            devotionSchedules.Clear();
+
             var lines = File.ReadAllLines(devotionScheduleFilePath);
 
             foreach (var line in lines)
             {
                 var parts = line.Split('|');
 
-                devotionSchedules.Add(new Devotion
+                if (DateTime.TryParse(parts[0], null, System.Globalization.DateTimeStyles.None, out DateTime parsedDate))
                 {
-                    Date = parts[0],
-                    SongLeader = parts[1],
-                    Presider = parts[2],
-                    Speaker = parts[3]
-                });
+                    devotionSchedules.Add(new Devotion
+                    {
+                        Date = parsedDate,
+                        SongLeader = parts[1],
+                        Presider = parts[2],
+                        Speaker = parts[3]
+                    });
+                }
+                else
+                {
+                    Console.WriteLine($"Invalid date format found in line: {line}");
+                }
             }
         }
         private void LoadDiscipleshipSched()
         {
-            var lines = File.ReadAllLines(devotionScheduleFilePath);
+            discipleshipSchedules.Clear();
+
+            var lines = File.ReadAllLines(discipleshipScheduleFilePath);
 
             foreach (var line in lines)
             {
                 var parts = line.Split('|');
 
-                discipleshipSchedules.Add(new DiscipleshipMinistry
+                if (DateTime.TryParse(parts[0], null, System.Globalization.DateTimeStyles.None, out DateTime parsedDate))
                 {
-                    Date = parts[0],
-                    Speaker = parts[1],
-                    Description = parts[2],
-                    Note  = parts[3],
+                    discipleshipSchedules.Add(new DiscipleshipMinistry
+                    {
+                        Date = parsedDate,
+                        Speaker = parts[1],
+                        Description = parts[2],
+                        Note = parts[3],
 
-                });
+                    });
+                }
+                else
+                {
+                    Console.WriteLine($"Invalid date format found in line: {line}");
+                }
+
+                
             }
         }
         private void LoadLessonList()
         {
+            lessonsList.Clear();
+
             var lines = File.ReadAllLines(lessonFilePath);
 
             foreach (var line in lines)
             {
                 var parts = line.Split('|');
 
-                lessonsList.Add(new Lesson
+                if (DateTime.TryParse(parts[0], null, System.Globalization.DateTimeStyles.None, out DateTime parsedDate))
                 {
-                    Date = parts[0],
-                    Lessson = parts[1],
-                    Materials = parts[2]
-                });
+                    lessonsList.Add(new Lesson
+                    {
+                        Date = parsedDate,
+                        Lessson = parts[1],
+                        Materials = parts[2]
+                    });
+                }
+                else
+                {
+                    Console.WriteLine($"Invalid date format found in line: {line}");
+                }
             }
         }
         private void LoadTeachersList()
         {
+            teachersList.Clear();
+            
             var lines = File.ReadAllLines(teachersFilePath);
 
             foreach (var line in lines)
@@ -110,54 +140,83 @@ namespace CMSDataLogic
         }
         private void LoadPrayerSched()
         {
+            prayerSchedules.Clear();
+
             var lines = File.ReadAllLines(prayerMeetingFilePath);
 
             foreach (var line in lines)
             {
                 var parts = line.Split('|');
-
-                prayerSchedules.Add(new PrayerMinistry
+                if (DateTime.TryParse(parts[0], null, System.Globalization.DateTimeStyles.None, out DateTime parsedDate))
                 {
-                    Date = parts[0],
-                    SongLeader = parts[1],
-                    Presider = parts[2],
-                    Speaker = parts[3]
-                });
+
+                    prayerSchedules.Add(new PrayerMinistry
+                    {
+                        Date = parsedDate,
+                        SongLeader = parts[1],
+                        Presider = parts[2],
+                        Speaker = parts[3],
+                        PrayerItem = parts[4]
+                    });
+                }
+                else
+                {
+                    Console.WriteLine($"Invalid date format found in line: {line}");
+                }
+
             }
 
         }
         private void LoadPraiseAndWorshipSched()
         {
+            praiseAndWorshipSchedules.Clear();
+
             var lines = File.ReadAllLines(praiseAndWorshipScheduleFilePath);
 
             foreach (var line in lines)
             {
                 var parts = line.Split('|');
-
-                praiseAndWorshipSchedules.Add(new PraiseAndWorship
+                
+                if (DateTime.TryParse(parts[0], null, System.Globalization.DateTimeStyles.None, out DateTime parsedDate))
                 {
-                    Date = parts[0],
-                    SongLeader = parts[1],
-                    Instrumentalist = parts[2]
-                });
+                    praiseAndWorshipSchedules.Add(new PraiseAndWorship
+                    {
+                        Date = parsedDate,
+                        SongLeader = parts[1],
+                        Instrumentalist = parts[2]
+                    });
+                }
+                else
+                {
+                    Console.WriteLine($"Invalid date format found in line: {line}");
+                } 
             }
         }
         private void LoadSundayWorshipSched()
         {
+            sundayWorshipSchedules.Clear();
+
             var lines = File.ReadAllLines(sundayWorshipServiceFilePath);
 
             foreach (var line in lines)
             {
                 var parts = line.Split('|');
 
-                sundayWorshipSchedules.Add(new SundayWorshipService
+                if (DateTime.TryParse(parts[0], null, System.Globalization.DateTimeStyles.None, out DateTime parsedDate))
                 {
-                    Date = parts[0],
-                    Presider = parts[1],
-                    Speaker = parts[2],
-                    Flowers = parts[3],
-                    Ushers = parts[4]
-                });
+                    sundayWorshipSchedules.Add(new SundayWorshipService
+                    {
+                        Date = parsedDate,
+                        Presider = parts[1],
+                        Speaker = parts[2],
+                        Flowers = parts[3],
+                        Ushers = parts[4]
+                    });
+                }
+                else
+                {
+                    Console.WriteLine($"Invalid date format found in line: {line}");
+                }
             }
         }
         private void GetAdminAccount()
@@ -195,7 +254,6 @@ namespace CMSDataLogic
                 Console.WriteLine($"Error reading admin accounts: {ex.Message}");
             }
         }
-
         private void GetRegularAccount()
         {
             try
@@ -231,13 +289,11 @@ namespace CMSDataLogic
                 Console.WriteLine($"Error reading regular accounts: {ex.Message}");
             }
         }
-
-        // Fixed login method
         public string GetAdminMinistry(string username, string password)
         {
             foreach (var admin in adminAccounts)
             {
-                if (admin.UserName.Equals(username, StringComparison.OrdinalIgnoreCase) &&
+                if (admin.UserName.Equals(username, StringComparison.Ordinal) &&
                     admin.Password.Equals(password, StringComparison.Ordinal))
                 {
                     return admin.MinistryName;
@@ -246,12 +302,11 @@ namespace CMSDataLogic
 
             return "No match account";
         }
-
         public string GetUserRole(string username, string password)
         {
             foreach (var admin in adminAccounts)
             {
-                if (admin.UserName.Equals(username, StringComparison.OrdinalIgnoreCase) &&
+                if (admin.UserName.Equals(username, StringComparison.Ordinal) &&
                     admin.Password.Equals(password, StringComparison.Ordinal))
                 {
                     return "Admin";
@@ -259,7 +314,7 @@ namespace CMSDataLogic
             }
             foreach (var user in regularAccounts)
             {
-                if (user.UserName.Equals(username, StringComparison.OrdinalIgnoreCase) &&
+                if (user.UserName.Equals(username, StringComparison.Ordinal) &&
                     user.Password.Equals(password, StringComparison.Ordinal))
                 {
                     return "User";
@@ -273,7 +328,6 @@ namespace CMSDataLogic
             var newlines = $"{firstName}|{lastName}|{age}|{emailAddress}|{userName}|{passWord}";
             File.AppendAllText(regularAccFilePath, newlines + Environment.NewLine);
         }
-
         private bool AppendLineToFile(string filePath, string line)
         {
             try
@@ -286,54 +340,46 @@ namespace CMSDataLogic
                 return false;
             }
         }
-
-        public bool AddDevotionSchedule(string date, string songLeader, string presider, string speaker)
+        public bool AddDevotionSchedule(DateTime date, string songLeader, string presider, string speaker)
         {
             var newLines = $"{date}|{songLeader}|{presider}|{speaker}";
             return AppendLineToFile(devotionScheduleFilePath, newLines);
         }
-
-        public bool AddDiscipleshipSchedule(string date, string speaker, string description, string note)
+        public bool AddDiscipleshipSchedule(DateTime date, string speaker, string description, string note)
         {
             var newLines = $"{date}|{speaker}|{description}|{note}";
             return AppendLineToFile(discipleshipScheduleFilePath, newLines);
         }
-
-        public bool AddLesson(string date, string lesson, string materials)
+        public bool AddLesson(DateTime date, string lesson, string materials)
         {
             var newLines = $"{date}|{lesson}|{materials}";
             return AppendLineToFile(lessonFilePath, newLines);
         }
-
-        public bool AddPraiseAndWorshipSchedule(string date, string songLeader, string instrumentalist)
+        public bool AddPraiseAndWorshipSchedule(DateTime date, string songLeader, string instrumentalist)
         {
             var newLines = $"{date}|{songLeader}|{instrumentalist}";
             return AppendLineToFile(praiseAndWorshipScheduleFilePath, newLines);
         }
-        public bool AddPrayerSchedule(string date, string songLeader, string presider, string speaker, string prayerItem)
+        public bool AddPrayerSchedule(DateTime date, string songLeader, string presider, string speaker, string prayerItem)
         {
-            var newLines = $"{date}|{songLeader}|{presider}|{speaker}|{prayerItem}";
+            var newLines = $"{date.ToString("MM-dd-yyyy")}|{songLeader}|{presider}|{speaker}|{prayerItem}";
             return AppendLineToFile(prayerMeetingFilePath, newLines);
         }
-
-        public bool AddSundayWorshipSchedule(string date, string presider, string speaker, string flowers, string ushers)
+        public bool AddSundayWorshipSchedule(DateTime date, string presider, string speaker, string flowers, string ushers)
         {
             var newLines = $"{date}|{presider}|{speaker}|{flowers}|{ushers}";
             return AppendLineToFile(sundayWorshipServiceFilePath, newLines);
         }
-
         public bool AddTeachers(string name, string designation)
         {
             var newLines = $"{name}|{designation}";
             return AppendLineToFile(teachersFilePath, newLines);
         }
-
         public void AdminAccounts(string firstName, string lastName, int age, string emailAddress, string ministryName, string position, string userName, string passWord)
         {
             var newlines = $"{firstName}|{lastName}|{age}|{emailAddress}|{ministryName}|{position}|{userName}|{passWord}";
             File.AppendAllText(adminAccFilePath, newlines + Environment.NewLine);
         }
-
         private void WriteDevotionSchedToFile()
         {
             var lines = new string[devotionSchedules.Count];
@@ -345,7 +391,6 @@ namespace CMSDataLogic
 
             File.WriteAllLines(devotionScheduleFilePath, lines);
         }
-
         private void WriteDiscipleshipSchedToFile()
         {
             var lines = new string[discipleshipSchedules.Count];
@@ -357,7 +402,6 @@ namespace CMSDataLogic
 
             File.WriteAllLines(discipleshipScheduleFilePath, lines);
         }
-
         private void WriteLessonToFile()
         {
             var lines = new string[lessonsList.Count];
@@ -369,7 +413,6 @@ namespace CMSDataLogic
 
             File.WriteAllLines(lessonFilePath, lines);
         }
-
         private void WritePraiseAndWorshipToFile()
         {
             var lines = new string[praiseAndWorshipSchedules.Count];
@@ -381,7 +424,6 @@ namespace CMSDataLogic
 
             File.WriteAllLines(praiseAndWorshipScheduleFilePath, lines);
         }
-
         private void WritePrayerToFile()
         {
             var lines = new string[prayerSchedules.Count];
@@ -393,7 +435,6 @@ namespace CMSDataLogic
 
             File.WriteAllLines(prayerMeetingFilePath, lines);
         }
-
         private void WriteSundayWorshipToFile()
         {
             var lines = new string[sundayWorshipSchedules.Count];
@@ -405,7 +446,6 @@ namespace CMSDataLogic
 
             File.WriteAllLines(sundayWorshipServiceFilePath, lines);
         }
-
         private void WriteTeacherToFile()
         {
             var lines = new string[teachersList.Count];
@@ -417,13 +457,12 @@ namespace CMSDataLogic
 
             File.WriteAllLines(teachersFilePath, lines);
         }
-
-        public bool RemoveDevotionSchedule(string date)
+        public bool RemoveDevotionSchedule(DateTime date)
         {
             int index = -1;
             for (int i = 0; i < devotionSchedules.Count; i++)
             {
-                if (devotionSchedules[i].Date == date)
+                if (devotionSchedules[i].Date.Date == date.Date)
                 {
                     index = i;
                     break;
@@ -437,13 +476,12 @@ namespace CMSDataLogic
             WriteDevotionSchedToFile();
             return true;
         }
-
-        public bool RemoveDiscipleshipSchedule(string date)
+        public bool RemoveDiscipleshipSchedule(DateTime date)
         {
             int index = -1;
             for (int i = 0; i < discipleshipSchedules.Count; i++)
             {
-                if (discipleshipSchedules[i].Date == date)
+                if (discipleshipSchedules[i].Date.Date == date.Date)
                 {
                     index = i;
                     break;
@@ -457,13 +495,12 @@ namespace CMSDataLogic
             WriteDiscipleshipSchedToFile();
             return true;
         }
-
-        public bool RemoveLesson(string date)
+        public bool RemoveLesson(DateTime date)
         {
             int index = -1;
             for (int i = 0; i < lessonsList.Count; i++)
             {
-                if (lessonsList[i].Date == date)
+                if (lessonsList[i].Date.Date == date.Date)
                 {
                     index = i;
                     break;
@@ -477,13 +514,12 @@ namespace CMSDataLogic
             WriteLessonToFile();
             return true;
         }
-
-        public bool RemovePraiseAndWorshipSchedule(string date)
+        public bool RemovePraiseAndWorshipSchedule(DateTime date)
         {
             int index = -1;
             for (int i = 0; i < praiseAndWorshipSchedules.Count; i++)
             {
-                if (praiseAndWorshipSchedules[i].Date == date)
+                if (praiseAndWorshipSchedules[i].Date.Date == date.Date)
                 {
                     index = i;
                     break;
@@ -497,33 +533,24 @@ namespace CMSDataLogic
             WritePraiseAndWorshipToFile();
             return true;
         }
-
-        public bool RemovePrayerSchedule(string date)
+        public bool RemovePrayerSchedule(DateTime date)
         {
-            int index = -1;
             for (int i = 0; i < prayerSchedules.Count; i++)
             {
-                if (prayerSchedules[i].Date == date)
+                if (prayerSchedules[i].Date.Date == date.Date)
                 {
-                    index = i;
-                    break;
+                    prayerSchedules.RemoveAt(i);
                 }
             }
-            if (index == -1)
-            {
-                return false;
-            }
-            prayerSchedules.RemoveAt(index);
             WritePrayerToFile();
             return true;
         }
-
-        public bool RemoveSundayWorshipSched(string date)
+        public bool RemoveSundayWorshipSched(DateTime date)
         {
             int index = -1;
             for (int i = 0; i < sundayWorshipSchedules.Count; i++)
             {
-                if (sundayWorshipSchedules[i].Date == date)
+                if (sundayWorshipSchedules[i].Date.Date == date.Date)
                 {
                     index = i;
                     break;
@@ -537,7 +564,6 @@ namespace CMSDataLogic
             WriteSundayWorshipToFile();
             return true;
         }
-
         public bool RemoveTeacher(string name)
         {
             int index = -1;
@@ -557,47 +583,196 @@ namespace CMSDataLogic
             WriteTeacherToFile();
             return true;
         }
-
         public List<Devotion> ViewDevotionSchedule()
         {
             LoadDevotionSched();
             return devotionSchedules;
         }
-
         public List<DiscipleshipMinistry> ViewDiscipleshipSchedule()
         {
             LoadDiscipleshipSched();
             return discipleshipSchedules;
         }
-
         public List<Lesson> ViewLessons()
         {
             LoadLessonList();
             return lessonsList;
         }
-
         public List<PraiseAndWorship> ViewPraiseAndWorshipSchedule()
         {
             LoadPraiseAndWorshipSched();
             return praiseAndWorshipSchedules;
         }
-
         public List<PrayerMinistry> ViewPrayerMeetingSchedule()
         {
             LoadPrayerSched();
             return prayerSchedules;
         }
-
         public List<SundayWorshipService> ViewSundayWorshipSched()
         {
             LoadSundayWorshipSched();
             return sundayWorshipSchedules;
         }
-
         public List<TeachersList> ViewTeachersList()
         {
             LoadTeachersList();
             return teachersList;
+        }
+
+        public bool UpdateDiscipleshipSchedule(DateTime date, string speaker, string description, string note)
+        {
+            string[] lines = File.ReadAllLines(discipleshipScheduleFilePath);
+
+            bool updated = false;
+            for (int i = 0; i < lines.Length; i++)
+            {
+                string[] parts = lines[i].Split("|");
+                if (DateTime.Parse(parts[0]).Date == date.Date)
+                {
+                    lines[i] = $"{date.ToShortDateString()}|{speaker}|{description}|{note}";
+                    updated = true;
+                    break;
+                }
+            }
+            if (updated)
+            {
+                File.WriteAllLines(discipleshipScheduleFilePath, lines);
+                return true;
+            }
+            return false;
+        }
+        public bool UpdatePrayerSchedule(DateTime date, string songLeader, string presider, string speaker, string prayerItem)
+        {
+            string[] lines = File.ReadAllLines(prayerMeetingFilePath);
+
+            bool updated = false;
+            for (int i = 0; i < lines.Length; i++)
+            {
+                string[] parts = lines[i].Split("|");
+                if (DateTime.Parse(parts[0]).Date == date.Date)
+                {
+                    lines[i] = $"{date.ToShortDateString()}|{songLeader}|{presider}|{speaker}|{prayerItem}";
+                    updated = true;
+                    break;
+                }
+            }
+            if (updated)
+            {
+                File.WriteAllLines(prayerMeetingFilePath, lines);
+                return true;
+            }
+            return false;
+        }
+        public bool UpdatePraiseAndWorshipSchedule(DateTime date, string songLeader)
+        {
+            string[] lines = File.ReadAllLines(praiseAndWorshipScheduleFilePath);
+
+            bool updated = false;
+            for (int i = 0; i < lines.Length; i++)
+            {
+                string[] parts = lines[i].Split("|");
+                if (DateTime.Parse(parts[0]).Date == date.Date)
+                {
+                    string instrumentalist = parts.Length > 2 ? parts[2] : "";
+                    lines[i] = $"{date.ToShortDateString()}|{songLeader}|{instrumentalist}";
+                    updated = true;
+                    break;
+                }
+            }
+            if (updated)
+            {
+                File.WriteAllLines(praiseAndWorshipScheduleFilePath, lines);
+                return true;
+            }
+            return false;
+        }
+        public bool UpdateSundayWorshipSchedule(DateTime date, string presider, string speaker, string flowers, string ushers)
+        {
+            string[] lines = File.ReadAllLines(sundayWorshipServiceFilePath);
+
+            bool updated = false;
+            for (int i = 0; i < lines.Length; i++)
+            {
+                string[] parts = lines[i].Split("|");
+                if (DateTime.Parse(parts[0]).Date == date.Date)
+                {
+                    lines[i] = $"{date.ToShortDateString()}|{presider}|{speaker}|{flowers}|{ushers}";
+                    updated = true;
+                    break;
+                }
+            }
+            if (updated)
+            {
+                File.WriteAllLines(sundayWorshipServiceFilePath, lines);
+                return true;
+            }
+            return false;
+        }
+        public bool UpdateDevotionSchedule(DateTime date, string songLeader, string presider, string speaker)
+        {
+            string[] lines = File.ReadAllLines(devotionScheduleFilePath);
+
+            bool updated = false;
+            for (int i = 0; i < lines.Length; i++)
+            {
+                string[] parts = lines[i].Split("|");
+                if (DateTime.Parse(parts[0]).Date == date.Date)
+                {
+                    lines[i] = $"{date.ToShortDateString()}|{songLeader}|{presider}|{speaker}";
+                    updated = true;
+                    break;
+                }
+            }
+            if (updated)
+            {
+                File.WriteAllLines(devotionScheduleFilePath, lines);
+                return true;
+            }
+            return false;
+        }
+        public bool UpdateTeachers(string name, string designation)
+        {
+            string[] lines = File.ReadAllLines(teachersFilePath);
+
+            bool updated = false;
+            for (int i = 0; i < lines.Length; i++)
+            {
+                string[] parts = lines[i].Split("|");
+                if (parts[0].Equals(name))
+                {
+                    lines[i] = $"{name}|{designation}";
+                    updated = true;
+                    break;
+                }
+            }
+            if (updated)
+            {
+                File.WriteAllLines(teachersFilePath, lines);
+                return true;
+            }
+            return false;
+        }
+        public bool UpdateLesson(DateTime date, string lesson, string materials)
+        {
+            string[] lines = File.ReadAllLines(lessonFilePath);
+
+            bool updated = false;
+            for (int i = 0; i < lines.Length; i++)
+            {
+                string[] parts = lines[i].Split("|");
+                if (DateTime.Parse(parts[0]).Date == date.Date)
+                {
+                    lines[i] = $"{date.ToShortDateString()}|{lesson}|{materials}";
+                    updated = true;
+                    break;
+                }
+            }
+            if (updated)
+            {
+                File.WriteAllLines(lessonFilePath, lines);
+                return true;
+            }
+            return false;
         }
     }
 }

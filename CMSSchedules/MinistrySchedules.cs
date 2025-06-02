@@ -9,12 +9,12 @@ namespace CMSSchedules
 {
     public class DiscipleshipMinistry
     {
-        private string date;
+        private DateTime date;
         private string speaker;
         private string description;
         private string note;
 
-        public string Date
+        public DateTime Date
         {
             get { return date; }
             set { date = value; }
@@ -38,14 +38,13 @@ namespace CMSSchedules
     }
     public class PrayerMinistry
     {
-        private string date;
+        private DateTime date;
         private string songLeader;
         private string presider;
         private string speaker;
-        private string description;
         private string prayerItem;
 
-        public string Date
+        public DateTime Date
         {
             get { return date; }
             set { date = value; }
@@ -65,11 +64,6 @@ namespace CMSSchedules
             get { return speaker; }
             set { speaker = value; }
         }
-        public string Description
-        {
-            get { return description; }
-            set { description = value; }
-        }
         public string PrayerItem
         {
             get { return prayerItem; }
@@ -79,10 +73,10 @@ namespace CMSSchedules
     }
     public class PraiseAndWorship
     {
-        private string date;
+        private DateTime date;
         private string songLeader;
         private string instrumentalist;
-        public string Date
+        public DateTime Date
         {
             get { return date; }
             set { date = value; }
@@ -102,13 +96,13 @@ namespace CMSSchedules
     }
     public class SundayWorshipService
     {
-        private string date;
+        private DateTime date;
         private string presider;
         private string speaker;
         private string flowers;
         private string ushers;
 
-        public string Date
+        public DateTime Date
         {
             get { return date; }
             set { date = value; }
@@ -138,10 +132,10 @@ namespace CMSSchedules
     {
         string presider;
         string speaker;
-        string date;
+        DateTime date;
         string songLeader;
 
-        public string Date
+        public DateTime Date
         {
             get { return date; }
             set { date = value; }
@@ -181,11 +175,11 @@ namespace CMSSchedules
     }
     public class Lesson
     {
-        private string date;
+        private DateTime date;
         private string lesson;
         private string materials;
 
-        public string Date
+        public DateTime Date
         {
             get { return date; }
             set { date = value; }

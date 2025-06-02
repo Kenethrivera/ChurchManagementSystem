@@ -10,14 +10,13 @@ namespace CMSDataLogic
     public class DBDataService : IMinistriesDataService
     {
         static string accountsConnectionString = "Data Source = DESKTOP-1PU2QVR\\SQLEXPRESS; Initial Catalog = Accounts; Integrated Security = True; TrustServerCertificate = True;";
-        static string scheduleConnctionString = "Data Source = DESKTOP-1PU2QVR\\SQLEXPRESS; Initial Catalog = Schedules; Integrated Security = True; TrustServerCertificate = True;";
+        static string scheduleConnectionString = "Data Source = DESKTOP-1PU2QVR\\SQLEXPRESS; Initial Catalog = Schedules; Integrated Security = True; TrustServerCertificate = True;";
         static SqlConnection sqlConnection1, sqlConnection2;
 
         public DBDataService()
         {
             sqlConnection1 = new SqlConnection(accountsConnectionString);
-            sqlConnection2 = new SqlConnection(scheduleConnctionString);
-
+            sqlConnection2 = new SqlConnection(scheduleConnectionString);
             GetAdminAcc();
         }
         public List<UserAccounts> GetAdminAcc()
@@ -53,7 +52,7 @@ namespace CMSDataLogic
         public string GetAdminMinistry(string username, string password)
         {
             sqlConnection1.Open();
-            var getAdminStatement = $"SELECT MinistryName FROM tbl_AdminAccounts WHERE Username = @username AND Password = @password";
+            var getAdminStatement = $"SELECT MinistryName FROM tbl_AdminAccounts WHERE Username = @username COLLATE Latin1_General_CS_AS AND Password = @password COLLATE Latin1_General_CS_AS";
 
             SqlCommand getAdminCommand = new SqlCommand(getAdminStatement, sqlConnection1);
             getAdminCommand.Parameters.AddWithValue("@Username", username);
@@ -73,7 +72,7 @@ namespace CMSDataLogic
         public string GetUserRole(string username, string password)
         {
             sqlConnection1.Open();
-            var getAdminRole = $"SELECT COUNT(*) FROM tbl_AdminAccounts WHERE Username = @Username AND Password = @Password";
+            var getAdminRole = $"SELECT COUNT(*) FROM tbl_AdminAccounts WHERE Username = @Username COLLATE Latin1_General_CS_AS AND Password = @Password COLLATE Latin1_General_CS_AS";
 
             SqlCommand getAdminRoleCommand = new SqlCommand(getAdminRole, sqlConnection1);
             getAdminRoleCommand.Parameters.AddWithValue("@Username", username);
@@ -86,10 +85,11 @@ namespace CMSDataLogic
                 return "Admin";
             }
 
+            sqlConnection1.Close();
             return "User";
 
         }
-        public bool AddDevotionSchedule(string date, string songLeader, string presider, string speaker)
+        public bool AddDevotionSchedule(DateTime date, string songLeader, string presider, string speaker)
         {
             try {
                 var insertStatement = "INSERT INTO tbl_DevotionSchedules VALUES(@Date, @SongLeader, @Presider, @Speaker)";
@@ -111,7 +111,7 @@ namespace CMSDataLogic
                 return false;
             }           
         }
-        public bool AddDiscipleshipSchedule(string date, string speaker, string description, string note)
+        public bool AddDiscipleshipSchedule(DateTime date, string speaker, string description, string note)
         {
             try
             {
@@ -135,7 +135,7 @@ namespace CMSDataLogic
                 return false;
             }
         }
-        public bool AddLesson(string date, string lesson, string materials)
+        public bool AddLesson(DateTime date, string lesson, string materials)
         {
             try
             {
@@ -158,7 +158,7 @@ namespace CMSDataLogic
                 return false;
             }
         }
-        public bool AddPraiseAndWorshipSchedule(string date, string songLeader, string instrumentalist)
+        public bool AddPraiseAndWorshipSchedule(DateTime date, string songLeader, string instrumentalist)
         {
             try
             {
@@ -181,7 +181,7 @@ namespace CMSDataLogic
                 return false;
             }
         }
-        public bool AddPrayerSchedule(string date, string songLeader, string presider, string speaker, string prayerItem)
+        public bool AddPrayerSchedule(DateTime date, string songLeader, string presider, string speaker, string prayerItem)
         {
             try
             {
@@ -206,7 +206,7 @@ namespace CMSDataLogic
                 return false;
             }
         }
-        public bool AddSundayWorshipSchedule(string date, string presider, string speaker, string flowers, string ushers)
+        public bool AddSundayWorshipSchedule(DateTime date, string presider, string speaker, string flowers, string ushers)
         {
             try
             {
@@ -276,7 +276,7 @@ namespace CMSDataLogic
         {
             throw new NotImplementedException();
         }
-        public bool RemoveDevotionSchedule(string date)
+        public bool RemoveDevotionSchedule(DateTime date)
         {
             try
             {
@@ -296,7 +296,7 @@ namespace CMSDataLogic
                 return false;
             }
         }
-        public bool RemoveDiscipleshipSchedule(string date)
+        public bool RemoveDiscipleshipSchedule(DateTime date)
         {
             try
             {
@@ -316,7 +316,7 @@ namespace CMSDataLogic
                 return false;
             }
         }
-        public bool RemoveLesson(string date)
+        public bool RemoveLesson(DateTime date)
         {
             try
             {
@@ -325,9 +325,8 @@ namespace CMSDataLogic
 
                 SqlCommand updateCommand = new SqlCommand(deleteStatement, sqlConnection2);
                 updateCommand.Parameters.AddWithValue("@Date", date);
-
                 updateCommand.ExecuteNonQuery();
-
+                
                 sqlConnection2.Close();
                 return true;
             }
@@ -336,7 +335,7 @@ namespace CMSDataLogic
                 return false;
             }
         }
-        public bool RemovePraiseAndWorshipSchedule(string date)
+        public bool RemovePraiseAndWorshipSchedule(DateTime date)
         {
             try
             {
@@ -356,7 +355,7 @@ namespace CMSDataLogic
                 return false;
             }
         }
-        public bool RemovePrayerSchedule(string date)
+        public bool RemovePrayerSchedule(DateTime date)
         {
             try
             {
@@ -376,7 +375,7 @@ namespace CMSDataLogic
                 return false;
             }
         }
-        public bool RemoveSundayWorshipSched(string date)
+        public bool RemoveSundayWorshipSched(DateTime date)
         {
             try
             {
@@ -431,7 +430,7 @@ namespace CMSDataLogic
             while (reader.Read())
             {
                 Devotion devotion = new Devotion();
-                devotion.Date = reader["Date"].ToString();
+                devotion.Date = Convert.ToDateTime(reader["Date"]);
                 devotion.SongLeader = reader["SongLeader"].ToString();
                 devotion.Presider = reader["Presider"].ToString();
                 devotion.Speaker = reader["Speaker"].ToString();
@@ -442,7 +441,6 @@ namespace CMSDataLogic
             sqlConnection2.Close();
             return devotionSchedules;
         }
-
         public List<DiscipleshipMinistry> ViewDiscipleshipSchedule()
         {
             string selectStatement = "SELECT * FROM tbl_DiscipleshipSchedules";
@@ -458,7 +456,7 @@ namespace CMSDataLogic
             while (reader.Read())
             {
                 DiscipleshipMinistry discipleship = new DiscipleshipMinistry();
-                discipleship.Date = reader["Date"].ToString();
+                discipleship.Date = Convert.ToDateTime(reader["Date"]);
                 discipleship.Speaker = reader["Speaker"].ToString();
                 discipleship.Description = reader["Description"].ToString();
                 discipleship.Note = reader["Note"].ToString();
@@ -469,7 +467,6 @@ namespace CMSDataLogic
             sqlConnection2.Close();
             return discipleshipSchedules;
         }
-
         public List<Lesson> ViewLessons()
         {
             string selectStatement = "SELECT * FROM tbl_LessonsList";
@@ -485,7 +482,7 @@ namespace CMSDataLogic
             while (reader.Read())
             {
                 Lesson lessons = new Lesson();
-                lessons.Date = reader["Date"].ToString();
+                lessons.Date = Convert.ToDateTime(reader["Date"]);
                 lessons.Lessson = reader["Lesson"].ToString();
                 lessons.Materials = reader["Materials"].ToString();
 
@@ -495,7 +492,6 @@ namespace CMSDataLogic
             sqlConnection2.Close();
             return lessonList;
         }
-
         public List<PraiseAndWorship> ViewPraiseAndWorshipSchedule()
         {
             string selectStatement = "SELECT * FROM tbl_PraiseAndWorshipSchedules";
@@ -511,7 +507,7 @@ namespace CMSDataLogic
             while (reader.Read())
             {
                 PraiseAndWorship praiseAndWorship = new PraiseAndWorship();
-                praiseAndWorship.Date = reader["Date"].ToString();
+                praiseAndWorship.Date = Convert.ToDateTime(reader["Date"]);
                 praiseAndWorship.SongLeader = reader["SongLeader"].ToString();
                 praiseAndWorship.Instrumentalist = reader["Instrumentalist"].ToString();
 
@@ -521,7 +517,6 @@ namespace CMSDataLogic
             sqlConnection2.Close();
             return praiseAndWorshipSchedule;
         }
-
         public List<PrayerMinistry> ViewPrayerMeetingSchedule()
         {
             string selectStatement = "SELECT * FROM tbl_PrayerSchedules";
@@ -537,7 +532,7 @@ namespace CMSDataLogic
             while (reader.Read())
             {
                 PrayerMinistry prayer = new PrayerMinistry();
-                prayer.Date = reader["Date"].ToString();
+                prayer.Date = Convert.ToDateTime(reader["Date"]);
                 prayer.SongLeader = reader["SongLeader"].ToString();
                 prayer.Presider = reader["Presider"].ToString();
                 prayer.Speaker = reader["Speaker"].ToString();
@@ -549,7 +544,6 @@ namespace CMSDataLogic
             sqlConnection2.Close();
             return prayerSchedules;
         }
-
         public List<SundayWorshipService> ViewSundayWorshipSched()
         {
             string selectStatement = "SELECT * FROM tbl_SundayWorshipSchedules";
@@ -565,7 +559,7 @@ namespace CMSDataLogic
             while (reader.Read())
             {
                 SundayWorshipService sundayWorship = new SundayWorshipService();
-                sundayWorship.Date = reader["Date"].ToString();
+                sundayWorship.Date = Convert.ToDateTime(reader["Date"]);
                 sundayWorship.Presider = reader["Presider"].ToString();
                 sundayWorship.Speaker = reader["Speaker"].ToString();
                 sundayWorship.Flowers = reader["Flowers"].ToString();
@@ -577,7 +571,6 @@ namespace CMSDataLogic
             sqlConnection2.Close();
             return sundayWorshipSchedule;
         }
-
         public List<TeachersList> ViewTeachersList()
         {
             string selectStatement = "SELECT * FROM tbl_TeachersList";
@@ -601,6 +594,172 @@ namespace CMSDataLogic
 
             sqlConnection2.Close();
             return teachersLists;
+        }
+
+        public bool UpdateDiscipleshipSchedule(DateTime date, string speaker, string description, string note)
+        {
+            try
+            {
+                sqlConnection2.Open();
+
+                string updateQuery = "UPDATE tbl_DiscipleshipSchedules SET Speaker = @speaker, Description = @description, Note = @note WHERE DATE = @date";
+
+                SqlCommand updateCommand = new SqlCommand(updateQuery, sqlConnection2);
+                updateCommand.Parameters.AddWithValue("@Date", date);
+                updateCommand.Parameters.AddWithValue("@Speaker", speaker);
+                updateCommand.Parameters.AddWithValue("@Description", description);
+                updateCommand.Parameters.AddWithValue("@Note", note);
+                updateCommand.ExecuteNonQuery();
+
+                sqlConnection2.Close();
+                return true;
+
+            }
+            catch
+            {
+                return false;
+            }
+        }
+        public bool UpdatePrayerSchedule(DateTime date, string songLeader, string presider, string speaker, string prayerItem)
+        {
+            try
+            {
+                sqlConnection2.Open();
+
+                string updateQuery = "UPDATE tbl_PrayerSchedules SET SongLeader = @songLeader, Presider = @presider, Speaker = @speaker, PrayerItem = @prayerItem WHERE DATE = @date";
+
+                SqlCommand updateCommand = new SqlCommand(updateQuery, sqlConnection2);
+                updateCommand.Parameters.AddWithValue("@Date", date);
+                updateCommand.Parameters.AddWithValue("@SongLeader", songLeader);
+                updateCommand.Parameters.AddWithValue("@Presider", presider);
+                updateCommand.Parameters.AddWithValue("@Speaker", speaker);
+                updateCommand.Parameters.AddWithValue("@PrayerItem", prayerItem);
+                updateCommand.ExecuteNonQuery();
+
+                sqlConnection2.Close();
+                return true;
+                
+            }
+            catch
+            {
+                return false;
+            }
+        }
+        public bool UpdatePraiseAndWorshipSchedule(DateTime date, string songLeader)
+        {
+            try
+            {
+                sqlConnection2.Open();
+
+                string updateQuery = "UPDATE tbl_PraiseAndWorshipSchedules SET SongLeader = @songLeader WHERE DATE = @date";
+
+                SqlCommand updateCommand = new SqlCommand(updateQuery, sqlConnection2);
+                updateCommand.Parameters.AddWithValue("@Date", date);
+                updateCommand.Parameters.AddWithValue("@SongLeader", songLeader);
+                updateCommand.ExecuteNonQuery();
+
+                sqlConnection2.Close();
+                return true;
+
+            }
+            catch
+            {
+                return false;
+            }
+        }
+        public bool UpdateSundayWorshipSchedule(DateTime date, string presider, string speaker, string flowers, string ushers)
+        {
+            try
+            {
+                sqlConnection2.Open();
+
+                string updateQuery = "UPDATE tbl_SundayWorshipSchedules SET Presider = @presider, Speaker = @speaker, Flowers = @flowers, Ushers = @ushers WHERE DATE = @date";
+
+                SqlCommand updateCommand = new SqlCommand(updateQuery, sqlConnection2);
+                updateCommand.Parameters.AddWithValue("@Date", date);
+                updateCommand.Parameters.AddWithValue("@Presider", presider);
+                updateCommand.Parameters.AddWithValue("@Speaker", speaker);
+                updateCommand.Parameters.AddWithValue("@Flowers", flowers);
+                updateCommand.Parameters.AddWithValue("@Ushers", ushers);
+                updateCommand.ExecuteNonQuery();
+
+                sqlConnection2.Close();
+                return true;
+
+            }
+            catch
+            {
+                return false;
+            }
+        }
+        public bool UpdateDevotionSchedule(DateTime date, string songLeader, string presider, string speaker)
+        {
+            try
+            {
+                sqlConnection2.Open();
+
+                string updateQuery = "UPDATE tbl_DevotionSchedules SET SongLeader = @songLeader, Presider = @presider, Speaker = @speaker WHERE DATE = @date";
+
+                SqlCommand updateCommand = new SqlCommand(updateQuery, sqlConnection2);
+                updateCommand.Parameters.AddWithValue("@Date", date);
+                updateCommand.Parameters.AddWithValue("@Presider", presider);
+                updateCommand.Parameters.AddWithValue("@SongLeader", songLeader);
+                updateCommand.Parameters.AddWithValue("@Speaker", speaker);
+                updateCommand.ExecuteNonQuery();
+
+                sqlConnection2.Close();
+                return true;
+
+            }
+            catch
+            {
+                return false;
+            }
+        }
+        public bool UpdateTeachers(string name, string designation)
+        {
+            try
+            {
+                sqlConnection2.Open();
+
+                string updateQuery = "UPDATE tbl_TeachersList SET Assignment = @Assignment WHERE Name = @name";
+
+                SqlCommand updateCommand = new SqlCommand(updateQuery, sqlConnection2);
+                updateCommand.Parameters.AddWithValue("@Name", name);
+                updateCommand.Parameters.AddWithValue("@Assignment", designation);
+                updateCommand.ExecuteNonQuery();
+
+                sqlConnection2.Close();
+                return true;
+
+            }
+            catch
+            {
+                return false;
+            }
+        }
+        public bool UpdateLesson(DateTime date, string lesson, string materials)
+        {
+            try
+            {
+                sqlConnection2.Open();
+
+                string updateQuery = "UPDATE tbl_LessonsList SET Lesson = @lesson, Materials = @materials WHERE DATE = @date";
+
+                SqlCommand updateCommand = new SqlCommand(updateQuery, sqlConnection2);
+                updateCommand.Parameters.AddWithValue("@Date", date);
+                updateCommand.Parameters.AddWithValue("@Lesson", lesson);
+                updateCommand.Parameters.AddWithValue("@Materials", materials);
+                updateCommand.ExecuteNonQuery();
+
+                sqlConnection2.Close();
+                return true;
+
+            }
+            catch
+            {
+                return false;
+            }
         }
     }
 }

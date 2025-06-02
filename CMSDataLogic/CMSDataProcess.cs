@@ -16,8 +16,8 @@ namespace CMSDataLogic
         IMinistriesDataService cmsDataService;
         public CMSDataProcess()
         {
-            // cmsDataService = new InMemoryDataService();
-            // cmsDataService = new TextFileDataService();
+            //cmsDataService = new InMemoryDataService();
+            //cmsDataService = new TextFileDataService();
             //cmsDataService = new JsonDataService();
             cmsDataService = new DBDataService();            
         }
@@ -41,11 +41,15 @@ namespace CMSDataLogic
         {
             return cmsDataService.ViewDiscipleshipSchedule();
         }
-        public bool AddDiscipleshipSchedule(string date, string speaker, string description, string note)
+        public bool AddDiscipleshipSchedule(DateTime date, string speaker, string description, string note)
         {
             return cmsDataService.AddDiscipleshipSchedule(date, speaker, description, note);
         }
-        public bool RemoveDiscipleshipSchedule(string date)
+        public bool UpdateDiscipleshipSchedule(DateTime date, string speaker, string description, string note)
+        {
+            return cmsDataService.UpdateDiscipleshipSchedule(date, speaker, description, note);
+        }
+        public bool RemoveDiscipleshipSchedule(DateTime date)
         {
             return cmsDataService.RemoveDiscipleshipSchedule(date);
         }
@@ -53,11 +57,15 @@ namespace CMSDataLogic
         {
             return cmsDataService.ViewPrayerMeetingSchedule();
         }
-        public bool AddPrayerSchedule(string date, string songLeader, string presider, string speaker, string prayerItem)
+        public bool AddPrayerSchedule(DateTime date, string songLeader, string presider, string speaker, string prayerItem)
         {
             return cmsDataService.AddPrayerSchedule(date, songLeader, presider, speaker, prayerItem);
         }
-        public bool RemovePrayerSchedule(string date)
+        public bool UpdatePrayerSchedule(DateTime date, string songLeader, string presider, string speaker, string prayerItem)
+        {
+            return cmsDataService.UpdatePrayerSchedule(date, songLeader, presider, speaker, prayerItem);
+        }
+        public bool RemovePrayerSchedule(DateTime date)
         {
             return cmsDataService.RemovePrayerSchedule(date);
         }
@@ -65,11 +73,15 @@ namespace CMSDataLogic
         {
             return cmsDataService.ViewPraiseAndWorshipSchedule();
         }
-        public bool AddPraiseAndWorshipSchedule(string date, string songLeader, string instrumentalist)
+        public bool AddPraiseAndWorshipSchedule(DateTime date, string songLeader, string instrumentalist)
         {
             return cmsDataService.AddPraiseAndWorshipSchedule(date, songLeader, instrumentalist);
         }
-        public bool RemovePraiseAndWorshipSchedule(string date)
+        public bool UpdatePraiseAndWorshipSchedule(DateTime date, string songLeader)
+        {
+            return cmsDataService.UpdatePraiseAndWorshipSchedule(date, songLeader);
+        }
+        public bool RemovePraiseAndWorshipSchedule(DateTime date)
         {
             return cmsDataService.RemovePraiseAndWorshipSchedule(date);
         }
@@ -77,11 +89,15 @@ namespace CMSDataLogic
         {
             return cmsDataService.ViewSundayWorshipSched();
         }
-        public bool AddSundayWorshipSchedule(string date, string presider, string speaker, string flowers, string ushers)
+        public bool AddSundayWorshipSchedule(DateTime date, string presider, string speaker, string flowers, string ushers)
         {
             return cmsDataService.AddSundayWorshipSchedule(date, presider, speaker, flowers, ushers);
         }
-        public bool RemoveSundayWorshipSched(string date)
+        public bool UpdateSundayWorshipSchedule(DateTime date, string presider, string speaker, string flowers, string ushers)
+        {
+            return cmsDataService.UpdateSundayWorshipSchedule(date, presider, speaker, flowers, ushers);
+        }
+        public bool RemoveSundayWorshipSched(DateTime date)
         {
             return cmsDataService.RemoveSundayWorshipSched(date);
         }
@@ -89,11 +105,16 @@ namespace CMSDataLogic
         {
             return cmsDataService.ViewDevotionSchedule();
         }
-        public bool AddDevotionSchedule(string date, string songLeader, string presider, string speaker)
+        public bool AddDevotionSchedule(DateTime date, string songLeader, string presider, string speaker)
         {
             return cmsDataService.AddDevotionSchedule(date, songLeader, presider, speaker);
         }
-        public bool RemoveDevotionSchedule(string date)
+        public bool UpdateDevotionSchedule(DateTime date, string songLeader, string presider, string speaker)
+        {
+            return cmsDataService.UpdateDevotionSchedule(date, songLeader, presider, speaker);
+        }
+
+        public bool RemoveDevotionSchedule(DateTime date)
         {
             return cmsDataService.RemoveDevotionSchedule(date);
         }
@@ -105,6 +126,11 @@ namespace CMSDataLogic
         {
             return cmsDataService.AddTeachers(name, designation);
         }
+        public bool UpdateTeachers(string name, string designation)
+        {
+            return cmsDataService.UpdateTeachers(name, designation);
+        }
+
         public bool RemoveTeacher(string name)
         {
             return cmsDataService.RemoveTeacher(name);
@@ -113,16 +139,20 @@ namespace CMSDataLogic
         {
             return cmsDataService.ViewLessons();
         }
-        public bool AddLesson(string date, string lesson, string materials)
+        public bool AddLesson(DateTime date, string lesson, string materials)
         {
             return cmsDataService.AddLesson(date, lesson, materials);
         }
-        public bool RemoveLesson(string date)
+        public bool UpdateLesson(DateTime date, string lesson, string materials)
+        {
+            return cmsDataService.UpdateLesson(date, lesson, materials);
+        }
+
+        public bool RemoveLesson(DateTime date)
         {
             return cmsDataService.RemoveLesson(date);
         }
     }
-
 }
     
 
