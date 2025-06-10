@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using CMSAccounts;
 using CMSDataLogic;
 using CMSSchedules;
 
@@ -13,13 +14,33 @@ namespace BusinessAndDataLogic
         private CMSDataProcess dataProcess = new CMSDataProcess();
 
         // about Login/sign up
-        public void RegisteringRegularAccounts(string firstName, string lastName, int age, string emailAddress, string username, string password)
+        public bool RegisteringRegularAccounts(string firstName, string lastName, int age, string emailAddress, string username, string password)
         {
-            dataProcess.RegularUserAccounts(firstName, lastName, age, emailAddress, username, password);
+            var userAccounts = new UserAccounts()
+            {
+                FirstName = firstName,
+                LastName = lastName,
+                Age = age,
+                EmailAddress = emailAddress,
+                UserName = username,
+                Password = password
+            };
+            return dataProcess.RegularUserAccounts(userAccounts);
         }
-        public void RegisteringAdminAccounts(string firstName, string lastName, int age, string emailAddress, string ministryName, string position, string userName, string passWord)
+        public bool RegisteringAdminAccounts(string firstName, string lastName, int age, string emailAddress, string ministryName, string position, string userName, string passWord)
         {
-            dataProcess.AdminAccounts(firstName, lastName, age, emailAddress, ministryName, position, userName, passWord);
+            var adminAccounts = new UserAccounts()
+            {
+                FirstName = firstName,
+                LastName = lastName,
+                Age = age,
+                EmailAddress = emailAddress,
+                MinistryName = ministryName,
+                Position = position,
+                UserName = userName,
+                Password = passWord
+            };
+            return dataProcess.AdminAccounts(adminAccounts);
         }
         public static bool CheckPasswordMatch(string password, string re_Enter_Password)
         {
@@ -34,11 +55,21 @@ namespace BusinessAndDataLogic
         }
         public string ValidatingUserRole(string username, string password)
         {
-            return dataProcess.GetUserRole(username, password);
+            var loginAccounts = new UserAccounts()
+            {
+                UserName = username,
+                Password = password
+            };
+            return dataProcess.GetUserRole(loginAccounts);
         }
         public string ValidatingAdminMinistry(string username, string password)
         {
-            return dataProcess.GetAdminMinistry(username, password);
+            var loginAccounts = new UserAccounts()
+            {
+                UserName = username,
+                Password = password
+            };
+            return dataProcess.GetAdminMinistry(loginAccounts);
         }
 
 
@@ -56,15 +87,33 @@ namespace BusinessAndDataLogic
         }
         public bool AddDiscipleshipSched(DateTime date, string speaker, string description, string note)
         {
-            return dataProcess.AddDiscipleshipSchedule(date, speaker, description, note);
+            var discipleship = new DiscipleshipMinistry()
+            {
+                Date = date,
+                Speaker = speaker,
+                Description = description,
+                Note = note
+            };
+            return dataProcess.AddDiscipleshipSchedule(discipleship);
         }
         public bool UpdateDiscipleshipSched(DateTime date, string speaker, string description, string note)
         {
-            return dataProcess.UpdateDiscipleshipSchedule(date, speaker, description, note);
+            var update = new DiscipleshipMinistry()
+            {
+                Date = date,
+                Speaker = speaker,
+                Description = description,
+                Note = note
+            };
+            return dataProcess.UpdateDiscipleshipSchedule(update);
         }
         public bool RemoveDiscipleSched(DateTime date)
         {
-            return dataProcess.RemoveDiscipleshipSchedule(date);
+            var toDelete = new DiscipleshipMinistry()
+            {
+                Date = date.Date
+            };
+            return dataProcess.RemoveDiscipleshipSchedule(toDelete);
         }
         
         //prayer ministry
@@ -74,15 +123,35 @@ namespace BusinessAndDataLogic
         }
         public bool AddPrayerSched(DateTime date, string songLeader, string presider, string speaker, string prayerItem)
         {
-            return dataProcess.AddPrayerSchedule(date, songLeader, presider, speaker, prayerItem);
+            var prayerSched = new PrayerMinistry()
+            {
+                Date = date,
+                SongLeader = songLeader,
+                Presider = presider,
+                Speaker = speaker,
+                PrayerItem = prayerItem
+            };
+            return dataProcess.AddPrayerSchedule(prayerSched);
         }
         public bool UpdatePrayerSched(DateTime date, string songLeader, string presider, string speaker, string prayerItem)
         {
-            return dataProcess.UpdatePrayerSchedule(date, songLeader, presider, speaker, prayerItem);
+            var update = new PrayerMinistry()
+            {
+                Date = date,
+                SongLeader = songLeader,
+                Presider = presider,
+                Speaker = speaker,
+                PrayerItem = prayerItem
+            };
+            return dataProcess.UpdatePrayerSchedule(update);
         }
         public bool RemovePrayerSched(DateTime date)
         {
-            return dataProcess.RemovePrayerSchedule(date);
+            var toDelete = new PrayerMinistry()
+            {
+                Date = date.Date
+            };
+            return dataProcess.RemovePrayerSchedule(toDelete);
         }
 
         //worship ministry
@@ -92,15 +161,30 @@ namespace BusinessAndDataLogic
         }
         public bool AddPraiseAndWorshipSched(DateTime date, string songLeader, string instrumentalist)
         {
-            return dataProcess.AddPraiseAndWorshipSchedule(date, songLeader, instrumentalist);
+            var praiseAndWorshipSched = new PraiseAndWorship()
+            {
+                Date = date,
+                SongLeader = songLeader,
+                Instrumentalist = instrumentalist
+            };
+            return dataProcess.AddPraiseAndWorshipSchedule(praiseAndWorshipSched);
         }
         public bool UpdatePraiseAndWorshipSched(DateTime date, string songLeader)
         {
-            return dataProcess.UpdatePraiseAndWorshipSchedule(date, songLeader);
+            var update = new PraiseAndWorship()
+            {
+                Date = date,
+                SongLeader = songLeader
+            };
+            return dataProcess.UpdatePraiseAndWorshipSchedule(update);
         }
         public bool RemovePraiseAndWorshipSched(DateTime date)
         {
-            return dataProcess.RemovePraiseAndWorshipSchedule(date);
+            var toDelete = new PraiseAndWorship()
+            {
+                Date = date.Date
+            };
+            return dataProcess.RemovePraiseAndWorshipSchedule(toDelete);
         }
 
         public List<SundayWorshipService> ViewSundayWorshipSched()
@@ -109,15 +193,35 @@ namespace BusinessAndDataLogic
         }
         public bool AddSundayWorshipServiceSched(DateTime date, string presider, string speaker, string flowers, string ushers)
         {
-            return dataProcess.AddSundayWorshipSchedule(date, presider, speaker, flowers, ushers);
+            var sundayWorshipSched = new SundayWorshipService()
+            {
+                Date = date,
+                Presider = presider,
+                Speaker = speaker,
+                Flowers = flowers,
+                Ushers = ushers
+            };
+            return dataProcess.AddSundayWorshipSchedule(sundayWorshipSched);
         }
         public bool UpdateSundayWorshipServiceSched(DateTime date, string presider, string speaker, string flowers, string ushers)
         {
-            return dataProcess.UpdateSundayWorshipSchedule(date, presider, speaker, flowers, ushers);
+            var update = new SundayWorshipService()
+            {
+                Date = date,
+                Presider = presider,
+                Speaker = speaker,
+                Flowers = flowers,
+                Ushers = ushers
+            };
+            return dataProcess.UpdateSundayWorshipSchedule(update);
         }
         public bool RemoveSundayWorshipSched(DateTime date)
         {
-            return dataProcess.RemoveSundayWorshipSched(date);
+            var toDelete = new SundayWorshipService()
+            {
+                Date = date.Date
+            };
+            return dataProcess.RemoveSundayWorshipSched(toDelete);
         }
 
         public List<Devotion> ViewDevotionSched()
@@ -126,17 +230,34 @@ namespace BusinessAndDataLogic
         }     
         public bool AddDevotionSched(DateTime date, string songLeader, string presider, string speaker)
         {
-            return dataProcess.AddDevotionSchedule(date, songLeader, presider, speaker);
+            var devotionSched = new Devotion()
+            {
+                Date = date,
+                SongLeader = songLeader, 
+                Presider = presider,
+                Speaker = speaker
+            };
+            return dataProcess.AddDevotionSchedule(devotionSched);
         }
         public bool UpdateDevotionSched(DateTime date, string songLeader, string presider, string speaker)
         {
-            return dataProcess.UpdateDevotionSchedule(date, songLeader, presider, speaker);
+            var update = new Devotion()
+            {
+                Date = date,
+                SongLeader = songLeader,
+                Presider = presider,
+                Speaker = speaker
+            };
+            return dataProcess.UpdateDevotionSchedule(update);
         }
-
         public bool RemoveDevotionSched(DateTime date)
         {
-            return dataProcess.RemoveDevotionSchedule(date);
+            var toDelete = new Devotion()
+            {
+                Date = date.Date
+            };
 
+            return dataProcess.RemoveDevotionSchedule(toDelete);
         }
 
         public List<TeachersList> GetTeachers()
@@ -145,15 +266,29 @@ namespace BusinessAndDataLogic
         }
         public bool AddTeachers(string name, string designation)
         {
-            return dataProcess.AddTeachers(name, designation);
+            var teachersList = new TeachersList()
+            {
+                TeachersName = name,
+                Assignment = designation
+            };
+            return dataProcess.AddTeachers(teachersList);
         }
         public bool UpdateTeachers(string name, string designation)
         {
-            return dataProcess.UpdateTeachers(name, designation);
+            var update = new TeachersList()
+            {
+                TeachersName = name,
+                Assignment = designation
+            };
+            return dataProcess.UpdateTeachers(update);
         }
-        public bool RemoveTeacher(string date)
+        public bool RemoveTeacher(string name)
         {
-            return dataProcess.RemoveTeacher(date);
+            var toDelete = new TeachersList()
+            {
+                TeachersName = name
+            };
+            return dataProcess.RemoveTeacher(toDelete);
         }
 
         public List<Lesson> GetLessons()
@@ -162,15 +297,31 @@ namespace BusinessAndDataLogic
         }
         public bool AddLesson(DateTime date, string lesson, string materials)
         {
-            return dataProcess.AddLesson(date, lesson, materials);
+            var lessonsLists = new Lesson()
+            {
+                Date = date,
+                Lessson = lesson,
+                Materials = materials
+            };
+            return dataProcess.AddLesson(lessonsLists);
         }
         public bool UpdateLesson(DateTime date, string lesson, string materials)
         {
-            return dataProcess.UpdateLesson(date, lesson, materials);
+            var update = new Lesson()
+            {
+                Date = date,
+                Lessson = lesson,
+                Materials = materials
+            };
+            return dataProcess.UpdateLesson(update);
         }
         public bool RemoveLesson(DateTime date)
         {
-            return dataProcess.RemoveLesson(date);
+            var toDelete = new Lesson()
+            {
+                Date = date.Date
+            };
+            return dataProcess.RemoveLesson(toDelete);
         }
 
         public bool ValidateSundayDate(DateTime date)

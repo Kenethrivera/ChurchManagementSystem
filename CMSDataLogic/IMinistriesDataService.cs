@@ -10,39 +10,40 @@ namespace CMSDataLogic
 {
     interface IMinistriesDataService
     {
-        public void RegularUserAccounts(string firstName, string lastName, int age, string emailAddress, string userName, string passWord);
-        public void AdminAccounts(string firstName, string lastName, int age, string emailAddress, string ministryName, string position, string userName, string passWord);
-        public string GetUserRole(string username, string password);
-        public string GetAdminMinistry(string username, string password);
+        public bool RegularUserAccounts(UserAccounts userAccounts);
+        public bool AdminAccounts(UserAccounts adminAccounts);
+        public string GetUserRole(UserAccounts loginAccounts);
+        public string GetAdminMinistry(UserAccounts loginAccounts);
         public List<DiscipleshipMinistry> ViewDiscipleshipSchedule();
-        public bool AddDiscipleshipSchedule(DateTime date, string speaker, string description, string note);
-        public bool UpdateDiscipleshipSchedule(DateTime date, string speaker, string description, string note);
-        public bool RemoveDiscipleshipSchedule(DateTime date);
+        public bool AddDiscipleshipSchedule(DiscipleshipMinistry discipleshipSched);
+        public bool UpdateDiscipleshipSchedule(DiscipleshipMinistry update);
+        public bool RemoveDiscipleshipSchedule(DiscipleshipMinistry toDelete);
+        
         public List<PrayerMinistry> ViewPrayerMeetingSchedule();
-        public bool AddPrayerSchedule(DateTime date, string songLeader, string presider, string speaker, string prayerItem);
-        public bool UpdatePrayerSchedule(DateTime date, string songLeader, string presider, string speaker, string prayerItem);
+        public bool AddPrayerSchedule(PrayerMinistry prayerSched);
+        public bool UpdatePrayerSchedule(PrayerMinistry update);
+        public bool RemovePrayerSchedule(PrayerMinistry toDelete);
 
-        public bool RemovePrayerSchedule(DateTime date);
         public List<PraiseAndWorship> ViewPraiseAndWorshipSchedule();
-        public bool AddPraiseAndWorshipSchedule(DateTime date, string songLeader, string instrumentalist);
-        public bool UpdatePraiseAndWorshipSchedule(DateTime date, string songLeader);        
-        public bool RemovePraiseAndWorshipSchedule(DateTime date);
+        public bool AddPraiseAndWorshipSchedule(PraiseAndWorship praiseAndWorshipSched);
+        public bool UpdatePraiseAndWorshipSchedule(PraiseAndWorship update);        
+        public bool RemovePraiseAndWorshipSchedule(PraiseAndWorship toDelete);
         public List<SundayWorshipService> ViewSundayWorshipSched();
-        public bool AddSundayWorshipSchedule(DateTime date, string presider, string speaker, string flowers, string ushers);
-        public bool UpdateSundayWorshipSchedule(DateTime date, string presider, string speaker, string flowers, string ushers);
-        public bool RemoveSundayWorshipSched(DateTime date);
+        public bool AddSundayWorshipSchedule(SundayWorshipService sundayWorshipSched);
+        public bool UpdateSundayWorshipSchedule(SundayWorshipService update);
+        public bool RemoveSundayWorshipSched(SundayWorshipService toDelete);
         public List<Devotion> ViewDevotionSchedule();
-        public bool AddDevotionSchedule(DateTime date, string songLeader, string presider, string speaker);
-        public bool UpdateDevotionSchedule(DateTime date, string songLeader, string presider, string speaker);
-        public bool RemoveDevotionSchedule(DateTime date);
+        public bool AddDevotionSchedule(Devotion devotionSched);
+        public bool UpdateDevotionSchedule(Devotion update);
+        public bool RemoveDevotionSchedule(Devotion toDelete);
         public List<TeachersList> ViewTeachersList();
-        public bool AddTeachers(string name, string designation);
-        public bool UpdateTeachers(string name, string designation);
-        public bool RemoveTeacher(string name);
+        public bool AddTeachers(TeachersList teachersList);
+        public bool UpdateTeachers(TeachersList update);
+        public bool RemoveTeacher(TeachersList toDelete);
         public List<Lesson> ViewLessons();
-        public bool AddLesson(DateTime date, string lesson, string materials);
-        public bool UpdateLesson(DateTime date, string lesson, string materials);
-        public bool RemoveLesson(DateTime date);
+        public bool AddLesson(Lesson lessonsList);
+        public bool UpdateLesson(Lesson update);
+        public bool RemoveLesson(Lesson toDelete);
 
     }
 }

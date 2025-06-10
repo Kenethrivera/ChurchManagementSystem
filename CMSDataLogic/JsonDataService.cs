@@ -1,5 +1,7 @@
 ﻿using CMSAccounts;
 using CMSSchedules;
+using System;
+using System.Reflection;
 using System.Text.Json;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 
@@ -35,6 +37,7 @@ namespace CMSDataLogic
         }
         private void ReadAdminAccFromFile()
         {
+            adminAccounts.Clear();
             string adminJson = File.ReadAllText(adminAccFilePath);
             adminAccounts = JsonSerializer.Deserialize<List<UserAccounts>>(adminJson,
                 new JsonSerializerOptions { PropertyNameCaseInsensitive = true }
@@ -47,12 +50,12 @@ namespace CMSDataLogic
                 new JsonSerializerOptions { PropertyNameCaseInsensitive = true }
            );
         }
-        public string GetAdminMinistry(string username, string password)
+        public string GetAdminMinistry(UserAccounts loginAccounts)
         {
             foreach (var admin in adminAccounts)
             {
-                if (admin.UserName.Equals(username, StringComparison.Ordinal) &&
-                    admin.Password.Equals(password, StringComparison.Ordinal))
+                if (admin.UserName.Equals(loginAccounts.UserName, StringComparison.Ordinal) &&
+                    admin.Password.Equals(loginAccounts.Password, StringComparison.Ordinal))
                 {
                     return admin.MinistryName;
                 }
@@ -60,20 +63,20 @@ namespace CMSDataLogic
 
             return "No match account";
         }
-        public string GetUserRole(string username, string password)
+        public string GetUserRole(UserAccounts loginAccounts)
         {
             foreach (var admin in adminAccounts)
             {
-                if (admin.UserName.Equals(username, StringComparison.Ordinal) &&
-                    admin.Password.Equals(password, StringComparison.Ordinal))
+                if (admin.UserName.Equals(loginAccounts.UserName, StringComparison.Ordinal) &&
+                    admin.Password.Equals(loginAccounts.Password, StringComparison.Ordinal))
                 {
                     return "Admin";
                 }
             }
             foreach (var user in regularAccounts)
             {
-                if (user.UserName.Equals(username, StringComparison.Ordinal) &&
-                    user.Password.Equals(password, StringComparison.Ordinal))
+                if (user.UserName.Equals(loginAccounts.UserName, StringComparison.Ordinal) &&
+                    user.Password.Equals(loginAccounts.Password, StringComparison.Ordinal))
                 {
                     return "User";
                 }
@@ -123,7 +126,7 @@ namespace CMSDataLogic
             teachersList = JsonSerializer.Deserialize<List<TeachersList>>(jsonText,
                 new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
         }
-        public bool AddDevotionSchedule(DateTime date, string songLeader, string presider, string speaker)
+        public bool AddDevotionSchedule(Devotion devotionSched)
         {
             try
             {
@@ -134,10 +137,10 @@ namespace CMSDataLogic
                 }
                 var newSchedule = new Devotion
                 {
-                    Date = date,
-                    SongLeader = songLeader,
-                    Presider = presider,
-                    Speaker = speaker
+                    Date = devotionSched.Date,
+                    SongLeader = devotionSched.SongLeader,
+                    Presider = devotionSched.Presider,
+                    Speaker = devotionSched.Speaker
                 };
                 devotionSchedules.Add(newSchedule);
                     
@@ -151,7 +154,7 @@ namespace CMSDataLogic
                 return false;
             }
         }
-        public bool AddDiscipleshipSchedule(DateTime date, string speaker, string description, string note)
+        public bool AddDiscipleshipSchedule(DiscipleshipMinistry discpleshipSched)
         {
             try
             {
@@ -162,10 +165,10 @@ namespace CMSDataLogic
                 }
                 var newSchedule = new DiscipleshipMinistry
                 {
-                    Date = date,
-                    Speaker = speaker,
-                    Description = description,
-                    Note = note
+                    Date = discpleshipSched.Date,
+                    Speaker = discpleshipSched.Speaker,
+                    Description = discpleshipSched.Description,
+                    Note = discpleshipSched.Note
                 };
                 discipleshipSchedules.Add(newSchedule);
                     
@@ -179,7 +182,7 @@ namespace CMSDataLogic
                 return false;
             }
         }
-        public bool AddLesson(DateTime date, string lesson, string materials)
+        public bool AddLesson(Lesson lessonsLists)
         {
             try
             {
@@ -190,9 +193,9 @@ namespace CMSDataLogic
                 }
                 var newSchedule = new Lesson
                 {
-                    Date = date,
-                    Lessson = lesson,
-                    Materials = materials
+                    Date = lessonsLists.Date,
+                    Lessson = lessonsLists.Lessson,
+                    Materials = lessonsLists.Materials
                 };
                 lessonsList.Add(newSchedule);
 
@@ -206,7 +209,7 @@ namespace CMSDataLogic
                 return false;
             }
         }
-        public bool AddPraiseAndWorshipSchedule(DateTime date, string songLeader, string instrumentalist)
+        public bool AddPraiseAndWorshipSchedule(PraiseAndWorship praiseAndWorshipSched)
         {
             try
             {
@@ -217,9 +220,9 @@ namespace CMSDataLogic
                 }
                 var newSchedule = new PraiseAndWorship
                 {
-                    Date = date,
-                    SongLeader = songLeader,
-                    Instrumentalist = instrumentalist
+                    Date = praiseAndWorshipSched.Date,
+                    SongLeader = praiseAndWorshipSched.SongLeader,
+                    Instrumentalist = praiseAndWorshipSched.Instrumentalist
                 };
                 praiseAndWorshipSchedules.Add(newSchedule);
 
@@ -233,7 +236,7 @@ namespace CMSDataLogic
                 return false;
             }
         }
-        public bool AddPrayerSchedule(DateTime date, string songLeader, string presider, string speaker, string prayerItem)
+        public bool AddPrayerSchedule(PrayerMinistry prayerSched)
         {
             try
             {
@@ -244,11 +247,11 @@ namespace CMSDataLogic
                 }
                 var newSchedule = new PrayerMinistry
                 {
-                    Date = date,
-                    SongLeader = songLeader,
-                    Presider = presider,
-                    Speaker = speaker,
-                    PrayerItem = prayerItem
+                    Date = prayerSched.Date,
+                    SongLeader = prayerSched.SongLeader,
+                    Presider = prayerSched.Presider,
+                    Speaker = prayerSched.Speaker,
+                    PrayerItem = prayerSched.PrayerItem
                 };
                 prayerSchedules.Add(newSchedule);
 
@@ -262,7 +265,7 @@ namespace CMSDataLogic
                 return false;
             }
         }
-        public bool AddSundayWorshipSchedule(DateTime date, string presider, string speaker, string flowers, string ushers)
+        public bool AddSundayWorshipSchedule(SundayWorshipService sundayWorshipSched)
         {
             try
             {
@@ -273,11 +276,11 @@ namespace CMSDataLogic
                 }
                 var newSchedule = new SundayWorshipService
                 {
-                    Date = date,
-                    Presider = presider,
-                    Speaker = speaker,
-                    Flowers = flowers,
-                    Ushers = ushers
+                    Date = sundayWorshipSched.Date,
+                    Presider = sundayWorshipSched.Presider,
+                    Speaker = sundayWorshipSched.Speaker,
+                    Flowers = sundayWorshipSched.Flowers,
+                    Ushers = sundayWorshipSched.Ushers
                 };
                 sundayWorshipSchedules.Add(newSchedule);
 
@@ -291,7 +294,7 @@ namespace CMSDataLogic
                 return false;
             }
         }
-        public bool AddTeachers(string name, string designation)
+        public bool AddTeachers(TeachersList teachersLists)
         {
             try
             {
@@ -302,8 +305,8 @@ namespace CMSDataLogic
                 }
                 var newSchedule = new TeachersList
                 {
-                    TeachersName = name,
-                    Assignment = designation
+                    TeachersName = teachersLists.TeachersName,
+                    Assignment = teachersLists.Assignment
                 };
                 teachersList.Add(newSchedule);
 
@@ -317,31 +320,42 @@ namespace CMSDataLogic
                 return false;
             }
         }
-        public void AdminAccounts(string firstName, string lastName, int age, string emailAddress, string ministryName, string position, string userName, string passWord)
+        public bool AdminAccounts(UserAccounts admin)
         {
-            if (File.Exists(adminAccFilePath))
+            try
             {
-                string jsonText = File.ReadAllText(adminAccFilePath);
-                adminAccounts = JsonSerializer.Deserialize<List<UserAccounts>>(jsonText) ?? new();
-            }
-            var newSchedule = new UserAccounts
-            {
-                FirstName = firstName,
-                LastName = lastName,
-                Age = age,
-                EmailAddress = emailAddress,
-                MinistryName = ministryName,
-                Position = position,
-                UserName = userName,
-                Password = passWord
-            };
-            adminAccounts.Add(newSchedule);
+                if (File.Exists(adminAccFilePath))
+                {
+                    string jsonText = File.ReadAllText(adminAccFilePath);
+                    adminAccounts = JsonSerializer.Deserialize<List<UserAccounts>>(jsonText) ?? new();
+                }
+                var newAccounts = new UserAccounts
+                {
+                    FirstName = admin.FirstName,
+                    LastName = admin.LastName,
+                    Age = admin.Age,
+                    EmailAddress = admin.EmailAddress,
+                    MinistryName = admin.MinistryName,
+                    Position = admin.Position,
+                    UserName = admin.UserName,
+                    Password = admin.Password
+                };
+                adminAccounts.Add(newAccounts);
 
-            string jsonString = JsonSerializer.Serialize(adminAccounts, new JsonSerializerOptions
-            { WriteIndented = true });
-            File.WriteAllText(adminAccFilePath, jsonString); 
+                string jsonString = JsonSerializer.Serialize(adminAccounts, new JsonSerializerOptions
+                { WriteIndented = true });
+                File.WriteAllText(adminAccFilePath, jsonString);
+                ReadAdminAccFromFile();
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+
+
         }
-        public void RegularUserAccounts(string firstName, string lastName, int age, string emailAddress, string userName, string passWord)
+        public bool RegularUserAccounts(UserAccounts userAccounts)
         {
             throw new NotImplementedException();
         }
@@ -394,138 +408,104 @@ namespace CMSDataLogic
 
             File.WriteAllText(teachersFilePath, jsonString);
         }
-        public bool RemoveDevotionSchedule(DateTime date)
+        public bool RemoveDevotionSchedule(Devotion toDelete)
         {
-            int index = -1;
+            LoadDevotionSchedule();
             for (int i = 0; i < devotionSchedules.Count; i++)
             {
-                if (devotionSchedules[i].Date.Date == date.Date)
+                if (devotionSchedules[i].Date.Date == toDelete.Date.Date)
                 {
-                    index = i;
-                    break;
+                    devotionSchedules.RemoveAt(i);
+                    WriteDevotionDataToFile();
+                    return true;
                 }
             }
-            if (index == -1)
-            {
-                return false;
-            }
-            devotionSchedules.RemoveAt(index);
-            WriteDevotionDataToFile();
-            return true;
+            return false;
         }
-        public bool RemoveDiscipleshipSchedule(DateTime date)
+        public bool RemoveDiscipleshipSchedule(DiscipleshipMinistry toDelete)
         {
-            int index = -1;
+            LoadDiscipleshipSchedule();
             for (int i = 0; i < discipleshipSchedules.Count; i++)
             {
-                if (discipleshipSchedules[i].Date.Date == date.Date)
+                if (discipleshipSchedules[i].Date.Date == toDelete.Date.Date)
                 {
-                    index = i;
-                    break;
+                    discipleshipSchedules.RemoveAt(i);
+                    WriteDiscipleshipDataToFile();
+                    return true;
                 }
             }
-            if (index == -1)
-            {
-                return false;
-            }
-            discipleshipSchedules.RemoveAt(index);
-            WriteDiscipleshipDataToFile();
-            return true;
+            return false;
         }
-        public bool RemoveLesson(DateTime date)
+        public bool RemoveLesson(Lesson toDelete)
         {
-            int index = -1;
+            LoadLessons();
             for (int i = 0; i < lessonsList.Count; i++)
             {
-                if (lessonsList[i].Date.Date == date.Date)
+                if (lessonsList[i].Date.Date == toDelete.Date.Date)
                 {
-                    index = i;
-                    break;
+                    lessonsList.RemoveAt(i);
+                    WriteLessonDataToFile();
+                    return true;
                 }
             }
-            if (index == -1)
-            {
-                return false;
-            }
-            lessonsList.RemoveAt(index);
-            WriteLessonDataToFile();
-            return true;
+            return false;
         }
-        public bool RemovePraiseAndWorshipSchedule(DateTime date)
+        public bool RemovePraiseAndWorshipSchedule(PraiseAndWorship toDelete)
         {
-            int index = -1;
+            LoadPraiseAndWorshipSchedule();
             for (int i = 0; i < praiseAndWorshipSchedules.Count; i++)
             {
-                if (praiseAndWorshipSchedules[i].Date.Date == date.Date)
+                if (praiseAndWorshipSchedules[i].Date.Date == toDelete.Date)
                 {
-                    index = i;
-                    break;
+                    praiseAndWorshipSchedules.RemoveAt(i);
+                    WritePraiseAndWorshipDataToFile();
+                    return true;
                 }
             }
-            if (index == -1)
-            {
-                return false;
-            }
-            praiseAndWorshipSchedules.RemoveAt(index);
-            WritePraiseAndWorshipDataToFile();
-            return true;
+            return false;
+           
         }
-        public bool RemovePrayerSchedule(DateTime date)
+        public bool RemovePrayerSchedule(PrayerMinistry toDelete)
         {
-            int index = -1;
+            LoadPrayerSchedule();
             for (int i = 0; i < prayerSchedules.Count; i++)
             {
-                if (prayerSchedules[i].Date.Date == date.Date)
+                if (prayerSchedules[i].Date.Date == toDelete.Date.Date)
                 {
-                    index = i;
-                    break;
+                    prayerSchedules.RemoveAt(i);
+                    WritePrayerScheduleDataToFile();
+                    return true;
                 }
             }
-            if (index == -1)
-            {
-                return false;
-            }
-            prayerSchedules.RemoveAt(index);
-            WritePrayerScheduleDataToFile();
-            return true;
+            return false;
         }
-        public bool RemoveSundayWorshipSched(DateTime date)
+        public bool RemoveSundayWorshipSched(SundayWorshipService toDelete)
         {
-            int index = -1;
+            LoadSundayWorshipServiceSchdule();
             for (int i = 0; i < sundayWorshipSchedules.Count; i++)
             {
-                if (sundayWorshipSchedules[i].Date.Date == date.Date)
+                if (sundayWorshipSchedules[i].Date.Date == toDelete.Date.Date)
                 {
-                    index = i;
-                    break;
+                    sundayWorshipSchedules.RemoveAt(i);
+                    WriteSundayWorshipDataToFile();
+                    return true;
                 }
             }
-            if (index == -1)
-            {
-                return false;
-            }
-            sundayWorshipSchedules.RemoveAt(index);
-            WriteSundayWorshipDataToFile();
-            return true;
+            return false;
         }
-        public bool RemoveTeacher(string name)
+        public bool RemoveTeacher(TeachersList toDelete)
         {
-            int index = -1;
+            LoadTeachersList();
             for (int i = 0; i < teachersList.Count; i++)
             {
-                if (teachersList[i].TeachersName == name)
+                if (teachersList[i].TeachersName == toDelete.TeachersName)
                 {
-                    index = i;
-                    break;
+                    teachersList.RemoveAt(i);
+                    WriteTeachersDataToFile();
+                    return true;
                 }
             }
-            if (index == -1)
-            {
-                return false;
-            }
-            teachersList.RemoveAt(index);
-            WriteTeachersDataToFile();
-            return true;
+            return false;
         }
         public List<Devotion> ViewDevotionSchedule()
         {
@@ -563,7 +543,7 @@ namespace CMSDataLogic
             return teachersList;
         }
 
-        public bool UpdateDiscipleshipSchedule(DateTime date, string speaker, string description, string note)
+        public bool UpdateDiscipleshipSchedule(DiscipleshipMinistry update)
         {
             string jsonFile = File.ReadAllText(discipleshipScheduleFilePath);
             discipleshipSchedules = JsonSerializer.Deserialize<List<DiscipleshipMinistry>>(jsonFile);
@@ -571,11 +551,11 @@ namespace CMSDataLogic
             bool updated = false;
             for (int i = 0; i < discipleshipSchedules.Count; i++)
             {
-                if (discipleshipSchedules[i].Date.Date == date.Date)
+                if (discipleshipSchedules[i].Date.Date == update.Date.Date)
                 {
-                    discipleshipSchedules[i].Speaker = speaker;
-                    discipleshipSchedules[i].Description = description;
-                    discipleshipSchedules[i].Note = note;
+                    discipleshipSchedules[i].Speaker = update.Speaker;
+                    discipleshipSchedules[i].Description = update.Description;
+                    discipleshipSchedules[i].Note = update.Note;
                     updated = true;
                     break;
                 }
@@ -588,7 +568,7 @@ namespace CMSDataLogic
             }
             return false;
         }
-        public bool UpdatePrayerSchedule(DateTime date, string songLeader, string presider, string speaker, string prayerItem)
+        public bool UpdatePrayerSchedule(PrayerMinistry update)
         {
             string jsonFile = File.ReadAllText(prayerMeetingFilePath);
             prayerSchedules = JsonSerializer.Deserialize<List<PrayerMinistry>>(jsonFile);
@@ -596,12 +576,12 @@ namespace CMSDataLogic
             bool updated = false;
             for (int i = 0; i < prayerSchedules.Count; i++)
             {
-                if (prayerSchedules[i].Date.Date == date.Date)
+                if (prayerSchedules[i].Date.Date == update.Date.Date)
                 {
-                    prayerSchedules[i].SongLeader = songLeader;
-                    prayerSchedules[i].Presider = presider;
-                    prayerSchedules[i].Speaker = speaker;
-                    prayerSchedules[i].PrayerItem = prayerItem;
+                    prayerSchedules[i].SongLeader = update.SongLeader;
+                    prayerSchedules[i].Presider = update.Presider;
+                    prayerSchedules[i].Speaker = update.Speaker;
+                    prayerSchedules[i].PrayerItem = update.PrayerItem;
                     updated = true;
                     break;
                 }
@@ -614,7 +594,7 @@ namespace CMSDataLogic
             }
             return false;
         }
-        public bool UpdatePraiseAndWorshipSchedule(DateTime date, string songLeader)
+        public bool UpdatePraiseAndWorshipSchedule(PraiseAndWorship update)
         {
             string jsonFile = File.ReadAllText(praiseAndWorshipScheduleFilePath);
             praiseAndWorshipSchedules = JsonSerializer.Deserialize<List<PraiseAndWorship>>(jsonFile);
@@ -622,9 +602,9 @@ namespace CMSDataLogic
             bool updated = false;
             for (int i = 0; i < praiseAndWorshipSchedules.Count; i++)
             {
-                if (praiseAndWorshipSchedules[i].Date.Date == date.Date)
+                if (praiseAndWorshipSchedules[i].Date.Date == update.Date.Date)
                 {
-                    praiseAndWorshipSchedules[i].SongLeader = songLeader;
+                    praiseAndWorshipSchedules[i].SongLeader = update.SongLeader;
                     updated = true;
                     break;
                 }
@@ -637,7 +617,7 @@ namespace CMSDataLogic
             }
             return false;
         }
-        public bool UpdateSundayWorshipSchedule(DateTime date, string presider, string speaker, string flowers, string ushers)
+        public bool UpdateSundayWorshipSchedule(SundayWorshipService update)
         {
             string jsonFile = File.ReadAllText(sundayWorshipServiceFilePath);
             sundayWorshipSchedules = JsonSerializer.Deserialize<List<SundayWorshipService>>(jsonFile);
@@ -645,12 +625,12 @@ namespace CMSDataLogic
             bool updated = false;
             for (int i = 0; i < sundayWorshipSchedules.Count; i++)
             {
-                if (sundayWorshipSchedules[i].Date.Date == date.Date)
+                if (sundayWorshipSchedules[i].Date.Date == update.Date.Date)
                 {
-                    sundayWorshipSchedules[i].Presider = presider;
-                    sundayWorshipSchedules[i].Speaker = speaker;
-                    sundayWorshipSchedules[i].Flowers = flowers;
-                    sundayWorshipSchedules[i].Ushers = ushers;
+                    sundayWorshipSchedules[i].Presider = update.Presider;
+                    sundayWorshipSchedules[i].Speaker = update.Speaker;
+                    sundayWorshipSchedules[i].Flowers = update.Flowers;
+                    sundayWorshipSchedules[i].Ushers = update.Ushers;
                     updated = true;
                     break;
                 }
@@ -663,7 +643,7 @@ namespace CMSDataLogic
             }
             return false;
         }
-        public bool UpdateDevotionSchedule(DateTime date, string songLeader, string presider, string speaker)
+        public bool UpdateDevotionSchedule(Devotion update)
         {
             string jsonFile = File.ReadAllText(devotionScheduleFilePath);
             devotionSchedules = JsonSerializer.Deserialize<List<Devotion>>(jsonFile);
@@ -671,11 +651,11 @@ namespace CMSDataLogic
             bool updated = false;
             for (int i = 0; i < devotionSchedules.Count; i++)
             {
-                if (devotionSchedules[i].Date.Date == date.Date)
+                if (devotionSchedules[i].Date.Date == update.Date.Date)
                 {
-                    devotionSchedules[i].SongLeader = songLeader;
-                    devotionSchedules[i].Presider = presider;
-                    devotionSchedules[i].Speaker = speaker;
+                    devotionSchedules[i].SongLeader = update.SongLeader;
+                    devotionSchedules[i].Presider = update.Presider;
+                    devotionSchedules[i].Speaker = update.Speaker;
                     updated = true;
                     break;
                 }
@@ -688,7 +668,7 @@ namespace CMSDataLogic
             }
             return false;
         }
-        public bool UpdateTeachers(string name, string designation)
+        public bool UpdateTeachers(TeachersList update)
         {
             string jsonFile = File.ReadAllText(teachersFilePath);
             teachersList = JsonSerializer.Deserialize<List<TeachersList>>(jsonFile);
@@ -696,9 +676,9 @@ namespace CMSDataLogic
             bool updated = false;
             for (int i = 0; i < teachersList.Count; i++)
             {
-                if (teachersList[i].TeachersName == name)
+                if (teachersList[i].TeachersName == update.TeachersName)
                 {
-                    teachersList[i].Assignment = designation;
+                    teachersList[i].Assignment = update.Assignment;
                     updated = true;
                     break;
                 }
@@ -711,7 +691,7 @@ namespace CMSDataLogic
             }
             return false;
         }
-        public bool UpdateLesson(DateTime date, string lesson, string materials)
+        public bool UpdateLesson(Lesson update)
         {
             string jsonFile = File.ReadAllText(lessonFilePath);
             lessonsList = JsonSerializer.Deserialize<List<Lesson>>(jsonFile);
@@ -719,10 +699,10 @@ namespace CMSDataLogic
             bool updated = false;
             for (int i = 0; i < lessonsList.Count; i++)
             {
-                if (lessonsList[i].Date.Date == date.Date)
+                if (lessonsList[i].Date.Date == update.Date.Date)
                 {
-                    lessonsList[i].Lessson = lesson;
-                    lessonsList[i].Materials = materials;
+                    lessonsList[i].Lessson = update.Lessson;
+                    lessonsList[i].Materials = update.Materials;
                     updated = true;
                     break;
                 }

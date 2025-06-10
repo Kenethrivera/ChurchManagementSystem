@@ -90,14 +90,15 @@ namespace churchmanagementsystem
             {
                 string ministryName = NoNullOrEmptyInput("Ministry Name: ");
                 string position = NoNullOrEmptyInput("Your Position: ");
-                cmsProcess.RegisteringAdminAccounts(firstName, lastName, age, emailAddress, ministryName, position, username, password);
-                
+                bool added = cmsProcess.RegisteringAdminAccounts(firstName, lastName, age, emailAddress, ministryName, position, username, password);
+                Console.WriteLine(added ? "Registration Completed" : "Failed to Register Account");
             } else
             {
-                cmsProcess.RegisteringRegularAccounts(firstName, lastName, age, emailAddress, username, password);
+                bool added = cmsProcess.RegisteringRegularAccounts(firstName, lastName, age, emailAddress, username, password);
+                Console.WriteLine(added ? "Registration Completed" : "Failed to Register Account");
             }
 
-            Console.WriteLine("Registration Complete");
+            Thread.Sleep(1500);
             DisplayDashboard();
         }  
         static string CreateUsername()

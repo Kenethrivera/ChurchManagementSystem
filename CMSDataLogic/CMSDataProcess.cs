@@ -21,136 +21,137 @@ namespace CMSDataLogic
             //cmsDataService = new JsonDataService();
             cmsDataService = new DBDataService();            
         }
-        public void RegularUserAccounts(string firstName, string lastName, int age, string emailAddress, string userName, string passWord)
-        {
-            cmsDataService.RegularUserAccounts(firstName, lastName, age, emailAddress, userName, passWord);
+        public bool RegularUserAccounts(UserAccounts userAccounts)
+        { 
+            return cmsDataService.RegularUserAccounts(userAccounts);
         }
-        public void AdminAccounts(string firstName, string lastName, int age, string emailAddress, string ministryName, string position, string userName, string passWord)
+        public bool AdminAccounts(UserAccounts adminAccounts)
         {
-            cmsDataService.AdminAccounts(firstName, lastName, age, emailAddress, ministryName, position, userName, passWord);
+            
+            return cmsDataService.AdminAccounts(adminAccounts);
         }
-        public string GetUserRole(string username, string password)
+        public string GetUserRole(UserAccounts loginAccounts)
         {
-            return cmsDataService.GetUserRole(username, password);
+            return cmsDataService.GetUserRole(loginAccounts);
         }
-        public string GetAdminMinistry(string username, string password)
+        public string GetAdminMinistry(UserAccounts loginAccounts)
         {
-            return cmsDataService.GetAdminMinistry(username, password);
+            return cmsDataService.GetAdminMinistry(loginAccounts);
         }
         public List<DiscipleshipMinistry> ViewDiscipleshipSchedule()
         {
             return cmsDataService.ViewDiscipleshipSchedule();
         }
-        public bool AddDiscipleshipSchedule(DateTime date, string speaker, string description, string note)
+        public bool AddDiscipleshipSchedule(DiscipleshipMinistry discipleshipSched)
         {
-            return cmsDataService.AddDiscipleshipSchedule(date, speaker, description, note);
+            return cmsDataService.AddDiscipleshipSchedule(discipleshipSched);
         }
-        public bool UpdateDiscipleshipSchedule(DateTime date, string speaker, string description, string note)
+        public bool UpdateDiscipleshipSchedule(DiscipleshipMinistry update)
         {
-            return cmsDataService.UpdateDiscipleshipSchedule(date, speaker, description, note);
+            return cmsDataService.UpdateDiscipleshipSchedule(update);
         }
-        public bool RemoveDiscipleshipSchedule(DateTime date)
+        public bool RemoveDiscipleshipSchedule(DiscipleshipMinistry toDelete)
         {
-            return cmsDataService.RemoveDiscipleshipSchedule(date);
+            return cmsDataService.RemoveDiscipleshipSchedule(toDelete);
         }
         public List<PrayerMinistry> ViewPrayerMeetingSchedule()
         {
             return cmsDataService.ViewPrayerMeetingSchedule();
         }
-        public bool AddPrayerSchedule(DateTime date, string songLeader, string presider, string speaker, string prayerItem)
+        public bool AddPrayerSchedule(PrayerMinistry prayerSched)
         {
-            return cmsDataService.AddPrayerSchedule(date, songLeader, presider, speaker, prayerItem);
+            return cmsDataService.AddPrayerSchedule(prayerSched);
         }
-        public bool UpdatePrayerSchedule(DateTime date, string songLeader, string presider, string speaker, string prayerItem)
+        public bool UpdatePrayerSchedule(PrayerMinistry update)
         {
-            return cmsDataService.UpdatePrayerSchedule(date, songLeader, presider, speaker, prayerItem);
+            return cmsDataService.UpdatePrayerSchedule(update);
         }
-        public bool RemovePrayerSchedule(DateTime date)
+        public bool RemovePrayerSchedule(PrayerMinistry toDelete)
         {
-            return cmsDataService.RemovePrayerSchedule(date);
+            return cmsDataService.RemovePrayerSchedule(toDelete);
         }
         public List<PraiseAndWorship> ViewPraiseAndWorshipSchedule()
         {
             return cmsDataService.ViewPraiseAndWorshipSchedule();
         }
-        public bool AddPraiseAndWorshipSchedule(DateTime date, string songLeader, string instrumentalist)
+        public bool AddPraiseAndWorshipSchedule(PraiseAndWorship praiseAndWorshipSched)
         {
-            return cmsDataService.AddPraiseAndWorshipSchedule(date, songLeader, instrumentalist);
+            return cmsDataService.AddPraiseAndWorshipSchedule(praiseAndWorshipSched);
         }
-        public bool UpdatePraiseAndWorshipSchedule(DateTime date, string songLeader)
+        public bool UpdatePraiseAndWorshipSchedule(PraiseAndWorship update)
         {
-            return cmsDataService.UpdatePraiseAndWorshipSchedule(date, songLeader);
+            return cmsDataService.UpdatePraiseAndWorshipSchedule(update);
         }
-        public bool RemovePraiseAndWorshipSchedule(DateTime date)
+        public bool RemovePraiseAndWorshipSchedule(PraiseAndWorship toDelete)
         {
-            return cmsDataService.RemovePraiseAndWorshipSchedule(date);
+            return cmsDataService.RemovePraiseAndWorshipSchedule(toDelete);
         }
         public List<SundayWorshipService> ViewSundayWorshipSched()
         {
             return cmsDataService.ViewSundayWorshipSched();
         }
-        public bool AddSundayWorshipSchedule(DateTime date, string presider, string speaker, string flowers, string ushers)
+        public bool AddSundayWorshipSchedule(SundayWorshipService sundayWorshipSched)
         {
-            return cmsDataService.AddSundayWorshipSchedule(date, presider, speaker, flowers, ushers);
+            return cmsDataService.AddSundayWorshipSchedule(sundayWorshipSched);
         }
-        public bool UpdateSundayWorshipSchedule(DateTime date, string presider, string speaker, string flowers, string ushers)
+        public bool UpdateSundayWorshipSchedule(SundayWorshipService update)
         {
-            return cmsDataService.UpdateSundayWorshipSchedule(date, presider, speaker, flowers, ushers);
+            return cmsDataService.UpdateSundayWorshipSchedule(update);
         }
-        public bool RemoveSundayWorshipSched(DateTime date)
+        public bool RemoveSundayWorshipSched(SundayWorshipService toDelete)
         {
-            return cmsDataService.RemoveSundayWorshipSched(date);
+            return cmsDataService.RemoveSundayWorshipSched(toDelete);
         }
         public List<Devotion> ViewDevotionSchedule()
         {
             return cmsDataService.ViewDevotionSchedule();
         }
-        public bool AddDevotionSchedule(DateTime date, string songLeader, string presider, string speaker)
+        public bool AddDevotionSchedule(Devotion devotionSched)
         {
-            return cmsDataService.AddDevotionSchedule(date, songLeader, presider, speaker);
+            return cmsDataService.AddDevotionSchedule(devotionSched);
         }
-        public bool UpdateDevotionSchedule(DateTime date, string songLeader, string presider, string speaker)
+        public bool UpdateDevotionSchedule(Devotion update)
         {
-            return cmsDataService.UpdateDevotionSchedule(date, songLeader, presider, speaker);
+            return cmsDataService.UpdateDevotionSchedule(update);
         }
 
-        public bool RemoveDevotionSchedule(DateTime date)
+        public bool RemoveDevotionSchedule(Devotion toDelete)
         {
-            return cmsDataService.RemoveDevotionSchedule(date);
+            return cmsDataService.RemoveDevotionSchedule(toDelete);
         }
         public List<TeachersList> ViewTeachersList()
         {
             return cmsDataService.ViewTeachersList();
         }
-        public bool AddTeachers(string name, string designation)
+        public bool AddTeachers(TeachersList teachersList)
         {
-            return cmsDataService.AddTeachers(name, designation);
+            return cmsDataService.AddTeachers(teachersList);
         }
-        public bool UpdateTeachers(string name, string designation)
+        public bool UpdateTeachers(TeachersList update)
         {
-            return cmsDataService.UpdateTeachers(name, designation);
+            return cmsDataService.UpdateTeachers(update);
         }
 
-        public bool RemoveTeacher(string name)
+        public bool RemoveTeacher(TeachersList toDelete)
         {
-            return cmsDataService.RemoveTeacher(name);
+            return cmsDataService.RemoveTeacher(toDelete);
         }
         public List<Lesson> ViewLessons()
         {
             return cmsDataService.ViewLessons();
         }
-        public bool AddLesson(DateTime date, string lesson, string materials)
+        public bool AddLesson(Lesson lessonsList)
         {
-            return cmsDataService.AddLesson(date, lesson, materials);
+            return cmsDataService.AddLesson(lessonsList);
         }
-        public bool UpdateLesson(DateTime date, string lesson, string materials)
+        public bool UpdateLesson(Lesson update)
         {
-            return cmsDataService.UpdateLesson(date, lesson, materials);
+            return cmsDataService.UpdateLesson(update);
         }
 
-        public bool RemoveLesson(DateTime date)
+        public bool RemoveLesson(Lesson toDelete)
         {
-            return cmsDataService.RemoveLesson(date);
+            return cmsDataService.RemoveLesson(toDelete);
         }
     }
 }

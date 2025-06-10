@@ -49,14 +49,14 @@ namespace CMSDataLogic
             return adminAccounts;
 
         }
-        public string GetAdminMinistry(string username, string password)
+        public string GetAdminMinistry(UserAccounts loginAccounts)
         {
             sqlConnection1.Open();
             var getAdminStatement = $"SELECT MinistryName FROM tbl_AdminAccounts WHERE Username = @username COLLATE Latin1_General_CS_AS AND Password = @password COLLATE Latin1_General_CS_AS";
 
             SqlCommand getAdminCommand = new SqlCommand(getAdminStatement, sqlConnection1);
-            getAdminCommand.Parameters.AddWithValue("@Username", username);
-            getAdminCommand.Parameters.AddWithValue("@Password", password);
+            getAdminCommand.Parameters.AddWithValue("@Username", loginAccounts.UserName);
+            getAdminCommand.Parameters.AddWithValue("@Password", loginAccounts.Password);
 
             SqlDataReader reader = getAdminCommand.ExecuteReader();
             string ministryName = "No match account";
@@ -69,14 +69,14 @@ namespace CMSDataLogic
             sqlConnection1.Close();
             return ministryName;
         }
-        public string GetUserRole(string username, string password)
+        public string GetUserRole(UserAccounts loginAccounts)
         {
             sqlConnection1.Open();
             var getAdminRole = $"SELECT COUNT(*) FROM tbl_AdminAccounts WHERE Username = @Username COLLATE Latin1_General_CS_AS AND Password = @Password COLLATE Latin1_General_CS_AS";
 
             SqlCommand getAdminRoleCommand = new SqlCommand(getAdminRole, sqlConnection1);
-            getAdminRoleCommand.Parameters.AddWithValue("@Username", username);
-            getAdminRoleCommand.Parameters.AddWithValue("@Password", password);
+            getAdminRoleCommand.Parameters.AddWithValue("@Username", loginAccounts.UserName);
+            getAdminRoleCommand.Parameters.AddWithValue("@Password", loginAccounts.Password);
 
             int adminCount = (int)getAdminRoleCommand.ExecuteScalar();
             if(adminCount > 0)
@@ -89,17 +89,17 @@ namespace CMSDataLogic
             return "User";
 
         }
-        public bool AddDevotionSchedule(DateTime date, string songLeader, string presider, string speaker)
+        public bool AddDevotionSchedule(Devotion devotionSched)
         {
             try {
                 var insertStatement = "INSERT INTO tbl_DevotionSchedules VALUES(@Date, @SongLeader, @Presider, @Speaker)";
 
                 SqlCommand insertCommand = new SqlCommand(insertStatement, sqlConnection2);
 
-                insertCommand.Parameters.AddWithValue("@Date", date);
-                insertCommand.Parameters.AddWithValue("@SongLeader", songLeader);
-                insertCommand.Parameters.AddWithValue("@Presider", presider);
-                insertCommand.Parameters.AddWithValue("@Speaker", speaker);
+                insertCommand.Parameters.AddWithValue("@Date", devotionSched.Date);
+                insertCommand.Parameters.AddWithValue("@SongLeader", devotionSched.SongLeader);
+                insertCommand.Parameters.AddWithValue("@Presider", devotionSched.Presider);
+                insertCommand.Parameters.AddWithValue("@Speaker", devotionSched.Speaker);
 
                 sqlConnection2.Open();
                 insertCommand.ExecuteNonQuery();
@@ -111,7 +111,7 @@ namespace CMSDataLogic
                 return false;
             }           
         }
-        public bool AddDiscipleshipSchedule(DateTime date, string speaker, string description, string note)
+        public bool AddDiscipleshipSchedule(DiscipleshipMinistry discipleshipSched)
         {
             try
             {
@@ -119,10 +119,10 @@ namespace CMSDataLogic
 
                 SqlCommand insertCommand = new SqlCommand(insertStatement, sqlConnection2);
 
-                insertCommand.Parameters.AddWithValue("@Date", date);
-                insertCommand.Parameters.AddWithValue("@Speaker", speaker);
-                insertCommand.Parameters.AddWithValue("@Description", description);
-                insertCommand.Parameters.AddWithValue("@Note", note);
+                insertCommand.Parameters.AddWithValue("@Date", discipleshipSched.Date);
+                insertCommand.Parameters.AddWithValue("@Speaker", discipleshipSched.Speaker);
+                insertCommand.Parameters.AddWithValue("@Description", discipleshipSched.Description);
+                insertCommand.Parameters.AddWithValue("@Note", discipleshipSched.Note);
 
                 sqlConnection2.Open();
                 insertCommand.ExecuteNonQuery();
@@ -135,7 +135,7 @@ namespace CMSDataLogic
                 return false;
             }
         }
-        public bool AddLesson(DateTime date, string lesson, string materials)
+        public bool AddLesson(Lesson lesssonsLists)
         {
             try
             {
@@ -143,9 +143,9 @@ namespace CMSDataLogic
 
                 SqlCommand insertCommand = new SqlCommand(insertStatement, sqlConnection2);
 
-                insertCommand.Parameters.AddWithValue("@Date", date);
-                insertCommand.Parameters.AddWithValue("@Lesson", lesson);
-                insertCommand.Parameters.AddWithValue("@Materials", materials);
+                insertCommand.Parameters.AddWithValue("@Date", lesssonsLists.Date);
+                insertCommand.Parameters.AddWithValue("@Lesson", lesssonsLists.Lessson);
+                insertCommand.Parameters.AddWithValue("@Materials", lesssonsLists.Materials);
 
                 sqlConnection2.Open();
                 insertCommand.ExecuteNonQuery();
@@ -158,7 +158,7 @@ namespace CMSDataLogic
                 return false;
             }
         }
-        public bool AddPraiseAndWorshipSchedule(DateTime date, string songLeader, string instrumentalist)
+        public bool AddPraiseAndWorshipSchedule(PraiseAndWorship praiseAndWorshipSched)
         {
             try
             {
@@ -166,9 +166,9 @@ namespace CMSDataLogic
 
                 SqlCommand insertCommand = new SqlCommand(insertStatement, sqlConnection2);
 
-                insertCommand.Parameters.AddWithValue("@Date", date);
-                insertCommand.Parameters.AddWithValue("@SongLeader", songLeader);
-                insertCommand.Parameters.AddWithValue("@Instrumentalist", instrumentalist);
+                insertCommand.Parameters.AddWithValue("@Date", praiseAndWorshipSched.Date);
+                insertCommand.Parameters.AddWithValue("@SongLeader", praiseAndWorshipSched.SongLeader);
+                insertCommand.Parameters.AddWithValue("@Instrumentalist", praiseAndWorshipSched.Instrumentalist);
 
                 sqlConnection2.Open();
                 insertCommand.ExecuteNonQuery();
@@ -181,7 +181,7 @@ namespace CMSDataLogic
                 return false;
             }
         }
-        public bool AddPrayerSchedule(DateTime date, string songLeader, string presider, string speaker, string prayerItem)
+        public bool AddPrayerSchedule(PrayerMinistry prayerSched)
         {
             try
             {
@@ -189,11 +189,11 @@ namespace CMSDataLogic
 
                 SqlCommand insertCommand = new SqlCommand(insertStatement, sqlConnection2);
 
-                insertCommand.Parameters.AddWithValue("@Date", date);
-                insertCommand.Parameters.AddWithValue("@SongLeader", songLeader);
-                insertCommand.Parameters.AddWithValue("@Presider", presider);
-                insertCommand.Parameters.AddWithValue("@Speaker", speaker);
-                insertCommand.Parameters.AddWithValue("@PrayerItem", prayerItem);
+                insertCommand.Parameters.AddWithValue("@Date", prayerSched.Date);
+                insertCommand.Parameters.AddWithValue("@SongLeader", prayerSched.SongLeader);
+                insertCommand.Parameters.AddWithValue("@Presider", prayerSched.Presider);
+                insertCommand.Parameters.AddWithValue("@Speaker", prayerSched.Speaker);
+                insertCommand.Parameters.AddWithValue("@PrayerItem", prayerSched.PrayerItem);
 
                 sqlConnection2.Open();
                 insertCommand.ExecuteNonQuery();
@@ -206,7 +206,7 @@ namespace CMSDataLogic
                 return false;
             }
         }
-        public bool AddSundayWorshipSchedule(DateTime date, string presider, string speaker, string flowers, string ushers)
+        public bool AddSundayWorshipSchedule(SundayWorshipService sundayWorshipSched)
         {
             try
             {
@@ -214,11 +214,11 @@ namespace CMSDataLogic
 
                 SqlCommand insertCommand = new SqlCommand(insertStatement, sqlConnection2);
 
-                insertCommand.Parameters.AddWithValue("@Date", date);
-                insertCommand.Parameters.AddWithValue("@Presider", presider);
-                insertCommand.Parameters.AddWithValue("@Speaker", speaker);
-                insertCommand.Parameters.AddWithValue("@Flowers", flowers);
-                insertCommand.Parameters.AddWithValue("@Ushers", ushers);
+                insertCommand.Parameters.AddWithValue("@Date", sundayWorshipSched.Date);
+                insertCommand.Parameters.AddWithValue("@Presider", sundayWorshipSched.Presider);
+                insertCommand.Parameters.AddWithValue("@Speaker", sundayWorshipSched.Speaker);
+                insertCommand.Parameters.AddWithValue("@Flowers", sundayWorshipSched.Flowers);
+                insertCommand.Parameters.AddWithValue("@Ushers", sundayWorshipSched.Ushers);
 
                 sqlConnection2.Open();
                 insertCommand.ExecuteNonQuery();
@@ -231,7 +231,7 @@ namespace CMSDataLogic
                 return false;
             }
         }
-        public bool AddTeachers(string name, string designation)
+        public bool AddTeachers(TeachersList teachersList)
         {
             try
             {
@@ -239,8 +239,8 @@ namespace CMSDataLogic
 
                 SqlCommand insertCommand = new SqlCommand(insertStatement, sqlConnection2);
 
-                insertCommand.Parameters.AddWithValue("@Name", name);
-                insertCommand.Parameters.AddWithValue("@Assignment", designation);
+                insertCommand.Parameters.AddWithValue("@Name", teachersList.TeachersName);
+                insertCommand.Parameters.AddWithValue("@Assignment", teachersList.Assignment);
 
                 sqlConnection2.Open();
                 insertCommand.ExecuteNonQuery();
@@ -253,30 +253,39 @@ namespace CMSDataLogic
                 return false;
             }
         }
-        public void AdminAccounts(string firstName, string lastName, int age, string emailAddress, string ministryName, string position, string userName, string passWord)
+        public bool AdminAccounts(UserAccounts adminAccounts)
         {
-            var insertStatement = "INSERT INTO tbl_AdminAccounts VALUES(@FirstName, @LastName, @Age, @EmailAddress, @MinistryName, @Position, @Username, @Password)";
+            try
+            {
+                var insertStatement = "INSERT INTO tbl_AdminAccounts VALUES(@FirstName, @LastName, @Age, @EmailAddress, @MinistryName, @Position, @Username, @Password)";
 
-            SqlCommand insertCommand = new SqlCommand(insertStatement, sqlConnection1);
+                SqlCommand insertCommand = new SqlCommand(insertStatement, sqlConnection1);
 
-            insertCommand.Parameters.AddWithValue("@FirstName", firstName);
-            insertCommand.Parameters.AddWithValue("@LastName", lastName);
-            insertCommand.Parameters.AddWithValue("@Age", age);
-            insertCommand.Parameters.AddWithValue("@EmailAddress", emailAddress);
-            insertCommand.Parameters.AddWithValue("MinistryName", ministryName);
-            insertCommand.Parameters.AddWithValue("@Position", position);
-            insertCommand.Parameters.AddWithValue("@Username", userName);
-            insertCommand.Parameters.AddWithValue("@Password", passWord);
+                insertCommand.Parameters.AddWithValue("@FirstName", adminAccounts.FirstName);
+                insertCommand.Parameters.AddWithValue("@LastName", adminAccounts.LastName);
+                insertCommand.Parameters.AddWithValue("@Age", adminAccounts.Age);
+                insertCommand.Parameters.AddWithValue("@EmailAddress", adminAccounts.EmailAddress);
+                insertCommand.Parameters.AddWithValue("MinistryName", adminAccounts.MinistryName);
+                insertCommand.Parameters.AddWithValue("@Position", adminAccounts.Position);
+                insertCommand.Parameters.AddWithValue("@Username", adminAccounts.UserName);
+                insertCommand.Parameters.AddWithValue("@Password", adminAccounts.Password);
 
-            sqlConnection1.Open();
-            insertCommand.ExecuteNonQuery();
-            sqlConnection1.Close();
+                sqlConnection1.Open();
+                insertCommand.ExecuteNonQuery();
+                sqlConnection1.Close();
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+            
         }
-        public void RegularUserAccounts(string firstName, string lastName, int age, string emailAddress, string userName, string passWord)
+        public bool RegularUserAccounts(UserAccounts userAccounts)
         {
             throw new NotImplementedException();
         }
-        public bool RemoveDevotionSchedule(DateTime date)
+        public bool RemoveDevotionSchedule(Devotion toDelete)
         {
             try
             {
@@ -284,7 +293,7 @@ namespace CMSDataLogic
                 var deleteStatement = $"DELETE FROM tbl_DevotionSchedules WHERE Date = @Date";
 
                 SqlCommand updateCommand = new SqlCommand(deleteStatement, sqlConnection2);
-                updateCommand.Parameters.AddWithValue("@Date", date);
+                updateCommand.Parameters.AddWithValue("@Date", toDelete.Date);
 
                 updateCommand.ExecuteNonQuery();
 
@@ -296,7 +305,7 @@ namespace CMSDataLogic
                 return false;
             }
         }
-        public bool RemoveDiscipleshipSchedule(DateTime date)
+        public bool RemoveDiscipleshipSchedule(DiscipleshipMinistry toDelete)
         {
             try
             {
@@ -304,7 +313,7 @@ namespace CMSDataLogic
                 var deleteStatement = $"DELETE FROM tbl_DiscipleshipSchedules WHERE Date = @Date";
 
                 SqlCommand updateCommand = new SqlCommand(deleteStatement, sqlConnection2);
-                updateCommand.Parameters.AddWithValue("@Date", date);
+                updateCommand.Parameters.AddWithValue("@Date", toDelete.Date);
 
                 updateCommand.ExecuteNonQuery();
 
@@ -316,7 +325,7 @@ namespace CMSDataLogic
                 return false;
             }
         }
-        public bool RemoveLesson(DateTime date)
+        public bool RemoveLesson(Lesson toDelete)
         {
             try
             {
@@ -324,7 +333,7 @@ namespace CMSDataLogic
                 var deleteStatement = $"DELETE FROM tbl_LessonsList WHERE Date = @Date";
 
                 SqlCommand updateCommand = new SqlCommand(deleteStatement, sqlConnection2);
-                updateCommand.Parameters.AddWithValue("@Date", date);
+                updateCommand.Parameters.AddWithValue("@Date", toDelete.Date);
                 updateCommand.ExecuteNonQuery();
                 
                 sqlConnection2.Close();
@@ -335,7 +344,7 @@ namespace CMSDataLogic
                 return false;
             }
         }
-        public bool RemovePraiseAndWorshipSchedule(DateTime date)
+        public bool RemovePraiseAndWorshipSchedule(PraiseAndWorship toDelete)
         {
             try
             {
@@ -343,7 +352,7 @@ namespace CMSDataLogic
                 var deleteStatement = $"DELETE FROM tbl_PraiseAndWorshipSchedules WHERE Date = @Date";
 
                 SqlCommand updateCommand = new SqlCommand(deleteStatement, sqlConnection2);
-                updateCommand.Parameters.AddWithValue("@Date", date);
+                updateCommand.Parameters.AddWithValue("@Date", toDelete.Date);
 
                 updateCommand.ExecuteNonQuery();
 
@@ -355,7 +364,7 @@ namespace CMSDataLogic
                 return false;
             }
         }
-        public bool RemovePrayerSchedule(DateTime date)
+        public bool RemovePrayerSchedule(PrayerMinistry toDelete)
         {
             try
             {
@@ -363,7 +372,7 @@ namespace CMSDataLogic
                 var deleteStatement = $"DELETE FROM tbl_PrayerSchedules WHERE Date = @Date";
 
                 SqlCommand updateCommand = new SqlCommand(deleteStatement, sqlConnection2);
-                updateCommand.Parameters.AddWithValue("@Date", date);
+                updateCommand.Parameters.AddWithValue("@Date", toDelete.Date);
 
                 updateCommand.ExecuteNonQuery();
 
@@ -375,7 +384,7 @@ namespace CMSDataLogic
                 return false;
             }
         }
-        public bool RemoveSundayWorshipSched(DateTime date)
+        public bool RemoveSundayWorshipSched(SundayWorshipService toDelete)
         {
             try
             {
@@ -383,7 +392,7 @@ namespace CMSDataLogic
                 var deleteStatement = $"DELETE FROM tbl_SundayWorshipSchedules WHERE Date = @Date";
 
                 SqlCommand updateCommand = new SqlCommand(deleteStatement, sqlConnection2);
-                updateCommand.Parameters.AddWithValue("@Date", date);
+                updateCommand.Parameters.AddWithValue("@Date", toDelete.Date);
 
                 updateCommand.ExecuteNonQuery();
 
@@ -395,7 +404,7 @@ namespace CMSDataLogic
                 return false;
             }
         }
-        public bool RemoveTeacher(string name)
+        public bool RemoveTeacher(TeachersList toDelete)
         {
             try
             {
@@ -403,7 +412,7 @@ namespace CMSDataLogic
                 var deleteStatement = $"DELETE FROM tbl_TeachersList WHERE Name = @Name";
 
                 SqlCommand updateCommand = new SqlCommand(deleteStatement, sqlConnection2);
-                updateCommand.Parameters.AddWithValue("@Name", name);
+                updateCommand.Parameters.AddWithValue("@Name", toDelete.TeachersName);
 
                 updateCommand.ExecuteNonQuery();
 
@@ -596,7 +605,7 @@ namespace CMSDataLogic
             return teachersLists;
         }
 
-        public bool UpdateDiscipleshipSchedule(DateTime date, string speaker, string description, string note)
+        public bool UpdateDiscipleshipSchedule(DiscipleshipMinistry update)
         {
             try
             {
@@ -605,10 +614,10 @@ namespace CMSDataLogic
                 string updateQuery = "UPDATE tbl_DiscipleshipSchedules SET Speaker = @speaker, Description = @description, Note = @note WHERE DATE = @date";
 
                 SqlCommand updateCommand = new SqlCommand(updateQuery, sqlConnection2);
-                updateCommand.Parameters.AddWithValue("@Date", date);
-                updateCommand.Parameters.AddWithValue("@Speaker", speaker);
-                updateCommand.Parameters.AddWithValue("@Description", description);
-                updateCommand.Parameters.AddWithValue("@Note", note);
+                updateCommand.Parameters.AddWithValue("@Date", update.Date);
+                updateCommand.Parameters.AddWithValue("@Speaker", update.Speaker);
+                updateCommand.Parameters.AddWithValue("@Description", update.Description);
+                updateCommand.Parameters.AddWithValue("@Note", update.Note);
                 updateCommand.ExecuteNonQuery();
 
                 sqlConnection2.Close();
@@ -620,7 +629,7 @@ namespace CMSDataLogic
                 return false;
             }
         }
-        public bool UpdatePrayerSchedule(DateTime date, string songLeader, string presider, string speaker, string prayerItem)
+        public bool UpdatePrayerSchedule(PrayerMinistry update)
         {
             try
             {
@@ -629,11 +638,11 @@ namespace CMSDataLogic
                 string updateQuery = "UPDATE tbl_PrayerSchedules SET SongLeader = @songLeader, Presider = @presider, Speaker = @speaker, PrayerItem = @prayerItem WHERE DATE = @date";
 
                 SqlCommand updateCommand = new SqlCommand(updateQuery, sqlConnection2);
-                updateCommand.Parameters.AddWithValue("@Date", date);
-                updateCommand.Parameters.AddWithValue("@SongLeader", songLeader);
-                updateCommand.Parameters.AddWithValue("@Presider", presider);
-                updateCommand.Parameters.AddWithValue("@Speaker", speaker);
-                updateCommand.Parameters.AddWithValue("@PrayerItem", prayerItem);
+                updateCommand.Parameters.AddWithValue("@Date", update.Date);
+                updateCommand.Parameters.AddWithValue("@SongLeader", update.SongLeader);
+                updateCommand.Parameters.AddWithValue("@Presider", update.Presider);
+                updateCommand.Parameters.AddWithValue("@Speaker", update.Speaker);
+                updateCommand.Parameters.AddWithValue("@PrayerItem", update.PrayerItem);
                 updateCommand.ExecuteNonQuery();
 
                 sqlConnection2.Close();
@@ -645,7 +654,7 @@ namespace CMSDataLogic
                 return false;
             }
         }
-        public bool UpdatePraiseAndWorshipSchedule(DateTime date, string songLeader)
+        public bool UpdatePraiseAndWorshipSchedule(PraiseAndWorship update)
         {
             try
             {
@@ -654,8 +663,8 @@ namespace CMSDataLogic
                 string updateQuery = "UPDATE tbl_PraiseAndWorshipSchedules SET SongLeader = @songLeader WHERE DATE = @date";
 
                 SqlCommand updateCommand = new SqlCommand(updateQuery, sqlConnection2);
-                updateCommand.Parameters.AddWithValue("@Date", date);
-                updateCommand.Parameters.AddWithValue("@SongLeader", songLeader);
+                updateCommand.Parameters.AddWithValue("@Date", update.Date);
+                updateCommand.Parameters.AddWithValue("@SongLeader", update.SongLeader);
                 updateCommand.ExecuteNonQuery();
 
                 sqlConnection2.Close();
@@ -667,7 +676,7 @@ namespace CMSDataLogic
                 return false;
             }
         }
-        public bool UpdateSundayWorshipSchedule(DateTime date, string presider, string speaker, string flowers, string ushers)
+        public bool UpdateSundayWorshipSchedule(SundayWorshipService update)
         {
             try
             {
@@ -676,11 +685,11 @@ namespace CMSDataLogic
                 string updateQuery = "UPDATE tbl_SundayWorshipSchedules SET Presider = @presider, Speaker = @speaker, Flowers = @flowers, Ushers = @ushers WHERE DATE = @date";
 
                 SqlCommand updateCommand = new SqlCommand(updateQuery, sqlConnection2);
-                updateCommand.Parameters.AddWithValue("@Date", date);
-                updateCommand.Parameters.AddWithValue("@Presider", presider);
-                updateCommand.Parameters.AddWithValue("@Speaker", speaker);
-                updateCommand.Parameters.AddWithValue("@Flowers", flowers);
-                updateCommand.Parameters.AddWithValue("@Ushers", ushers);
+                updateCommand.Parameters.AddWithValue("@Date", update.Date);
+                updateCommand.Parameters.AddWithValue("@Presider", update.Presider);
+                updateCommand.Parameters.AddWithValue("@Speaker", update.Speaker);
+                updateCommand.Parameters.AddWithValue("@Flowers", update.Flowers);
+                updateCommand.Parameters.AddWithValue("@Ushers", update.Ushers);
                 updateCommand.ExecuteNonQuery();
 
                 sqlConnection2.Close();
@@ -692,7 +701,7 @@ namespace CMSDataLogic
                 return false;
             }
         }
-        public bool UpdateDevotionSchedule(DateTime date, string songLeader, string presider, string speaker)
+        public bool UpdateDevotionSchedule(Devotion update)
         {
             try
             {
@@ -701,10 +710,10 @@ namespace CMSDataLogic
                 string updateQuery = "UPDATE tbl_DevotionSchedules SET SongLeader = @songLeader, Presider = @presider, Speaker = @speaker WHERE DATE = @date";
 
                 SqlCommand updateCommand = new SqlCommand(updateQuery, sqlConnection2);
-                updateCommand.Parameters.AddWithValue("@Date", date);
-                updateCommand.Parameters.AddWithValue("@Presider", presider);
-                updateCommand.Parameters.AddWithValue("@SongLeader", songLeader);
-                updateCommand.Parameters.AddWithValue("@Speaker", speaker);
+                updateCommand.Parameters.AddWithValue("@Date", update.Date);
+                updateCommand.Parameters.AddWithValue("@Presider", update.Presider);
+                updateCommand.Parameters.AddWithValue("@SongLeader", update.SongLeader);
+                updateCommand.Parameters.AddWithValue("@Speaker", update.Speaker);
                 updateCommand.ExecuteNonQuery();
 
                 sqlConnection2.Close();
@@ -716,7 +725,7 @@ namespace CMSDataLogic
                 return false;
             }
         }
-        public bool UpdateTeachers(string name, string designation)
+        public bool UpdateTeachers(TeachersList update)
         {
             try
             {
@@ -725,8 +734,8 @@ namespace CMSDataLogic
                 string updateQuery = "UPDATE tbl_TeachersList SET Assignment = @Assignment WHERE Name = @name";
 
                 SqlCommand updateCommand = new SqlCommand(updateQuery, sqlConnection2);
-                updateCommand.Parameters.AddWithValue("@Name", name);
-                updateCommand.Parameters.AddWithValue("@Assignment", designation);
+                updateCommand.Parameters.AddWithValue("@Name", update.TeachersName);
+                updateCommand.Parameters.AddWithValue("@Assignment", update.Assignment);
                 updateCommand.ExecuteNonQuery();
 
                 sqlConnection2.Close();
@@ -738,7 +747,7 @@ namespace CMSDataLogic
                 return false;
             }
         }
-        public bool UpdateLesson(DateTime date, string lesson, string materials)
+        public bool UpdateLesson(Lesson update)
         {
             try
             {
@@ -747,9 +756,9 @@ namespace CMSDataLogic
                 string updateQuery = "UPDATE tbl_LessonsList SET Lesson = @lesson, Materials = @materials WHERE DATE = @date";
 
                 SqlCommand updateCommand = new SqlCommand(updateQuery, sqlConnection2);
-                updateCommand.Parameters.AddWithValue("@Date", date);
-                updateCommand.Parameters.AddWithValue("@Lesson", lesson);
-                updateCommand.Parameters.AddWithValue("@Materials", materials);
+                updateCommand.Parameters.AddWithValue("@Date", update.Date);
+                updateCommand.Parameters.AddWithValue("@Lesson", update.Lessson);
+                updateCommand.Parameters.AddWithValue("@Materials", update.Materials);
                 updateCommand.ExecuteNonQuery();
 
                 sqlConnection2.Close();
