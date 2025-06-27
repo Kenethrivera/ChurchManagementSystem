@@ -12,8 +12,8 @@ namespace CMSDataLogic
     {
         public bool RegularUserAccounts(UserAccounts userAccounts);
         public bool AdminAccounts(UserAccounts adminAccounts);
-        public string GetUserRole(UserAccounts loginAccounts);
-        public string GetAdminMinistry(UserAccounts loginAccounts);
+        public UserAccounts GetUserRole(UserAccounts loginAccounts, bool isAdmin);
+        public List<UserAccounts> GetAllAccounts();
         public List<DiscipleshipMinistry> ViewDiscipleshipSchedule();
         public bool AddDiscipleshipSchedule(DiscipleshipMinistry discipleshipSched);
         public bool UpdateDiscipleshipSchedule(DiscipleshipMinistry update);
@@ -45,5 +45,10 @@ namespace CMSDataLogic
         public bool UpdateLesson(Lesson update);
         public bool RemoveLesson(Lesson toDelete);
 
+        public bool ProcessUserResponseDiscipleship(DiscipleshipMinistry userResponse);
+        public bool ProcessUserResponsePrayer(PrayerMinistry userResponse);
+        public bool ProcessUserResponsePW(PraiseAndWorship userResponse);
+        public bool ProcessUserResponseSundayWorship(SundayWorshipService userResponse);
+        public bool ProcessUserResponseDevotion(Devotion userResponse);
     }
 }

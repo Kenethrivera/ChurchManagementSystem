@@ -1,0 +1,20 @@
+ken,rivera,19,ken@gmail.com,Discipleship Ministry,Member,ken,123
+keneth,rivera,19,ken@gmail.com,Discipleship Ministry,Member,keneth,123
+james,rivera,19,ken@gmail.com,Discipleship Ministry,Member,james,123
+len,rivera,19,ken@gmail.com,Discipleship Ministry,Member,len,123
+juan,dela cruz,19,ken@gmail.com,Prayer Ministry,Member,juan,1234
+matthew,rivera,19,ken@gmail.com,Prayer Ministry,Member,matthew,1234
+mark,rivera,19,ken@gmail.com,Prayer Ministry,Member,mark,1234
+luke,rivera,19,ken@gmail.com,Prayer Ministry,Member,luke,1234
+john,rivera,19,ken@gmail.com,Prayer Ministry,Member,john,1234
+acts,rivera,19,ken@gmail.com,Prayer Ministry,Member,acts,1234
+hanna,guig,20,ken3@gmail.com,Worship Ministry,Member,hanna,12345
+nicole,rivera,20,ken3@gmail.com,Worship Ministry,Member,nicole,12345
+kevin,rivera,20,ken3@gmail.com,Worship Ministry,Member,kevin,12345
+len,rivera,20,ken3@gmail.com,Worship Ministry,Member,len,12345
+jasper,rivera,20,ken3@gmail.com,Worship Ministry,Member,jasper,12345
+johan,rivera,20,ken4@gmail.com,Christian Education,Member,johan,123456
+chiara,rivera,20,ken4@gmail.com,Christian Education,Member,chiara,123456
+len,rivera,20,ken4@gmail.com,Christian Education,Member,len,123456
+ana,rivera,20,ken4@gmail.com,Christian Education,Member,ana,123456
+junior,rivera,20,ken4@gmail.com,Christian Education,Member,junior,123456

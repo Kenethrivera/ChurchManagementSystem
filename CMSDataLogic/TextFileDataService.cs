@@ -3,6 +3,7 @@ using CMSSchedules;
 using System;
 using System.Globalization;
 using System.Reflection;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 
 namespace CMSDataLogic
@@ -35,6 +36,158 @@ namespace CMSDataLogic
             GetAdminAccount();
             GetRegularAccount();
         }
+        
+        public List<UserAccounts> GetAllAccounts()
+        {
+            var accounts = new List<UserAccounts>();
+            
+            var lines = File.ReadAllLines(regularAccFilePath);
+            foreach(var line in lines)
+            {
+                var parts = line.Split(",");
+                var account = new UserAccounts
+                {
+                    FirstName = parts[0],
+                    LastName = parts[1],
+                    Age = int.Parse(parts[2]),
+                    EmailAddress = parts[3],
+                    MinistryName = parts[4],
+                    Position = parts[5],
+                    UserName = parts[6],
+                    Password = parts[7]
+                };
+                accounts.Add(account);
+            }
+            return accounts;
+        }
+        public bool RegularUserAccounts(UserAccounts userAccounts)
+        {
+            try
+            {
+                var newlines = $"{userAccounts.FirstName},{userAccounts.LastName},{userAccounts.Age},{userAccounts.EmailAddress},{userAccounts.MinistryName},{userAccounts.Position},{userAccounts.UserName},{userAccounts.Password}";
+                File.AppendAllText(regularAccFilePath, newlines + Environment.NewLine);
+                GetRegularAccount();
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+        public bool AdminAccounts(UserAccounts adminAccounts)
+        {
+            try
+            {
+                var newlines = $"{adminAccounts.FirstName},{adminAccounts.LastName},{adminAccounts.Age},{adminAccounts.EmailAddress},{adminAccounts.MinistryName},{adminAccounts.Position},{adminAccounts.UserName},{adminAccounts.Password}";
+                File.AppendAllText(adminAccFilePath, newlines + Environment.NewLine);
+                GetAdminAccount();
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+
+        }
+        private void GetAdminAccount()
+        {
+            adminAccounts.Clear();
+            try
+            {
+                if (File.Exists(adminAccFilePath))
+                {
+                    var lines = File.ReadAllLines(adminAccFilePath);
+                    foreach (var line in lines)
+                    {
+                        if (!string.IsNullOrWhiteSpace(line))
+                        {
+                            var parts = line.Split(',');
+                            if (parts.Length >= 8)
+                            {
+                                adminAccounts.Add(new UserAccounts
+                                {
+                                    FirstName = parts[0].Trim(),
+                                    LastName = parts[1].Trim(),
+                                    Age = Convert.ToInt16(parts[2].Trim()),
+                                    EmailAddress = parts[3].Trim(),
+                                    MinistryName = parts[4].Trim(),
+                                    Position = parts[5].Trim(),
+                                    UserName = parts[6].Trim(),
+                                    Password = parts[7].Trim()
+                                });
+                            }
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error reading admin accounts: {ex.Message}");
+            }
+        }
+        private void GetRegularAccount()
+        {
+            regularAccounts.Clear();
+            try
+            {
+                if (File.Exists(regularAccFilePath))
+                {
+                    var lines = File.ReadAllLines(regularAccFilePath);
+                    foreach (var line in lines)
+                    {
+                        if (!string.IsNullOrWhiteSpace(line))
+                        {
+                            var parts = line.Split(',');
+                            if (parts.Length >= 8)
+                            {
+                                regularAccounts.Add(new UserAccounts
+                                {
+                                    FirstName = parts[0].Trim(),
+                                    LastName = parts[1].Trim(),
+                                    Age = Convert.ToInt16(parts[2].Trim()),
+                                    EmailAddress = parts[3].Trim(),
+                                    MinistryName = parts[4].Trim(),
+                                    Position = parts[5].Trim(),
+                                    UserName = parts[6].Trim(),
+                                    Password = parts[7].Trim()
+                                });
+                            }
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error reading admin accounts: {ex.Message}");
+            }
+        }
+        public UserAccounts GetUserRole(UserAccounts loginAccounts, bool isAdmin)
+        {
+            if (isAdmin)
+            {
+                foreach (var admin in adminAccounts)
+                {
+                    if (admin.UserName.Equals(loginAccounts.UserName, StringComparison.Ordinal) &&
+                        admin.Password.Equals(loginAccounts.Password, StringComparison.Ordinal))
+                    {
+                        return admin;
+                    }
+                }
+            }
+            else
+            {
+                foreach (var user in regularAccounts)
+                {
+                    if (user.UserName.Equals(loginAccounts.UserName, StringComparison.Ordinal) &&
+                        user.Password.Equals(loginAccounts.Password, StringComparison.Ordinal))
+                    {
+                        return user;
+                    }
+                }
+            }
+            return null;
+        }
+        // load data from textfile
         private void LoadDevotionSched()
         {
             devotionSchedules.Clear();
@@ -54,8 +207,11 @@ namespace CMSDataLogic
                     {
                         Date = parsedDate,
                         SongLeader = parts[1],
-                        Presider = parts[2],
-                        Speaker = parts[3]
+                        SongLeaderStatus = parts[2],
+                        Presider = parts[3],
+                        PresiderStatus = parts[4],
+                        Speaker = parts[5],
+                        SpeakerStatus = parts[6]
                     });
                 }
                 else
@@ -83,9 +239,9 @@ namespace CMSDataLogic
                     {
                         Date = parsedDate,
                         Speaker = parts[1],
-                        Description = parts[2],
-                        Note = parts[3],
-
+                        Status = parts[2],
+                        Description = parts[3],
+                        Note = parts[4],
                     });
                 }
                 else
@@ -161,9 +317,12 @@ namespace CMSDataLogic
                     {
                         Date = parsedDate,
                         SongLeader = parts[1],
-                        Presider = parts[2],
-                        Speaker = parts[3],
-                        PrayerItem = parts[4]
+                        SongLeaderStatus = parts[2],
+                        Presider = parts[3],
+                        PresiderStatus = parts[4],
+                        Speaker = parts[5],
+                        SpeakerStatus = parts[6],
+                        PrayerItem = parts[7]
                     });
                 }
                 else
@@ -193,7 +352,8 @@ namespace CMSDataLogic
                     {
                         Date = parsedDate,
                         SongLeader = parts[1],
-                        Instrumentalist = parts[2]
+                        SongLeaderStatus = parts[2],
+                        Instrumentalist = parts[3]
                     });
                 }
                 else
@@ -221,9 +381,13 @@ namespace CMSDataLogic
                     {
                         Date = parsedDate,
                         Presider = parts[1],
-                        Speaker = parts[2],
-                        Flowers = parts[3],
-                        Ushers = parts[4]
+                        PresiderStatus = parts[2],
+                        Speaker = parts[3],
+                        SpeakerStatus = parts[4],
+                        Flowers = parts[5],
+                        FlowersStatus = parts[6],
+                        Ushers = parts[7],
+                        UshersStatus = parts[8]
                     });
                 }
                 else
@@ -232,124 +396,8 @@ namespace CMSDataLogic
                 }
             }
         }
-        private void GetAdminAccount()
-        {
-            adminAccounts.Clear();
-            try
-            {
-                if (File.Exists(adminAccFilePath))
-                {
-                    var lines = File.ReadAllLines(adminAccFilePath);
-                    foreach (var line in lines)
-                    {
-                        if (!string.IsNullOrWhiteSpace(line))
-                        {
-                            var parts = line.Split(',');
-                            if (parts.Length >= 8)
-                            {
-                                adminAccounts.Add(new UserAccounts
-                                {
-                                    FirstName = parts[0].Trim(),
-                                    LastName = parts[1].Trim(),
-                                    Age = Convert.ToInt16(parts[2].Trim()),
-                                    EmailAddress = parts[3].Trim(),
-                                    MinistryName = parts[4].Trim(),
-                                    Position = parts[5].Trim(),
-                                    UserName = parts[6].Trim(),
-                                    Password = parts[7].Trim()
-                                });
-                            }
-                        }
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Error reading admin accounts: {ex.Message}");
-            }
-        }
-        private void GetRegularAccount()
-        {
-            try
-            {
-                if (File.Exists(regularAccFilePath))
-                {
-                    var lines = File.ReadAllLines(regularAccFilePath);
-                    foreach (var line in lines)
-                    {
-                        if (!string.IsNullOrWhiteSpace(line))
-                        {
-                            var parts = line.Split('|');
-                            if (parts.Length >= 6)
-                            {
-                                regularAccounts.Add(new UserAccounts
-                                {
-                                    FirstName = parts[0].Trim(),
-                                    LastName = parts[1].Trim(),
-                                    Age = Convert.ToInt16(parts[2].Trim()),
-                                    EmailAddress = parts[3].Trim(),
-                                    Position = "Member",           
-                                    UserName = parts[4].Trim(),
-                                    Password = parts[5].Trim()
-                                });
-                            }
-                        }
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                // Log the exception or handle it appropriately
-                Console.WriteLine($"Error reading regular accounts: {ex.Message}");
-            }
-        }
-        public string GetAdminMinistry(UserAccounts loginAccounts)
-        {
-            foreach (var admin in adminAccounts)
-            {
-                if (admin.UserName.Equals(loginAccounts.UserName, StringComparison.Ordinal) &&
-                    admin.Password.Equals(loginAccounts.Password, StringComparison.Ordinal))
-                {
-                    return admin.MinistryName;
-                }
-            }
 
-            return "No match account";
-        }
-        public string GetUserRole(UserAccounts loginAccounts)
-        {
-            foreach (var admin in adminAccounts)
-            {
-                if (admin.UserName.Equals(loginAccounts.UserName, StringComparison.Ordinal) &&
-                    admin.Password.Equals(loginAccounts.Password, StringComparison.Ordinal))
-                {
-                    return "Admin";
-                }
-            }
-            foreach (var user in regularAccounts)
-            {
-                if (user.UserName.Equals(loginAccounts.UserName, StringComparison.Ordinal) &&
-                    user.Password.Equals(loginAccounts.Password, StringComparison.Ordinal))
-                {
-                    return "User";
-                }
-            }
-
-            return "No Account Match";            
-        }
-        public bool RegularUserAccounts(UserAccounts userAccounts)
-        {
-            try
-            {
-                var newlines = $"{userAccounts.FirstName}|{userAccounts.LastName}|{userAccounts.Age}|{userAccounts.EmailAddress}|{userAccounts.EmailAddress}|{userAccounts.Password}";
-                File.AppendAllText(regularAccFilePath, newlines + Environment.NewLine);
-                return true;
-            }
-            catch
-            {
-                return false;
-            }
-        }
+        // add function
         private bool AppendLineToFile(string filePath, string line)
         {
             try
@@ -364,12 +412,12 @@ namespace CMSDataLogic
         }
         public bool AddDevotionSchedule(Devotion devotionSched)
         {
-            var newLines = $"{devotionSched.Date.ToString("MM-dd-yyyy")}|{devotionSched.SongLeader}|{devotionSched.Presider}|{devotionSched.Speaker}";
+            var newLines = $"{devotionSched.Date.ToString("MM-dd-yyyy")}|{devotionSched.SongLeader}|{devotionSched.SongLeaderStatus}|{devotionSched.Presider}|{devotionSched.PresiderStatus}|{devotionSched.Speaker}|{devotionSched.SpeakerStatus}|";
             return AppendLineToFile(devotionScheduleFilePath, newLines);
         }
         public bool AddDiscipleshipSchedule(DiscipleshipMinistry discipleshipSched)
         {
-            var newLines = $"{discipleshipSched.Date.ToString("MM-dd-yyyy")}|{discipleshipSched.Speaker}|{discipleshipSched.Description}|{discipleshipSched.Note}";
+            var newLines = $"{discipleshipSched.Date.ToString("MM-dd-yyyy")}|{discipleshipSched.Speaker}|{discipleshipSched.Status}|{discipleshipSched.Description}|{discipleshipSched.Note}";
             return AppendLineToFile(discipleshipScheduleFilePath, newLines);
         }
         public bool AddLesson(Lesson lessonsLists)
@@ -379,17 +427,17 @@ namespace CMSDataLogic
         }
         public bool AddPraiseAndWorshipSchedule(PraiseAndWorship praiseAndWorshipSched)
         {
-            var newLines = $"{praiseAndWorshipSched.Date.ToString("MM-dd-yyyy")}|{praiseAndWorshipSched.SongLeader}|{praiseAndWorshipSched.Instrumentalist}";
+            var newLines = $"{praiseAndWorshipSched.Date.ToString("MM-dd-yyyy")}|{praiseAndWorshipSched.SongLeader}|{praiseAndWorshipSched.SongLeaderStatus}|{praiseAndWorshipSched.Instrumentalist}";
             return AppendLineToFile(praiseAndWorshipScheduleFilePath, newLines);
         }
         public bool AddPrayerSchedule(PrayerMinistry prayerSched)
         {
-            var newLines = $"{prayerSched.Date.ToString("MM-dd-yyyy")}|{prayerSched.SongLeader}|{prayerSched.Presider}|{prayerSched.Speaker}|{prayerSched.PrayerItem}";
+            var newLines = $"{prayerSched.Date.ToString("MM-dd-yyyy")}|{prayerSched.SongLeader}|{prayerSched.SongLeaderStatus}|{prayerSched.Presider}|{prayerSched.PresiderStatus}|{prayerSched.Speaker}|{prayerSched.SpeakerStatus}|{prayerSched.PrayerItem}";
             return AppendLineToFile(prayerMeetingFilePath, newLines);
         }
         public bool AddSundayWorshipSchedule(SundayWorshipService sundayWorshipSched)
         {
-            var newLines = $"{sundayWorshipSched.Date.ToString("MM-dd-yyyy")}|{sundayWorshipSched.Presider}|{sundayWorshipSched.Speaker}|{sundayWorshipSched.Flowers}|{sundayWorshipSched.Ushers}";
+            var newLines = $"{sundayWorshipSched.Date.ToString("MM-dd-yyyy")}|{sundayWorshipSched.Presider}|{sundayWorshipSched.PresiderStatus}|{sundayWorshipSched.Speaker}|{sundayWorshipSched.SpeakerStatus}|{sundayWorshipSched.Flowers}|{sundayWorshipSched.FlowersStatus}|{sundayWorshipSched.Ushers}|{sundayWorshipSched.UshersStatus}";
             return AppendLineToFile(sundayWorshipServiceFilePath, newLines);
         }
         public bool AddTeachers(TeachersList teachersList)
@@ -397,28 +445,15 @@ namespace CMSDataLogic
             var newLines = $"{teachersList.TeachersName}|{teachersList.Assignment}";
             return AppendLineToFile(teachersFilePath, newLines);
         }
-        public bool AdminAccounts(UserAccounts adminAccounts)
-        {
-            try
-            {
-                var newlines = $"{adminAccounts.FirstName},{adminAccounts.LastName},{adminAccounts.Age},{adminAccounts.EmailAddress},{adminAccounts.MinistryName},{adminAccounts.Position},{adminAccounts.UserName},{adminAccounts.Password}";
-                File.AppendAllText(adminAccFilePath, newlines + Environment.NewLine);
-                GetAdminAccount();
-                return true;
-            }
-            catch
-            {
-                return false;
-            }
-
-        }
+        
+        // writing data to file
         private void WriteDevotionSchedToFile()
         {
             var lines = new string[devotionSchedules.Count];
 
             for (int i = 0; i < devotionSchedules.Count; i++)
             {
-                lines[i] = $"{devotionSchedules[i].Date.ToString("MM-dd-yyyy")}|{devotionSchedules[i].Presider}|{devotionSchedules[i].Speaker}";
+                lines[i] = $"{devotionSchedules[i].Date.ToString("MM-dd-yyyy")}|{devotionSchedules[i].SongLeader}|{devotionSchedules[i].SongLeaderStatus}|{devotionSchedules[i].Presider}|{devotionSchedules[i].PresiderStatus}|{devotionSchedules[i].Speaker}|{devotionSchedules[i].SpeakerStatus}";
             }
 
             File.WriteAllLines(devotionScheduleFilePath, lines);
@@ -429,7 +464,7 @@ namespace CMSDataLogic
 
             for (int i = 0; i < discipleshipSchedules.Count; i++)
             {
-                lines[i] = $"{discipleshipSchedules[i].Date.ToString("MM-dd-yyyy")}|{discipleshipSchedules[i].Speaker}|{discipleshipSchedules[i].Description}| {discipleshipSchedules[i].Note}";
+                lines[i] = $"{discipleshipSchedules[i].Date.ToString("MM-dd-yyyy")}|{discipleshipSchedules[i].Speaker}| {discipleshipSchedules[i].Status}|{discipleshipSchedules[i].Description}| {discipleshipSchedules[i].Note}";
             }
 
             File.WriteAllLines(discipleshipScheduleFilePath, lines);
@@ -451,7 +486,7 @@ namespace CMSDataLogic
 
             for (int i = 0; i < praiseAndWorshipSchedules.Count; i++)
             {
-                lines[i] = $"{praiseAndWorshipSchedules[i].Date.ToString("MM-dd-yyyy")}|{praiseAndWorshipSchedules[i].SongLeader}|{praiseAndWorshipSchedules[i].Instrumentalist}";
+                lines[i] = $"{praiseAndWorshipSchedules[i].Date.ToString("MM-dd-yyyy")}|{praiseAndWorshipSchedules[i].SongLeader}|{praiseAndWorshipSchedules[i].SongLeaderStatus}|{praiseAndWorshipSchedules[i].Instrumentalist}";
             }
 
             File.WriteAllLines(praiseAndWorshipScheduleFilePath, lines);
@@ -462,7 +497,7 @@ namespace CMSDataLogic
 
             for (int i = 0; i < prayerSchedules.Count; i++)
             {
-                lines[i] = $"{prayerSchedules[i].Date.ToString("MM-dd-yyyy")}|{prayerSchedules[i].SongLeader}|{prayerSchedules[i].Presider}|{prayerSchedules[i].Speaker}|{prayerSchedules[i].PrayerItem}";
+                lines[i] = $"{prayerSchedules[i].Date.ToString("MM-dd-yyyy")}|{prayerSchedules[i].SongLeader}|{prayerSchedules[i].SongLeaderStatus}|{prayerSchedules[i].Presider}|{prayerSchedules[i].PresiderStatus}|{prayerSchedules[i].Speaker}|{prayerSchedules[i].SpeakerStatus}|{prayerSchedules[i].PrayerItem}";
             }
 
             File.WriteAllLines(prayerMeetingFilePath, lines);
@@ -473,7 +508,7 @@ namespace CMSDataLogic
 
             for (int i = 0; i < sundayWorshipSchedules.Count; i++)
             {
-                lines[i] = $"{sundayWorshipSchedules[i].Date.ToString("MM-dd-yyyy")}|{sundayWorshipSchedules[i].Presider}|{sundayWorshipSchedules[i].Speaker}|{sundayWorshipSchedules[i].Flowers}|{sundayWorshipSchedules[i].Ushers}";
+                lines[i] = $"{sundayWorshipSchedules[i].Date.ToString("MM-dd-yyyy")}|{sundayWorshipSchedules[i].Presider}|{sundayWorshipSchedules[i].PresiderStatus}|{sundayWorshipSchedules[i].Speaker}|{sundayWorshipSchedules[i].SpeakerStatus}|{sundayWorshipSchedules[i].Flowers}|{sundayWorshipSchedules[i].FlowersStatus}|{sundayWorshipSchedules[i].Ushers}|{sundayWorshipSchedules[i].UshersStatus}";
             }
 
             File.WriteAllLines(sundayWorshipServiceFilePath, lines);
@@ -489,6 +524,8 @@ namespace CMSDataLogic
 
             File.WriteAllLines(teachersFilePath, lines);
         }
+        
+        // remove function
         public bool RemoveDevotionSchedule(Devotion toDelete)
         {
             LoadDevotionSched();
@@ -587,6 +624,8 @@ namespace CMSDataLogic
             }
             return false;
         }
+        
+        // view function
         public List<Devotion> ViewDevotionSchedule()
         {
             LoadDevotionSched();
@@ -623,6 +662,7 @@ namespace CMSDataLogic
             return teachersList;
         }
 
+        // update function
         public bool UpdateDiscipleshipSchedule(DiscipleshipMinistry update)
         {
             string[] lines = File.ReadAllLines(discipleshipScheduleFilePath);
@@ -633,7 +673,7 @@ namespace CMSDataLogic
                 string[] parts = lines[i].Split("|");
                 if (DateTime.Parse(parts[0]).Date == update.Date.Date)
                 {
-                    lines[i] = $"{update.Date.ToString("MM-dd-yyyy")}|{update.Speaker}|{update.Description}|{update.Note}";
+                    lines[i] = $"{update.Date.ToString("MM-dd-yyyy")}|{update.Speaker}|{update.Status}|{update.Description}|{update.Note}|";
                     updated = true;
                     break;
                 }
@@ -655,7 +695,7 @@ namespace CMSDataLogic
                 string[] parts = lines[i].Split("|");
                 if (DateTime.Parse(parts[0]).Date == update.Date.Date)
                 {
-                    lines[i] = $"{update.Date.ToString("MM-dd-yyyy")}|{update.SongLeader}|{update.Presider}|{update.Speaker}|{update.PrayerItem}";
+                    lines[i] = $"{update.Date.ToString("MM-dd-yyyy")}|{update.SongLeader}|{update.SongLeaderStatus}|{update.Presider}|{update.PresiderStatus}|{update.Speaker}|{update.SpeakerStatus}|{update.PrayerItem}";
                     updated = true;
                     break;
                 }
@@ -677,8 +717,8 @@ namespace CMSDataLogic
                 string[] parts = lines[i].Split("|");
                 if (DateTime.Parse(parts[0]).Date == update.Date.Date)
                 {
-                    string instrumentalist = parts.Length > 2 ? parts[2] : "";
-                    lines[i] = $"{update.Date.ToString("MM-dd-yyyy")}|{update.SongLeader}|{instrumentalist}";
+                    string instrumentalist = parts.Length > 3 ? parts[3] : "";
+                    lines[i] = $"{update.Date.ToString("MM-dd-yyyy")}|{update.SongLeader}|{update.SongLeaderStatus}|{instrumentalist}";
                     updated = true;
                     break;
                 }
@@ -700,7 +740,7 @@ namespace CMSDataLogic
                 string[] parts = lines[i].Split("|");
                 if (DateTime.Parse(parts[0]).Date == update.Date.Date)
                 {
-                    lines[i] = $"{update.Date.ToString("MM-dd-yyyy")}|{update.Presider}|{update.Speaker}|{update.Flowers}|{update.Ushers}";
+                    lines[i] = $"{update.Date.ToString("MM-dd-yyyy")}|{update.Presider}|{update.PresiderStatus}|{update.Speaker}|{update.SpeakerStatus}|{update.Flowers}|{update.FlowersStatus}|{update.Ushers}|{update.UshersStatus}";
                     updated = true;
                     break;
                 }
@@ -722,7 +762,7 @@ namespace CMSDataLogic
                 string[] parts = lines[i].Split("|");
                 if (DateTime.Parse(parts[0]).Date == update.Date.Date)
                 {
-                    lines[i] = $"{update.Date.ToString("MM-dd-yyyy")}|{update.SongLeader}|{update.Presider}|{update.Speaker}";
+                    lines[i] = $"{update.Date.ToString("MM-dd-yyyy")}|{update.SongLeader}|{update.SongLeaderStatus}|{update.Presider}|{update.PresiderStatus}|{update.Speaker}|{update.SpeakerStatus}|";
                     updated = true;
                     break;
                 }
@@ -778,5 +818,167 @@ namespace CMSDataLogic
             }
             return false;
         }
+
+        // process user response
+        public bool ProcessUserResponseDiscipleship(DiscipleshipMinistry userResponse)
+        {
+            string[] lines = File.ReadAllLines(discipleshipScheduleFilePath);
+
+            bool updated = false;
+            for (int i = 0; i < lines.Length; i++)
+            {
+                string[] parts = lines[i].Split("|");
+                if (DateTime.Parse(parts[0]).Date == userResponse.Date.Date)
+                {
+                    if (!string.IsNullOrEmpty(userResponse.Status))
+                    {
+                        parts[2] = userResponse.Status;
+                    }
+                    lines[i] = string.Join("|", parts);
+                    updated = true;
+                    break;
+                }
+            }
+            if (updated)
+            {
+                File.WriteAllLines(discipleshipScheduleFilePath, lines);
+                return true;
+            }
+            return false;
+        }
+        public bool ProcessUserResponsePrayer(PrayerMinistry userResponse)
+        {
+            string[] lines = File.ReadAllLines(prayerMeetingFilePath);
+
+            bool updated = false;
+            for (int i = 0; i < lines.Length; i++)
+            {
+                string[] parts = lines[i].Split("|");
+                if (DateTime.Parse(parts[0]).Date == userResponse.Date.Date)
+                {
+                    if (!string.IsNullOrEmpty(userResponse.SongLeaderStatus))
+                    {
+                        parts[2] = userResponse.SongLeaderStatus;
+                    }
+                    if (!string.IsNullOrEmpty(userResponse.PresiderStatus))
+                    {
+                        parts[4] = userResponse.PresiderStatus;
+                    }
+                    if (!string.IsNullOrEmpty(userResponse.SpeakerStatus))
+                    {
+                        parts[6] = userResponse.SpeakerStatus;
+                    }
+                    lines[i] = string.Join("|", parts);
+                    updated = true;
+                    break;
+                }
+            }
+            if (updated)
+            {
+                File.WriteAllLines(prayerMeetingFilePath, lines);
+                return true;
+            }
+            return false;
+        }
+        public bool ProcessUserResponsePW(PraiseAndWorship userResponse)
+        {
+            string[] lines = File.ReadAllLines(praiseAndWorshipScheduleFilePath);
+
+            bool updated = false;
+            for (int i = 0; i < lines.Length; i++)
+            {
+                string[] parts = lines[i].Split("|");
+                if (DateTime.Parse(parts[0]).Date == userResponse.Date.Date)
+                {
+                    if (!string.IsNullOrEmpty(userResponse.SongLeaderStatus))
+                    {
+                        parts[2] = userResponse.SongLeaderStatus;
+                    }                    
+                    lines[i] = string.Join("|", parts);
+                    updated = true;
+                    break;
+                }
+            }
+            if (updated)
+            {
+                File.WriteAllLines(praiseAndWorshipScheduleFilePath, lines);
+                return true;
+            }
+            return false;
+        }
+        public bool ProcessUserResponseSundayWorship(SundayWorshipService userResponse)
+        {
+            string[] lines = File.ReadAllLines(sundayWorshipServiceFilePath);
+
+            bool updated = false;
+            for (int i = 0; i < lines.Length; i++)
+            {
+                string[] parts = lines[i].Split("|");
+                if (DateTime.Parse(parts[0]).Date == userResponse.Date.Date)
+                {
+                    if (!string.IsNullOrEmpty(userResponse.PresiderStatus))
+                    {
+                        parts[2] = userResponse.PresiderStatus;
+                    }
+                    if (!string.IsNullOrEmpty(userResponse.SpeakerStatus))
+                    {
+                        parts[4] = userResponse.SpeakerStatus;
+                    }
+                    if (!string.IsNullOrEmpty(userResponse.FlowersStatus))
+                    {
+                        parts[6] = userResponse.FlowersStatus;
+                    }
+                    if (!string.IsNullOrEmpty(userResponse.UshersStatus))
+                    {
+                        parts[8] = userResponse.UshersStatus;
+                    }
+                    lines[i] = string.Join("|", parts);
+                    updated = true;
+                    break;
+                }
+            }
+            if (updated)
+            {
+                File.WriteAllLines(sundayWorshipServiceFilePath, lines);
+                return true;
+            }
+            return false;
+        }
+        public bool ProcessUserResponseDevotion(Devotion userResponse)
+        {
+            string[] lines = File.ReadAllLines(devotionScheduleFilePath);
+
+            bool updated = false;
+            for (int i = 0; i < lines.Length; i++)
+            {
+                string[] parts = lines[i].Split("|");
+                if (DateTime.Parse(parts[0]).Date == userResponse.Date.Date)
+                {
+                    if (!string.IsNullOrEmpty(userResponse.PresiderStatus))
+                    {
+                        parts[4] = userResponse.PresiderStatus;
+                    }
+                    if (!string.IsNullOrEmpty(userResponse.SpeakerStatus))
+                    {
+                        parts[6] = userResponse.SpeakerStatus;
+                    }
+                    if (!string.IsNullOrEmpty(userResponse.SongLeaderStatus))
+                    {
+                        parts[2] = userResponse.SongLeaderStatus;
+                    }                    
+                    lines[i] = string.Join("|", parts);
+                    updated = true;
+                    break;
+                }
+            }
+            if (updated)
+            {
+                File.WriteAllLines(devotionScheduleFilePath, lines);
+                return true;
+            }
+            return false;
+        }
+
     }
+
 }

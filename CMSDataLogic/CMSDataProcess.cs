@@ -18,8 +18,13 @@ namespace CMSDataLogic
         {
             //cmsDataService = new InMemoryDataService();
             //cmsDataService = new TextFileDataService();
-            //cmsDataService = new JsonDataService();
-            cmsDataService = new DBDataService();            
+            cmsDataService = new JsonDataService();
+            //cmsDataService = new DBDataService();            
+        }
+        // about login and sigup
+        public List<UserAccounts> GetAllAccounts()
+        {
+            return cmsDataService.GetAllAccounts();
         }
         public bool RegularUserAccounts(UserAccounts userAccounts)
         { 
@@ -30,14 +35,12 @@ namespace CMSDataLogic
             
             return cmsDataService.AdminAccounts(adminAccounts);
         }
-        public string GetUserRole(UserAccounts loginAccounts)
+        public UserAccounts GetUserRole(UserAccounts loginAccounts, bool isAdmin)
         {
-            return cmsDataService.GetUserRole(loginAccounts);
+            return cmsDataService.GetUserRole(loginAccounts, isAdmin);
         }
-        public string GetAdminMinistry(UserAccounts loginAccounts)
-        {
-            return cmsDataService.GetAdminMinistry(loginAccounts);
-        }
+        // about ministries
+        // discipleship ministry
         public List<DiscipleshipMinistry> ViewDiscipleshipSchedule()
         {
             return cmsDataService.ViewDiscipleshipSchedule();
@@ -54,6 +57,7 @@ namespace CMSDataLogic
         {
             return cmsDataService.RemoveDiscipleshipSchedule(toDelete);
         }
+        //prayer ministry
         public List<PrayerMinistry> ViewPrayerMeetingSchedule()
         {
             return cmsDataService.ViewPrayerMeetingSchedule();
@@ -70,6 +74,7 @@ namespace CMSDataLogic
         {
             return cmsDataService.RemovePrayerSchedule(toDelete);
         }
+        // praise and worship
         public List<PraiseAndWorship> ViewPraiseAndWorshipSchedule()
         {
             return cmsDataService.ViewPraiseAndWorshipSchedule();
@@ -86,6 +91,7 @@ namespace CMSDataLogic
         {
             return cmsDataService.RemovePraiseAndWorshipSchedule(toDelete);
         }
+        // sunday worship service
         public List<SundayWorshipService> ViewSundayWorshipSched()
         {
             return cmsDataService.ViewSundayWorshipSched();
@@ -102,6 +108,7 @@ namespace CMSDataLogic
         {
             return cmsDataService.RemoveSundayWorshipSched(toDelete);
         }
+        // devotion
         public List<Devotion> ViewDevotionSchedule()
         {
             return cmsDataService.ViewDevotionSchedule();
@@ -114,11 +121,11 @@ namespace CMSDataLogic
         {
             return cmsDataService.UpdateDevotionSchedule(update);
         }
-
         public bool RemoveDevotionSchedule(Devotion toDelete)
         {
             return cmsDataService.RemoveDevotionSchedule(toDelete);
         }
+        // teachers
         public List<TeachersList> ViewTeachersList()
         {
             return cmsDataService.ViewTeachersList();
@@ -131,11 +138,11 @@ namespace CMSDataLogic
         {
             return cmsDataService.UpdateTeachers(update);
         }
-
         public bool RemoveTeacher(TeachersList toDelete)
         {
             return cmsDataService.RemoveTeacher(toDelete);
         }
+        // lessons
         public List<Lesson> ViewLessons()
         {
             return cmsDataService.ViewLessons();
@@ -148,10 +155,32 @@ namespace CMSDataLogic
         {
             return cmsDataService.UpdateLesson(update);
         }
-
         public bool RemoveLesson(Lesson toDelete)
         {
             return cmsDataService.RemoveLesson(toDelete);
+        }
+
+        // processing user response
+        public bool ProcessUserResponseDiscipleship(DiscipleshipMinistry userResponse) 
+        {
+            return cmsDataService.ProcessUserResponseDiscipleship(userResponse);
+        }
+        public bool ProcessUserResponsePrayer(PrayerMinistry statusUpdate)
+        {
+
+            return cmsDataService.ProcessUserResponsePrayer(statusUpdate);
+        }
+        public bool ProcessUserResponsePW(PraiseAndWorship statusUpdate)
+        {
+            return cmsDataService.ProcessUserResponsePW(statusUpdate);
+        }
+        public bool ProcessUserResponseSundayWorship(SundayWorshipService statusUpdate)
+        {
+            return cmsDataService.ProcessUserResponseSundayWorship(statusUpdate);
+        }
+        public bool ProcessUserResponseDevotion(Devotion statusUpdate)
+        {
+            return cmsDataService.ProcessUserResponseDevotion(statusUpdate);
         }
     }
 }

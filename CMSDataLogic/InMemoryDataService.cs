@@ -73,6 +73,21 @@ namespace CMSDataLogic
                 UserName = "ken",
                 Password = "123456"
             });
+            regularAccounts.Add(new UserAccounts
+            {
+                FirstName = "ken",
+                LastName = "rivera",
+                Age = 19,
+                EmailAddress = "kenrivera@gmail.com",
+                MinistryName = "Discipleship Ministry",
+                Position = "Member",
+                UserName = "ken",
+                Password = "123"
+            });
+        }
+        public List<UserAccounts> GetAllAccounts()
+        {
+            return regularAccounts;
         }
         public bool RegularUserAccounts(UserAccounts userAccounts)
         {
@@ -117,37 +132,31 @@ namespace CMSDataLogic
             }
             
         }
-        public string GetUserRole(UserAccounts loginAccounts)
-        { 
-            foreach (UserAccounts admin in adminAccounts)
-            {
-                if (admin.UserName == loginAccounts.UserName && admin.Password == loginAccounts.Password)
-                {
-                    return "Admin";
-                }
-            }
-
-            foreach (UserAccounts user in regularAccounts)
-            {
-                if (user.UserName == loginAccounts.UserName && user.Password == loginAccounts.Password)
-                {
-                    return "User";
-                }
-            }
-
-            return "No Account Match";
-        }
-        public string GetAdminMinistry(UserAccounts loginAccounts)
+        public UserAccounts GetUserRole(UserAccounts loginAccounts, bool isAdmin)
         {
-
-            foreach (UserAccounts admin in adminAccounts)
+            if (isAdmin)
             {
-                if (admin.UserName == loginAccounts.UserName && admin.Password == loginAccounts.Password)
+                foreach (var admin in adminAccounts)
                 {
-                    return admin.MinistryName;
+                    if (admin.UserName.Equals(loginAccounts.UserName, StringComparison.Ordinal) &&
+                        admin.Password.Equals(loginAccounts.Password, StringComparison.Ordinal))
+                    {
+                        return admin;
+                    }
                 }
             }
-            return "NO match account";
+            else
+            {
+                foreach (var user in regularAccounts)
+                {
+                    if (user.UserName.Equals(loginAccounts.UserName, StringComparison.Ordinal) &&
+                        user.Password.Equals(loginAccounts.Password, StringComparison.Ordinal))
+                    {
+                        return user;
+                    }
+                }
+            }
+            return null;
         }
         //discipleship ministry
         public List<DiscipleshipMinistry> ViewDiscipleshipSchedule()
@@ -163,7 +172,8 @@ namespace CMSDataLogic
                     Date = discipleshipSched.Date,
                     Speaker = discipleshipSched.Speaker,
                     Description = discipleshipSched.Description,
-                    Note = discipleshipSched.Note
+                    Note = discipleshipSched.Note,
+                    Status = discipleshipSched.Status
                 });
                 return true;
             }
@@ -180,6 +190,7 @@ namespace CMSDataLogic
                 if (discipleshipSchedules[i].Date.Date == update.Date.Date)
                 {
                     discipleshipSchedules[i].Speaker = update.Speaker;
+                    discipleshipSchedules[i].Status = update.Status;
                     discipleshipSchedules[i].Description = update.Description;
                     discipleshipSchedules[i].Note = update.Note;
                     return true;
@@ -213,8 +224,11 @@ namespace CMSDataLogic
                 {
                     Date = prayerSched.Date,
                     SongLeader = prayerSched.SongLeader,
+                    SongLeaderStatus = prayerSched.SongLeaderStatus,
                     Presider = prayerSched.Presider,
+                    PresiderStatus = prayerSched.PresiderStatus,
                     Speaker = prayerSched.Speaker,
+                    SpeakerStatus = prayerSched.SpeakerStatus,
                     PrayerItem = prayerSched.PrayerItem
                 });
                 return true;
@@ -232,8 +246,11 @@ namespace CMSDataLogic
                 if (prayerSchedules[i].Date.Date == update.Date.Date)
                 {
                     prayerSchedules[i].SongLeader = update.SongLeader;
+                    prayerSchedules[i].SongLeaderStatus = update.SongLeaderStatus;
                     prayerSchedules[i].Presider = update.Presider;
+                    prayerSchedules[i].PresiderStatus = update.PresiderStatus;
                     prayerSchedules[i].Speaker = update.Speaker;
+                    prayerSchedules[i].SpeakerStatus = update.SpeakerStatus;
                     prayerSchedules[i].PrayerItem = update.PrayerItem;
                     return true;
                 }
@@ -254,6 +271,7 @@ namespace CMSDataLogic
         }
 
         //worship ministry
+        // praise and worship
         public List<PraiseAndWorship> ViewPraiseAndWorshipSchedule()
         {
             return praiseAndWorshipSchedules;
@@ -266,6 +284,7 @@ namespace CMSDataLogic
                 {
                     Date = praiseAndWorshipSched.Date,
                     SongLeader = praiseAndWorshipSched.SongLeader,
+                    SongLeaderStatus = praiseAndWorshipSched.SongLeaderStatus,
                     Instrumentalist = praiseAndWorshipSched.Instrumentalist
                 });
                 return true;
@@ -282,6 +301,7 @@ namespace CMSDataLogic
                 if (praiseAndWorshipSchedules[i].Date.Date == update.Date.Date)
                 {
                     praiseAndWorshipSchedules[i].SongLeader = update.SongLeader;
+                    praiseAndWorshipSchedules[i].SongLeaderStatus = update.SongLeaderStatus;
                     return true;
                 }
             }
@@ -299,6 +319,7 @@ namespace CMSDataLogic
             }
             return false;
         }
+        // sunday worship service
         public List<SundayWorshipService> ViewSundayWorshipSched()
         {
             return sundayWorshipSchedules;
@@ -311,9 +332,13 @@ namespace CMSDataLogic
                 {
                     Date = sundayWorshipSched.Date,
                     Presider = sundayWorshipSched.Presider,
+                    PresiderStatus = sundayWorshipSched.PresiderStatus,
                     Speaker = sundayWorshipSched.Speaker,
+                    SpeakerStatus= sundayWorshipSched.SpeakerStatus,
                     Flowers = sundayWorshipSched.Flowers,
-                    Ushers = sundayWorshipSched.Ushers
+                    FlowersStatus = sundayWorshipSched.FlowersStatus,
+                    Ushers = sundayWorshipSched.Ushers,
+                    UshersStatus = sundayWorshipSched.UshersStatus
                 });
                 return true;
             }
@@ -329,9 +354,13 @@ namespace CMSDataLogic
                 if (sundayWorshipSchedules[i].Date.Date == update.Date.Date)
                 {
                     sundayWorshipSchedules[i].Presider = update.Presider;
+                    sundayWorshipSchedules[i].PresiderStatus = update.PresiderStatus;
                     sundayWorshipSchedules[i].Speaker = update.Speaker;
+                    sundayWorshipSchedules[i].SpeakerStatus = update.SpeakerStatus;
                     sundayWorshipSchedules[i].Flowers = update.Flowers;
+                    sundayWorshipSchedules[i].FlowersStatus = update.FlowersStatus;
                     sundayWorshipSchedules[i].Ushers = update.Ushers;
+                    sundayWorshipSchedules[i].UshersStatus = update.UshersStatus;
                     return true;
                 }
             }
@@ -349,6 +378,7 @@ namespace CMSDataLogic
             }
             return false;
         }
+        // devotion
         public List<Devotion> ViewDevotionSchedule()
         {
             return devotionSchedules;
@@ -361,8 +391,11 @@ namespace CMSDataLogic
                 {
                     Date = devotionSched.Date,
                     SongLeader = devotionSched.SongLeader,
+                    SongLeaderStatus = devotionSched.SongLeaderStatus,
                     Presider = devotionSched.Presider,
-                    Speaker = devotionSched.Speaker
+                    PresiderStatus = devotionSched.PresiderStatus,
+                    Speaker = devotionSched.Speaker,
+                    SpeakerStatus = devotionSched.SpeakerStatus
                 });
                 return true;
             }
@@ -378,8 +411,11 @@ namespace CMSDataLogic
                 if (devotionSchedules[i].Date.Date == update.Date.Date)
                 {
                     devotionSchedules[i].SongLeader = update.SongLeader;
+                    devotionSchedules[i].SongLeaderStatus = update.SongLeaderStatus;
                     devotionSchedules[i].Presider = update.Presider;
+                    devotionSchedules[i].PresiderStatus = update.PresiderStatus;
                     devotionSchedules[i].Speaker = update.Speaker;
+                    devotionSchedules[i].SpeakerStatus = update.SpeakerStatus;
                     return true;
                 }
             }
@@ -397,6 +433,7 @@ namespace CMSDataLogic
             }
             return false;
         }
+        // teachers
         public List<TeachersList> ViewTeachersList()
         {
             return teachersList;
@@ -441,7 +478,7 @@ namespace CMSDataLogic
             }
             return false;
         }
-
+        // lesson
         public List<Lesson> ViewLessons()
         {
             return lessonsList;
@@ -488,7 +525,127 @@ namespace CMSDataLogic
             }
             return false;
         }
+        // process user response
+        public bool ProcessUserResponseDiscipleship(DiscipleshipMinistry userResponse)
+        {
+            bool updated = false;
 
-        
+            foreach (var sched in discipleshipSchedules)
+            {
+                if (sched.Date.Date == userResponse.Date.Date)
+                {
+                    if (!string.IsNullOrEmpty(userResponse.Status))
+                    {
+                        sched.Status = userResponse.Status;
+                    }
+                    updated = true;
+                    break; 
+                }
+            }
+            return updated;
+        }
+        public bool ProcessUserResponsePrayer(PrayerMinistry userResponse)
+        {
+            bool updated = false;
+
+            foreach (var sched in prayerSchedules)
+            {
+                if (sched.Date.Date == userResponse.Date.Date)
+                {
+                    if (!string.IsNullOrEmpty(userResponse.SongLeaderStatus))
+                    {
+                        sched.SongLeaderStatus = userResponse.SongLeaderStatus;
+                    }
+                    if (!string.IsNullOrEmpty(userResponse.PresiderStatus))
+                    {
+                        sched.PresiderStatus = userResponse.PresiderStatus;
+                    }
+                    if (!string.IsNullOrEmpty(userResponse.SpeakerStatus))
+                    {
+                        sched.SpeakerStatus = userResponse.SpeakerStatus;
+                    }
+
+                    updated = true;
+                    break; 
+                }
+            }
+            return updated;
+        }
+        public bool ProcessUserResponsePW(PraiseAndWorship userResponse)
+        {
+            bool updated = false;
+
+            foreach (var sched in praiseAndWorshipSchedules)
+            {
+                if (sched.Date.Date == userResponse.Date.Date)
+                {
+                    if (!string.IsNullOrEmpty(userResponse.SongLeaderStatus))
+                    {
+                        sched.SongLeaderStatus = userResponse.SongLeaderStatus;
+                    }
+                   
+                    updated = true;
+                    break;
+                }
+            }
+            return updated;
+        }
+        public bool ProcessUserResponseSundayWorship(SundayWorshipService userResponse)
+        {
+            bool updated = false;
+
+            foreach (var sched in sundayWorshipSchedules)
+            {
+                if (sched.Date.Date == userResponse.Date.Date)
+                {
+                    if (!string.IsNullOrEmpty(userResponse.PresiderStatus))
+                    {
+                        sched.PresiderStatus = userResponse.PresiderStatus;
+                    }
+                    if (!string.IsNullOrEmpty(userResponse.SpeakerStatus))
+                    {
+                        sched.SpeakerStatus = userResponse.SpeakerStatus;
+                    }
+                    if (!string.IsNullOrEmpty(userResponse.FlowersStatus))
+                    {
+                        sched.FlowersStatus = userResponse.FlowersStatus;
+                    }
+                    if (!string.IsNullOrEmpty(userResponse.UshersStatus))
+                    {
+                        sched.UshersStatus = userResponse.UshersStatus;
+                    }
+
+                    updated = true;
+                    break; 
+                }
+            }
+            return updated;
+        }
+        public bool ProcessUserResponseDevotion(Devotion userResponse)
+        {
+            bool updated = false;
+
+            foreach (var sched in devotionSchedules)
+            {
+                if (sched.Date.Date == userResponse.Date.Date)
+                {
+                    if (!string.IsNullOrEmpty(userResponse.PresiderStatus))
+                    {
+                        sched.PresiderStatus = userResponse.PresiderStatus;
+                    }
+                    if (!string.IsNullOrEmpty(userResponse.SpeakerStatus))
+                    {
+                        sched.SpeakerStatus = userResponse.SpeakerStatus;
+                    }
+                    if (!string.IsNullOrEmpty(userResponse.SongLeaderStatus))
+                    {
+                        sched.SongLeaderStatus = userResponse.SongLeaderStatus;
+                    }                  
+                    updated = true;
+                    break;
+                }
+            }
+            return updated;
+        }
     }
 }

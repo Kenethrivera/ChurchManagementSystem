@@ -33,7 +33,79 @@ namespace CMSDataLogic
         public JsonDataService()
         {
             ReadAdminAccFromFile();
-            //ReadRegularAccFromFile();
+            ReadRegularAccFromFile();
+        }
+
+        public List<UserAccounts> GetAllAccounts()
+        {
+            var json = File.ReadAllText(regularAccFilePath);
+            return JsonSerializer.Deserialize<List<UserAccounts>>(json);
+        }
+        public bool AdminAccounts(UserAccounts admin)
+        {
+            try
+            {
+                if (File.Exists(adminAccFilePath))
+                {
+                    string jsonText = File.ReadAllText(adminAccFilePath);
+                    adminAccounts = JsonSerializer.Deserialize<List<UserAccounts>>(jsonText) ?? new();
+                }
+                var newAccounts = new UserAccounts
+                {
+                    FirstName = admin.FirstName,
+                    LastName = admin.LastName,
+                    Age = admin.Age,
+                    EmailAddress = admin.EmailAddress,
+                    MinistryName = admin.MinistryName,
+                    Position = admin.Position,
+                    UserName = admin.UserName,
+                    Password = admin.Password
+                };
+                adminAccounts.Add(newAccounts);
+
+                string jsonString = JsonSerializer.Serialize(adminAccounts, new JsonSerializerOptions
+                { WriteIndented = true });
+                File.WriteAllText(adminAccFilePath, jsonString);
+                ReadAdminAccFromFile();
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+        public bool RegularUserAccounts(UserAccounts userAccounts)
+        {
+            try
+            {
+                if (File.Exists(regularAccFilePath))
+                {
+                    string jsonText = File.ReadAllText(regularAccFilePath);
+                    regularAccounts = JsonSerializer.Deserialize<List<UserAccounts>>(jsonText) ?? new();
+                }
+                var newAccounts = new UserAccounts
+                {
+                    FirstName = userAccounts.FirstName,
+                    LastName = userAccounts.LastName,
+                    Age = userAccounts.Age,
+                    EmailAddress = userAccounts.EmailAddress,
+                    MinistryName = userAccounts.MinistryName,
+                    Position = userAccounts.Position,
+                    UserName = userAccounts.UserName,
+                    Password = userAccounts.Password
+                };
+                regularAccounts.Add(newAccounts);
+
+                string jsonString = JsonSerializer.Serialize(regularAccounts, new JsonSerializerOptions
+                { WriteIndented = true });
+                File.WriteAllText(regularAccFilePath, jsonString);
+                ReadAdminAccFromFile();
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
         }
         private void ReadAdminAccFromFile()
         {
@@ -45,45 +117,39 @@ namespace CMSDataLogic
         }
         private void ReadRegularAccFromFile()
         {
+            regularAccounts.Clear();
             string userJson = File.ReadAllText(regularAccFilePath);
             regularAccounts = JsonSerializer.Deserialize<List<UserAccounts>>(userJson,
                 new JsonSerializerOptions { PropertyNameCaseInsensitive = true }
-           );
+            );
         }
-        public string GetAdminMinistry(UserAccounts loginAccounts)
+        public UserAccounts GetUserRole(UserAccounts loginAccounts, bool isAdmin)
         {
-            foreach (var admin in adminAccounts)
+            if (isAdmin)
             {
-                if (admin.UserName.Equals(loginAccounts.UserName, StringComparison.Ordinal) &&
-                    admin.Password.Equals(loginAccounts.Password, StringComparison.Ordinal))
+                foreach (var admin in adminAccounts)
                 {
-                    return admin.MinistryName;
+                    if (admin.UserName.Equals(loginAccounts.UserName, StringComparison.Ordinal) &&
+                        admin.Password.Equals(loginAccounts.Password, StringComparison.Ordinal))
+                    {
+                        return admin;
+                    }
                 }
             }
-
-            return "No match account";
+            else
+            {
+                foreach (var user in regularAccounts)
+                {
+                    if (user.UserName.Equals(loginAccounts.UserName, StringComparison.Ordinal) &&
+                        user.Password.Equals(loginAccounts.Password, StringComparison.Ordinal))
+                    {
+                        return user;
+                    }
+                }
+            }
+            return null;
         }
-        public string GetUserRole(UserAccounts loginAccounts)
-        {
-            foreach (var admin in adminAccounts)
-            {
-                if (admin.UserName.Equals(loginAccounts.UserName, StringComparison.Ordinal) &&
-                    admin.Password.Equals(loginAccounts.Password, StringComparison.Ordinal))
-                {
-                    return "Admin";
-                }
-            }
-            foreach (var user in regularAccounts)
-            {
-                if (user.UserName.Equals(loginAccounts.UserName, StringComparison.Ordinal) &&
-                    user.Password.Equals(loginAccounts.Password, StringComparison.Ordinal))
-                {
-                    return "User";
-                }
-            }
-
-            return "No Account Match";
-        }
+        // load all data
         public void LoadDevotionSchedule()
         {
             var jsonText = File.ReadAllText(devotionScheduleFilePath);
@@ -126,6 +192,7 @@ namespace CMSDataLogic
             teachersList = JsonSerializer.Deserialize<List<TeachersList>>(jsonText,
                 new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
         }
+        // add function
         public bool AddDevotionSchedule(Devotion devotionSched)
         {
             try
@@ -139,8 +206,11 @@ namespace CMSDataLogic
                 {
                     Date = devotionSched.Date,
                     SongLeader = devotionSched.SongLeader,
+                    SongLeaderStatus = devotionSched.SongLeaderStatus,
                     Presider = devotionSched.Presider,
-                    Speaker = devotionSched.Speaker
+                    PresiderStatus = devotionSched.PresiderStatus,
+                    Speaker = devotionSched.Speaker,
+                    SpeakerStatus = devotionSched.SpeakerStatus
                 };
                 devotionSchedules.Add(newSchedule);
                     
@@ -154,7 +224,7 @@ namespace CMSDataLogic
                 return false;
             }
         }
-        public bool AddDiscipleshipSchedule(DiscipleshipMinistry discpleshipSched)
+        public bool AddDiscipleshipSchedule(DiscipleshipMinistry discipleshipSched)
         {
             try
             {
@@ -165,10 +235,11 @@ namespace CMSDataLogic
                 }
                 var newSchedule = new DiscipleshipMinistry
                 {
-                    Date = discpleshipSched.Date,
-                    Speaker = discpleshipSched.Speaker,
-                    Description = discpleshipSched.Description,
-                    Note = discpleshipSched.Note
+                    Date = discipleshipSched.Date,
+                    Speaker = discipleshipSched.Speaker,
+                    Status = discipleshipSched.Status,
+                    Description = discipleshipSched.Description,
+                    Note = discipleshipSched.Note
                 };
                 discipleshipSchedules.Add(newSchedule);
                     
@@ -222,6 +293,7 @@ namespace CMSDataLogic
                 {
                     Date = praiseAndWorshipSched.Date,
                     SongLeader = praiseAndWorshipSched.SongLeader,
+                    SongLeaderStatus = praiseAndWorshipSched.SongLeaderStatus,
                     Instrumentalist = praiseAndWorshipSched.Instrumentalist
                 };
                 praiseAndWorshipSchedules.Add(newSchedule);
@@ -249,8 +321,11 @@ namespace CMSDataLogic
                 {
                     Date = prayerSched.Date,
                     SongLeader = prayerSched.SongLeader,
+                    SongLeaderStatus = prayerSched.SongLeaderStatus,
                     Presider = prayerSched.Presider,
+                    PresiderStatus = prayerSched.PresiderStatus,
                     Speaker = prayerSched.Speaker,
+                    SpeakerStatus = prayerSched.SpeakerStatus,
                     PrayerItem = prayerSched.PrayerItem
                 };
                 prayerSchedules.Add(newSchedule);
@@ -278,9 +353,13 @@ namespace CMSDataLogic
                 {
                     Date = sundayWorshipSched.Date,
                     Presider = sundayWorshipSched.Presider,
+                    PresiderStatus = sundayWorshipSched.PresiderStatus,
                     Speaker = sundayWorshipSched.Speaker,
+                    SpeakerStatus = sundayWorshipSched.SpeakerStatus,
                     Flowers = sundayWorshipSched.Flowers,
-                    Ushers = sundayWorshipSched.Ushers
+                    FlowersStatus = sundayWorshipSched.FlowersStatus,
+                    Ushers = sundayWorshipSched.Ushers,
+                    UshersStatus = sundayWorshipSched.UshersStatus
                 };
                 sundayWorshipSchedules.Add(newSchedule);
 
@@ -320,45 +399,7 @@ namespace CMSDataLogic
                 return false;
             }
         }
-        public bool AdminAccounts(UserAccounts admin)
-        {
-            try
-            {
-                if (File.Exists(adminAccFilePath))
-                {
-                    string jsonText = File.ReadAllText(adminAccFilePath);
-                    adminAccounts = JsonSerializer.Deserialize<List<UserAccounts>>(jsonText) ?? new();
-                }
-                var newAccounts = new UserAccounts
-                {
-                    FirstName = admin.FirstName,
-                    LastName = admin.LastName,
-                    Age = admin.Age,
-                    EmailAddress = admin.EmailAddress,
-                    MinistryName = admin.MinistryName,
-                    Position = admin.Position,
-                    UserName = admin.UserName,
-                    Password = admin.Password
-                };
-                adminAccounts.Add(newAccounts);
-
-                string jsonString = JsonSerializer.Serialize(adminAccounts, new JsonSerializerOptions
-                { WriteIndented = true });
-                File.WriteAllText(adminAccFilePath, jsonString);
-                ReadAdminAccFromFile();
-                return true;
-            }
-            catch
-            {
-                return false;
-            }
-
-
-        }
-        public bool RegularUserAccounts(UserAccounts userAccounts)
-        {
-            throw new NotImplementedException();
-        }
+        // write data back to json
         private void WriteDevotionDataToFile()
         {
             string jsonString = JsonSerializer.Serialize(devotionSchedules, new JsonSerializerOptions
@@ -408,6 +449,7 @@ namespace CMSDataLogic
 
             File.WriteAllText(teachersFilePath, jsonString);
         }
+        // remove function
         public bool RemoveDevotionSchedule(Devotion toDelete)
         {
             LoadDevotionSchedule();
@@ -507,6 +549,7 @@ namespace CMSDataLogic
             }
             return false;
         }
+        // view function
         public List<Devotion> ViewDevotionSchedule()
         {
             LoadDevotionSchedule();
@@ -542,7 +585,7 @@ namespace CMSDataLogic
             LoadTeachersList();
             return teachersList;
         }
-
+        // update function
         public bool UpdateDiscipleshipSchedule(DiscipleshipMinistry update)
         {
             string jsonFile = File.ReadAllText(discipleshipScheduleFilePath);
@@ -554,6 +597,7 @@ namespace CMSDataLogic
                 if (discipleshipSchedules[i].Date.Date == update.Date.Date)
                 {
                     discipleshipSchedules[i].Speaker = update.Speaker;
+                    discipleshipSchedules[i].Status = update.Status;
                     discipleshipSchedules[i].Description = update.Description;
                     discipleshipSchedules[i].Note = update.Note;
                     updated = true;
@@ -579,8 +623,11 @@ namespace CMSDataLogic
                 if (prayerSchedules[i].Date.Date == update.Date.Date)
                 {
                     prayerSchedules[i].SongLeader = update.SongLeader;
+                    prayerSchedules[i].SongLeaderStatus = update.SongLeaderStatus;
                     prayerSchedules[i].Presider = update.Presider;
+                    prayerSchedules[i].PresiderStatus = update.PresiderStatus;
                     prayerSchedules[i].Speaker = update.Speaker;
+                    prayerSchedules[i].SpeakerStatus = update.SpeakerStatus;
                     prayerSchedules[i].PrayerItem = update.PrayerItem;
                     updated = true;
                     break;
@@ -605,6 +652,7 @@ namespace CMSDataLogic
                 if (praiseAndWorshipSchedules[i].Date.Date == update.Date.Date)
                 {
                     praiseAndWorshipSchedules[i].SongLeader = update.SongLeader;
+                    praiseAndWorshipSchedules[i].SongLeaderStatus = update.SongLeaderStatus;
                     updated = true;
                     break;
                 }
@@ -628,9 +676,13 @@ namespace CMSDataLogic
                 if (sundayWorshipSchedules[i].Date.Date == update.Date.Date)
                 {
                     sundayWorshipSchedules[i].Presider = update.Presider;
+                    sundayWorshipSchedules[i].PresiderStatus = update.PresiderStatus;
                     sundayWorshipSchedules[i].Speaker = update.Speaker;
+                    sundayWorshipSchedules[i].SpeakerStatus = update.SpeakerStatus;
                     sundayWorshipSchedules[i].Flowers = update.Flowers;
+                    sundayWorshipSchedules[i].FlowersStatus = update.FlowersStatus;
                     sundayWorshipSchedules[i].Ushers = update.Ushers;
+                    sundayWorshipSchedules[i].UshersStatus = update.UshersStatus;
                     updated = true;
                     break;
                 }
@@ -654,8 +706,11 @@ namespace CMSDataLogic
                 if (devotionSchedules[i].Date.Date == update.Date.Date)
                 {
                     devotionSchedules[i].SongLeader = update.SongLeader;
+                    devotionSchedules[i].SongLeaderStatus = update.SongLeaderStatus;
                     devotionSchedules[i].Presider = update.Presider;
+                    devotionSchedules[i].PresiderStatus = update.PresiderStatus;
                     devotionSchedules[i].Speaker = update.Speaker;
+                    devotionSchedules[i].SpeakerStatus = update.SpeakerStatus;
                     updated = true;
                     break;
                 }
@@ -711,6 +766,165 @@ namespace CMSDataLogic
             {
                 string updatedJson = JsonSerializer.Serialize(lessonsList, new JsonSerializerOptions { WriteIndented = true });
                 File.WriteAllText(lessonFilePath, updatedJson);
+                return true;
+            }
+            return false;
+        }
+        // process user response
+        public bool ProcessUserResponseDiscipleship(DiscipleshipMinistry userResponse)
+        {
+            string jsonFile = File.ReadAllText(discipleshipScheduleFilePath);
+            discipleshipSchedules = JsonSerializer.Deserialize<List<DiscipleshipMinistry>>(jsonFile);
+
+            bool updated = false;
+            foreach(var sched in discipleshipSchedules)
+            {
+                if (sched.Date.Date == userResponse.Date.Date)
+                {
+                    if (!string.IsNullOrEmpty(userResponse.Status))
+                    {
+                        sched.Status = userResponse.Status;
+                    }
+                    updated = true;
+                    break;
+                }
+            }
+            if (updated)
+            {
+                string updatedJson = JsonSerializer.Serialize(discipleshipSchedules, new JsonSerializerOptions { WriteIndented = true });
+                File.WriteAllText(discipleshipScheduleFilePath, updatedJson);
+                return true;
+            }
+            return false;
+        }
+        public bool ProcessUserResponsePrayer(PrayerMinistry userResponse)
+        {
+            string jsonFile = File.ReadAllText(prayerMeetingFilePath);
+            prayerSchedules = JsonSerializer.Deserialize<List<PrayerMinistry>>(jsonFile);
+
+            bool updated = false;
+            foreach (var sched in prayerSchedules)
+            {
+                if (sched.Date.Date == userResponse.Date.Date)
+                {
+                    if (!string.IsNullOrEmpty(userResponse.SongLeaderStatus))
+                    {
+                        sched.SongLeaderStatus = userResponse.SongLeaderStatus;
+                    }
+                    if (!string.IsNullOrEmpty(userResponse.PresiderStatus))
+                    {
+                        sched.PresiderStatus = userResponse.PresiderStatus;
+                    }
+                    if (!string.IsNullOrEmpty(userResponse.SpeakerStatus))
+                    {
+                        sched.SpeakerStatus = userResponse.SpeakerStatus;
+                    }
+                    updated = true;
+                    break;
+                }
+            }
+            if (updated)
+            {
+                string updatedJson = JsonSerializer.Serialize(prayerSchedules, new JsonSerializerOptions { WriteIndented = true });
+                File.WriteAllText(prayerMeetingFilePath, updatedJson);
+                return true;
+            }
+            return false;
+        }
+        public bool ProcessUserResponsePW(PraiseAndWorship userResponse)
+        {
+            string jsonFile = File.ReadAllText(praiseAndWorshipScheduleFilePath);
+            praiseAndWorshipSchedules = JsonSerializer.Deserialize<List<PraiseAndWorship>>(jsonFile);
+
+            bool updated = false;
+            foreach (var sched in praiseAndWorshipSchedules)
+            {
+                if (sched.Date.Date == userResponse.Date.Date)
+                {
+                    if (!string.IsNullOrEmpty(userResponse.SongLeaderStatus))
+                    {
+                        sched.SongLeaderStatus = userResponse.SongLeaderStatus;
+                    }
+                    updated = true;
+                    break;
+                }
+            }
+            if (updated)
+            {
+                string updatedJson = JsonSerializer.Serialize(praiseAndWorshipSchedules, new JsonSerializerOptions { WriteIndented = true });
+                File.WriteAllText(praiseAndWorshipScheduleFilePath, updatedJson);
+                return true;
+            }
+            return false;
+        }
+        public bool ProcessUserResponseSundayWorship(SundayWorshipService userResponse)
+        {
+            string jsonFile = File.ReadAllText(sundayWorshipServiceFilePath);
+            sundayWorshipSchedules = JsonSerializer.Deserialize<List<SundayWorshipService>>(jsonFile);
+
+            bool updated = false;
+            foreach (var sched in sundayWorshipSchedules)
+            {
+                if (sched.Date.Date == userResponse.Date.Date)
+                {
+                    if (!string.IsNullOrEmpty(userResponse.PresiderStatus))
+                    {
+                        sched.PresiderStatus = userResponse.PresiderStatus;
+                    }
+                    if (!string.IsNullOrEmpty(userResponse.SpeakerStatus))
+                    {
+                        sched.SpeakerStatus = userResponse.SpeakerStatus;
+                    }
+                    if (!string.IsNullOrEmpty(userResponse.FlowersStatus))
+                    {
+                        sched.FlowersStatus = userResponse.FlowersStatus;
+                    }
+                    if (!string.IsNullOrEmpty(userResponse.UshersStatus))
+                    {
+                        sched.UshersStatus = userResponse.UshersStatus;
+                    }
+                    updated = true;
+                    break;
+                }
+            }
+            if (updated)
+            {
+                string updatedJson = JsonSerializer.Serialize(sundayWorshipSchedules, new JsonSerializerOptions { WriteIndented = true });
+                File.WriteAllText(sundayWorshipServiceFilePath, updatedJson);
+                return true;
+            }
+            return false;
+        }
+        public bool ProcessUserResponseDevotion(Devotion userResponse)
+        {
+            string jsonFile = File.ReadAllText(devotionScheduleFilePath);
+            devotionSchedules = JsonSerializer.Deserialize<List<Devotion>>(jsonFile);
+
+            bool updated = false;
+            foreach (var sched in devotionSchedules)
+            {
+                if (sched.Date.Date == userResponse.Date.Date)
+                {
+                    if (!string.IsNullOrEmpty(userResponse.PresiderStatus))
+                    {
+                        sched.PresiderStatus = userResponse.PresiderStatus;
+                    }
+                    if (!string.IsNullOrEmpty(userResponse.SpeakerStatus))
+                    {
+                        sched.SpeakerStatus = userResponse.SpeakerStatus;
+                    }
+                    if (!string.IsNullOrEmpty(userResponse.SongLeaderStatus))
+                    {
+                        sched.SongLeaderStatus = userResponse.SongLeaderStatus;
+                    }
+                    updated = true;
+                    break;
+                }
+            }
+            if (updated)
+            {
+                string updatedJson = JsonSerializer.Serialize(devotionSchedules, new JsonSerializerOptions { WriteIndented = true });
+                File.WriteAllText(devotionScheduleFilePath, updatedJson);
                 return true;
             }
             return false;

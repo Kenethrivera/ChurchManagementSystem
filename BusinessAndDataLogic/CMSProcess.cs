@@ -14,7 +14,7 @@ namespace BusinessAndDataLogic
         private CMSDataProcess dataProcess = new CMSDataProcess();
 
         // about Login/sign up
-        public bool RegisteringRegularAccounts(string firstName, string lastName, int age, string emailAddress, string username, string password)
+        public bool RegisteringRegularAccounts(string firstName, string lastName, int age, string emailAddress, string ministryName, string position, string username, string password)
         {
             var userAccounts = new UserAccounts()
             {
@@ -22,6 +22,8 @@ namespace BusinessAndDataLogic
                 LastName = lastName,
                 Age = age,
                 EmailAddress = emailAddress,
+                MinistryName = ministryName,
+                Position = position,
                 UserName = username,
                 Password = password
             };
@@ -53,25 +55,15 @@ namespace BusinessAndDataLogic
                 return false;
             }
         }
-        public string ValidatingUserRole(string username, string password)
+        public UserAccounts ValidatingUserRole(bool isAdmin, string username, string password)
         {
             var loginAccounts = new UserAccounts()
             {
                 UserName = username,
                 Password = password
             };
-            return dataProcess.GetUserRole(loginAccounts);
+            return dataProcess.GetUserRole(loginAccounts, isAdmin);
         }
-        public string ValidatingAdminMinistry(string username, string password)
-        {
-            var loginAccounts = new UserAccounts()
-            {
-                UserName = username,
-                Password = password
-            };
-            return dataProcess.GetAdminMinistry(loginAccounts);
-        }
-
 
         // about the ministries schedule
         public string[] MinistryNamesList()
@@ -96,12 +88,13 @@ namespace BusinessAndDataLogic
             };
             return dataProcess.AddDiscipleshipSchedule(discipleship);
         }
-        public bool UpdateDiscipleshipSched(DateTime date, string speaker, string description, string note)
+        public bool UpdateDiscipleshipSched(DateTime date, string speaker, string speakerStatus, string description, string note)
         {
             var update = new DiscipleshipMinistry()
             {
                 Date = date,
                 Speaker = speaker,
+                Status = speakerStatus,
                 Description = description,
                 Note = note
             };
@@ -115,7 +108,7 @@ namespace BusinessAndDataLogic
             };
             return dataProcess.RemoveDiscipleshipSchedule(toDelete);
         }
-        
+
         //prayer ministry
         public List<PrayerMinistry> ViewPrayerSched()
         {
@@ -133,14 +126,17 @@ namespace BusinessAndDataLogic
             };
             return dataProcess.AddPrayerSchedule(prayerSched);
         }
-        public bool UpdatePrayerSched(DateTime date, string songLeader, string presider, string speaker, string prayerItem)
+        public bool UpdatePrayerSched(DateTime date, string songLeader, string songLeaderStatus, string presider, string presiderStataus, string speaker, string speakerStatus, string prayerItem)
         {
             var update = new PrayerMinistry()
             {
                 Date = date,
                 SongLeader = songLeader,
+                SongLeaderStatus = songLeaderStatus,
                 Presider = presider,
+                PresiderStatus = presiderStataus,
                 Speaker = speaker,
+                SpeakerStatus = speakerStatus,
                 PrayerItem = prayerItem
             };
             return dataProcess.UpdatePrayerSchedule(update);
@@ -154,7 +150,8 @@ namespace BusinessAndDataLogic
             return dataProcess.RemovePrayerSchedule(toDelete);
         }
 
-        //worship ministry
+        // worship ministry
+        // praise and worship
         public List<PraiseAndWorship> ViewPraiseAndWorshipSched()
         {
             return dataProcess.ViewPraiseAndWorshipSchedule();
@@ -169,12 +166,13 @@ namespace BusinessAndDataLogic
             };
             return dataProcess.AddPraiseAndWorshipSchedule(praiseAndWorshipSched);
         }
-        public bool UpdatePraiseAndWorshipSched(DateTime date, string songLeader)
+        public bool UpdatePraiseAndWorshipSched(DateTime date, string songLeader, string songLeaderStatus)
         {
             var update = new PraiseAndWorship()
             {
                 Date = date,
-                SongLeader = songLeader
+                SongLeader = songLeader,
+                SongLeaderStatus = songLeaderStatus
             };
             return dataProcess.UpdatePraiseAndWorshipSchedule(update);
         }
@@ -186,7 +184,7 @@ namespace BusinessAndDataLogic
             };
             return dataProcess.RemovePraiseAndWorshipSchedule(toDelete);
         }
-
+        // Sunday worship service
         public List<SundayWorshipService> ViewSundayWorshipSched()
         {
             return dataProcess.ViewSundayWorshipSched();
@@ -203,15 +201,19 @@ namespace BusinessAndDataLogic
             };
             return dataProcess.AddSundayWorshipSchedule(sundayWorshipSched);
         }
-        public bool UpdateSundayWorshipServiceSched(DateTime date, string presider, string speaker, string flowers, string ushers)
+        public bool UpdateSundayWorshipServiceSched(DateTime date, string presider, string presiderStatus, string speaker, string speakerStatus, string flowers, string flowersStatus, string ushers, string ushersStatus)
         {
             var update = new SundayWorshipService()
             {
                 Date = date,
                 Presider = presider,
+                PresiderStatus = presiderStatus,
                 Speaker = speaker,
+                SpeakerStatus = speakerStatus,
                 Flowers = flowers,
-                Ushers = ushers
+                FlowersStatus = flowersStatus,
+                Ushers = ushers,
+                UshersStatus = ushersStatus
             };
             return dataProcess.UpdateSundayWorshipSchedule(update);
         }
@@ -223,7 +225,7 @@ namespace BusinessAndDataLogic
             };
             return dataProcess.RemoveSundayWorshipSched(toDelete);
         }
-
+        // devotion
         public List<Devotion> ViewDevotionSched()
         {
             return dataProcess.ViewDevotionSchedule();
@@ -239,14 +241,17 @@ namespace BusinessAndDataLogic
             };
             return dataProcess.AddDevotionSchedule(devotionSched);
         }
-        public bool UpdateDevotionSched(DateTime date, string songLeader, string presider, string speaker)
+        public bool UpdateDevotionSched(DateTime date, string songLeader, string songLeaderStatus, string presider, string presiderStatus, string speaker, string speakerStatus)
         {
             var update = new Devotion()
             {
                 Date = date,
                 SongLeader = songLeader,
+                SongLeaderStatus = songLeaderStatus,
                 Presider = presider,
-                Speaker = speaker
+                PresiderStatus = presiderStatus,
+                Speaker = speaker,
+                SpeakerStatus = speakerStatus
             };
             return dataProcess.UpdateDevotionSchedule(update);
         }
@@ -259,7 +264,7 @@ namespace BusinessAndDataLogic
 
             return dataProcess.RemoveDevotionSchedule(toDelete);
         }
-
+        // teachers
         public List<TeachersList> GetTeachers()
         {
             return dataProcess.ViewTeachersList();
@@ -290,7 +295,7 @@ namespace BusinessAndDataLogic
             };
             return dataProcess.RemoveTeacher(toDelete);
         }
-
+        // lessons
         public List<Lesson> GetLessons()
         {
             return dataProcess.ViewLessons();
@@ -324,6 +329,7 @@ namespace BusinessAndDataLogic
             return dataProcess.RemoveLesson(toDelete);
         }
 
+        // validate date
         public bool ValidateSundayDate(DateTime date)
         {
             if (date.DayOfWeek != DayOfWeek.Sunday)
@@ -357,7 +363,7 @@ namespace BusinessAndDataLogic
             return true;
         }
 
-        //checking if date exist
+        // checking if date exist
         public bool DiscipleshipScheduleExist(DateTime date)
         {
             foreach (DiscipleshipMinistry sched in dataProcess.ViewDiscipleshipSchedule())
@@ -434,6 +440,164 @@ namespace BusinessAndDataLogic
                 }
             }
             return false;
+        }
+        
+        //get all users
+        public List<string> GetAllUsersPerMinistry(string ministryName)
+        {
+            var allAccounts = dataProcess.GetAllAccounts();
+
+            List<string> names = new List<string>();
+            foreach(var account in allAccounts)
+            {
+                if (account.MinistryName.Equals(ministryName, StringComparison.OrdinalIgnoreCase))
+                {
+                    names.Add(account.FirstName + " " + account.LastName);
+                }
+            }
+            return names;
+        }
+
+        //processing users response
+        public bool ProcessUserResponseDiscipleship(DateTime date, string newStatus)
+        {
+            var userResponse = new DiscipleshipMinistry()
+            {
+                Date = date,
+                Status = newStatus
+            };
+            return dataProcess.ProcessUserResponseDiscipleship(userResponse);
+        }
+        public bool ProcessUserResponsePrayer(DateTime date, string presiderStatus, string  speakerStatus, string songLeaderStatus)
+        {
+            var statusUpdate = new PrayerMinistry()
+            {
+                Date = date,
+                PresiderStatus = presiderStatus,
+                SongLeaderStatus = songLeaderStatus,
+                SpeakerStatus = speakerStatus
+            };
+            return dataProcess.ProcessUserResponsePrayer(statusUpdate);
+        }
+
+        // for windows form, since i can't revise and think of differnt approach or logic anymore :(
+        public bool ProcessUserResponsePrayer(DateTime date, string role, string newStatus)
+        {
+            var prayer = new PrayerMinistry { 
+                Date = date 
+            };
+
+            if (role == "Presider")
+                prayer.PresiderStatus = newStatus;
+            else if (role == "Speaker")
+                prayer.SpeakerStatus = newStatus;
+            else if (role == "Song Leader")
+                prayer.SongLeaderStatus = newStatus;
+
+            return dataProcess.ProcessUserResponsePrayer(prayer);
+        }
+
+        public bool ProcessUserResponseDevotion(DateTime date, string role, string newStatus)
+        {
+            var devotion = new Devotion { 
+                Date = date 
+            };
+
+            if (role == "Presider")
+                devotion.PresiderStatus = newStatus;
+            else if (role == "Speaker")
+                devotion.SpeakerStatus = newStatus;
+            else if (role == "Song Leader")
+                devotion.SongLeaderStatus = newStatus;
+
+            return dataProcess.ProcessUserResponseDevotion(devotion);
+        }
+        public bool ProcessUserResponsePraiseAndWorship(DateTime date, string role, string newStatus)
+        {
+            var pw = new PraiseAndWorship { 
+                Date = date 
+            };
+
+            if (role == "Song Leader")
+                pw.SongLeaderStatus = newStatus;
+
+            return dataProcess.ProcessUserResponsePW(pw);
+        }
+
+        public bool ProcessUserResponseSundayWorship(DateTime date, string role, string newStatus)
+        {
+            var sunday = new SundayWorshipService {
+                Date = date 
+            };
+
+            if (role == "Presider")
+                sunday.PresiderStatus = newStatus;
+            else if (role == "Speaker")
+                sunday.SpeakerStatus = newStatus;
+            else if (role == "Flowers")
+                sunday.FlowersStatus = newStatus;
+            else if (role == "Ushers")
+                sunday.UshersStatus = newStatus;
+
+            return dataProcess.ProcessUserResponseSundayWorship(sunday);
+        }
+
+
+
+        public bool ProcessUserResponsePW(DateTime date, string songLeaderStatus)
+        {
+            var statusUpdate = new PraiseAndWorship()
+            {
+                Date = date,
+                SongLeaderStatus = songLeaderStatus
+            };
+            return dataProcess.ProcessUserResponsePW(statusUpdate);
+        }
+        public bool ProcessUserResponseSundayWorship(DateTime date, string presiderStatus, string speakerStatus, string flowersStatus, string ushersStatus)
+        {
+            var statusUpdate = new SundayWorshipService()
+            {
+                Date = date,
+                PresiderStatus = presiderStatus,
+                SpeakerStatus = speakerStatus,
+                FlowersStatus = flowersStatus,
+                UshersStatus = ushersStatus
+            };
+            return dataProcess.ProcessUserResponseSundayWorship(statusUpdate);
+        }
+        public bool ProcessUserResponseDevotion(DateTime date, string presiderStatus, string speakerStatus, string songLeaderStatus)
+        {
+            var statusUpdate = new Devotion()
+            {
+                Date = date,
+                PresiderStatus = presiderStatus,
+                SpeakerStatus = speakerStatus,
+                SongLeaderStatus = songLeaderStatus
+            };
+            return dataProcess.ProcessUserResponseDevotion(statusUpdate);
+        }
+        
+
+
+        public string GetUserConfirmation(int choice)
+        {
+
+            if (choice == 1)
+            {
+                return "Confirmed";
+            }
+            else if (choice == 2)
+            {
+                return "Request to be Changed";
+            }
+            else
+            {
+                return "invalid";
+            }
+        }
+        public bool CheckIfStatusIsPending(string fullName, string assignedName, string status)
+        {
+            return assignedName.Equals(fullName, StringComparison.OrdinalIgnoreCase) && !status.Equals("Confirmed", StringComparison.OrdinalIgnoreCase);
         }
 
     }
