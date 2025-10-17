@@ -96,6 +96,16 @@ namespace churchmanagementsystem
                 string position = NoNullOrEmptyInput("Your Position: ");
                 bool added = cmsProcess.RegisteringAdminAccounts(firstName, lastName, age, emailAddress, ministryName, position, username, password);
                 Console.WriteLine(added ? "Registration Completed" : "Failed to Register Account");
+                try
+                {
+                    EmailService emailService = new();
+                    emailService.SendWelcomeEmail(emailAddress, firstName, ministryName);
+                    Console.WriteLine($"📨 A welcome email has been sent to {emailAddress}");
+                }
+                catch
+                {
+                    Console.WriteLine($"⚠️ Failed to send email");
+                }
             }
             else
             {
@@ -104,10 +114,21 @@ namespace churchmanagementsystem
                 string position = "Member";
                 bool added = cmsProcess.RegisteringRegularAccounts(firstName, lastName, age, emailAddress, ministryName, position, username, password);
                 Console.WriteLine(added ? "Registration Completed" : "Failed to Register Account");
+                
+                try
+                {
+                    EmailService emailService = new();
+                    emailService.SendWelcomeEmail(emailAddress, firstName, ministryName);
+                    Console.WriteLine($"A welcome email has been sent to {emailAddress}");
+                }
+                catch
+                {
+                    Console.WriteLine($"Failed to send email");
+                }
             }
+           
 
             Thread.Sleep(1500);
-            DisplayDashboard();
         }
         static string CreateUsername()
         {
