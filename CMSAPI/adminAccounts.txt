@@ -3,3 +3,4 @@ james,rivera,20,ken123@gmail.com,Prayer Ministry,Leader,ken,1234
 escueta,rivera,20,ken123@gmail.com,Worship Ministry,Leader,ken3,12345
 rivera,rivera,20,ken123@gmail.com,Christian Education,Leader,ken4,123456
 keneth,james,90,kenadq,Worship Ministry,Band Leader,keneth,1234567890
+Keneth,Rivera,30,riverakeneth@gmail.com,Prayer Ministry,Leader,ken132,12345

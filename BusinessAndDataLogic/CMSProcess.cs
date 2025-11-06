@@ -9,26 +9,34 @@ using CMSSchedules;
 
 namespace BusinessAndDataLogic
 {
-    public class CMSProcess
-    {
-        private CMSDataProcess dataProcess = new CMSDataProcess();
+        public class CMSProcess
+        {
+            private CMSDataProcess dataProcess = new CMSDataProcess();
+            private readonly EmailService _emailService;
+        
+        public CMSProcess(EmailService emailService)
+        {
+            dataProcess = new CMSDataProcess();
+            _emailService = emailService;
+        }
 
         // about Login/sign up
         public bool RegisteringRegularAccounts(string firstName, string lastName, int age, string emailAddress, string ministryName, string position, string username, string password)
-        {
-            var userAccounts = new UserAccounts()
             {
-                FirstName = firstName,
-                LastName = lastName,
-                Age = age,
-                EmailAddress = emailAddress,
-                MinistryName = ministryName,
-                Position = position,
-                UserName = username,
-                Password = password
-            };
-            return dataProcess.RegularUserAccounts(userAccounts);
-        }
+                var userAccounts = new UserAccounts()
+                {
+                    FirstName = firstName,
+                    LastName = lastName,
+                    Age = age,
+                    EmailAddress = emailAddress,
+                    MinistryName = ministryName,
+                    Position = position,
+                    UserName = username,
+                    Password = password
+                };
+                _emailService.SendWelcomeEmail(emailAddress, firstName, ministryName);
+                return dataProcess.RegularUserAccounts(userAccounts);
+            }
         public bool RegisteringAdminAccounts(string firstName, string lastName, int age, string emailAddress, string ministryName, string position, string userName, string passWord)
         {
             var adminAccounts = new UserAccounts()
@@ -42,6 +50,7 @@ namespace BusinessAndDataLogic
                 UserName = userName,
                 Password = passWord
             };
+            _emailService.SendWelcomeEmail(emailAddress, firstName, ministryName);
             return dataProcess.AdminAccounts(adminAccounts);
         }
         public static bool CheckPasswordMatch(string password, string re_Enter_Password)

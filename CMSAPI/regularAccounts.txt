@@ -18,3 +18,4 @@ chiara,rivera,20,ken4@gmail.com,Christian Education,Member,chiara,123456
 len,rivera,20,ken4@gmail.com,Christian Education,Member,len,123456
 ana,rivera,20,ken4@gmail.com,Christian Education,Member,ana,123456
 junior,rivera,20,ken4@gmail.com,Christian Education,Member,junior,123456
+James,Escueta,20,jamesescueta@gmail.com,Worship Ministry,Member,james_rivera,1234567

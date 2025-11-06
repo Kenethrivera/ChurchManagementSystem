@@ -9,8 +9,14 @@ namespace CMSAPI.Controllers
     [Route("api/[Controller]")]
     public class MinistriesController : Controller
     {
-        CMSProcess cmsProcess = new CMSProcess();
+      
         UserAccounts userAccounts = new UserAccounts();
+        private readonly CMSProcess cmsProcess;
+
+        public MinistriesController(CMSProcess _cmsProcess)
+        {
+            cmsProcess = _cmsProcess;
+        }
 
         [HttpGet("DiscipleshipSchedules")]
         public IEnumerable<DiscipleshipMinistry> GetDiscipleshipSchedules()

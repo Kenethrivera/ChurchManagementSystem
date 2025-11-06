@@ -17,8 +17,8 @@ namespace CMSDataLogic
         public CMSDataProcess()
         {
             //cmsDataService = new InMemoryDataService();
-            //cmsDataService = new TextFileDataService();
-            cmsDataService = new JsonDataService();
+            cmsDataService = new TextFileDataService();
+            //cmsDataService = new JsonDataService();
             //cmsDataService = new DBDataService();            
         }
         // about login and sigup

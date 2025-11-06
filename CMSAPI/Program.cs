@@ -1,4 +1,6 @@
 
+using BusinessAndDataLogic;
+
 namespace CMSAPI
 {
     public class Program
@@ -13,6 +15,10 @@ namespace CMSAPI
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
+            
+            builder.Services.AddScoped<EmailService>();
+            builder.Services.AddScoped<CMSProcess>();
+
 
             var app = builder.Build();
 

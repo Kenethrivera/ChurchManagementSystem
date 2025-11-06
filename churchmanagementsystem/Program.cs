@@ -95,17 +95,8 @@ namespace churchmanagementsystem
                 string ministryName = NoNullOrEmptyInput("Ministry Name: ");
                 string position = NoNullOrEmptyInput("Your Position: ");
                 bool added = cmsProcess.RegisteringAdminAccounts(firstName, lastName, age, emailAddress, ministryName, position, username, password);
-                Console.WriteLine(added ? "Registration Completed" : "Failed to Register Account");
-                try
-                {
-                    EmailService emailService = new();
-                    emailService.SendWelcomeEmail(emailAddress, firstName, ministryName);
-                    Console.WriteLine($"📨 A welcome email has been sent to {emailAddress}");
-                }
-                catch
-                {
-                    Console.WriteLine($"⚠️ Failed to send email");
-                }
+                Console.WriteLine(added ? "Registration Completed.  A welcome Email has been sent to you!!" : "Failed to Register Account");
+                
             }
             else
             {
@@ -113,22 +104,10 @@ namespace churchmanagementsystem
                 Console.WriteLine("Position: Member");
                 string position = "Member";
                 bool added = cmsProcess.RegisteringRegularAccounts(firstName, lastName, age, emailAddress, ministryName, position, username, password);
-                Console.WriteLine(added ? "Registration Completed" : "Failed to Register Account");
+                Console.WriteLine(added ? "Registration Completed. A Welcome Email has been sent to you!!" : "Failed to Register Account");
                 
-                try
-                {
-                    EmailService emailService = new();
-                    emailService.SendWelcomeEmail(emailAddress, firstName, ministryName);
-                    Console.WriteLine($"A welcome email has been sent to {emailAddress}");
-                }
-                catch
-                {
-                    Console.WriteLine($"Failed to send email");
-                }
+               
             }
-           
-
-            Thread.Sleep(1500);
         }
         static string CreateUsername()
         {
