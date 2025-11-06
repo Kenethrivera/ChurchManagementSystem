@@ -32,7 +32,7 @@ namespace BusinessAndDataLogic
             string body = $@"
                 <h2>Welcome to {ministryName}!</h2>
                 <p>Dear <b>{recipientName}</b>,</p>
-                <p>We are excited to have you as part of our {ministryName} team.</p>
+                <p>We are excited to have you as part of our {ministryName} steam.</p>
                 <p>May the Lord continue to use you mightily in His service!</p>
                 <p><b>God bless you!</b><br/>– Church Management Team</p>
             ";
